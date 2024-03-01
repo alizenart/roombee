@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomepageView: View {
+    @EnvironmentObject var eventStore: EventStore
     var ourPurple = hexstringToUIColor(hex: "#381e38")
     var calGrid: GridView
     var yourStatus: StatusView
@@ -90,7 +91,7 @@ func hexstringToUIColor (hex:String) -> UIColor {
 
 struct HomepageView_Previews: PreviewProvider {
     static var previews: some View {
-        HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:"))
+      HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())
     }
 }
 

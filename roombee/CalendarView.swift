@@ -52,16 +52,17 @@ struct NewEventView: View {
 }
 
 struct CalendarView: View {
+  @EnvironmentObject var eventStore: EventStore
     var title: String
-  @State private var showingAddEventSheet = false
+    @State private var showingAddEventSheet = false
     
     let date: Date = dateFrom(9, 5, 2023)
     
-    @State var events: [Event] = [
-        Event(startDate: dateFrom(9,5,2023,7,0), endDate: dateFrom(9,5,2023,8,0), title: "Interview"),
-        Event(startDate: dateFrom(9,5,2023,9,0), endDate: dateFrom(9,5,2023,10,0), title: "Friend's Coming Over"),
-        Event(startDate: dateFrom(9,5,2023,11,0), endDate: dateFrom(9,5,2023,12,00), title: "Project Meeting")
-    ]
+//    @State var events: [Event] = [
+//        Event(startDate: dateFrom(9,5,2023,7,0), endDate: dateFrom(9,5,2023,8,0), title: "Interview"),
+//        Event(startDate: dateFrom(9,5,2023,9,0), endDate: dateFrom(9,5,2023,10,0), title: "Friend's Coming Over"),
+//        Event(startDate: dateFrom(9,5,2023,11,0), endDate: dateFrom(9,5,2023,12,00), title: "Project Meeting")
+//    ]
     
     let hourHeight = 50.0
     
@@ -82,7 +83,7 @@ struct CalendarView: View {
                 ZStack(alignment: .topLeading) {
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        ForEach(7..<12) { hour in
+                        ForEach(7..<18) { hour in
                             HStack {
                                 Text("\(hour)")
                                     .font(.caption)
@@ -94,7 +95,7 @@ struct CalendarView: View {
                         }
                     }
                     
-                    ForEach(events) { event in
+                  ForEach(eventStore.events) { event in
                         eventCell(event)
                     }
                 }
@@ -104,7 +105,7 @@ struct CalendarView: View {
           }
           .sheet(isPresented: $showingAddEventSheet) {
             NewEventView(viewModel: NewEventViewModel()) { newEvent in
-              events.append(newEvent)
+              eventStore.addEvent(newEvent)
             }
           }
           .padding()
@@ -161,6 +162,6 @@ func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: 
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView(title: String())
+      CalendarView(title: String()).environmentObject(EventStore())
     }
 }

@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct roombeeApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
+  var eventStore = EventStore()
+  
+  var body: some Scene {
+      WindowGroup {
+        ContentView().environmentObject(eventStore)
+      }
+  }
 }
