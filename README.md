@@ -1,2 +1,3 @@
-# hackathon
-progress from hackathon 
+# roombee
+
+the best roommate communication app ever 
