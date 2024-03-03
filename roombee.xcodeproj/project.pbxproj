@@ -15,6 +15,9 @@
 		30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */; };
 		30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */; };
 		345A398B59DFC987D091D22D /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 641C99D889D120338723EFFC /* awsconfiguration.json */; };
+		4DF5E7F8C7A581EF6D17B6CE /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48255A30ECF74E10CDA58641 /* AmplifyModels.swift */; };
+		56D4D4150928526FFCB5C62E /* Event+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A28956FB927015908CCC30 /* Event+Schema.swift */; };
+		83469D7DB735933B4E0CE673 /* CalendarEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C454BAC02A47133481494EF6 /* CalendarEvent.swift */; };
 		C359588EB91F965B1C6BF5A1 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 1E49ACB27DC1E7E9BFA368F2 /* amplifyconfiguration.json */; };
 		C70BC7832B7EA15C008B5883 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7822B7EA15C008B5883 /* AWSAPIPlugin */; };
 		C70BC7852B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7842B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin */; };
@@ -37,7 +40,10 @@
 		30AA0BC12AD1BC0800344002 /* roombee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = roombee.entitlements; sourceTree = "<group>"; };
 		30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageView.swift; sourceTree = "<group>"; };
+		48255A30ECF74E10CDA58641 /* AmplifyModels.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = AmplifyModels.swift; path = amplify/generated/models/AmplifyModels.swift; sourceTree = "<group>"; };
 		641C99D889D120338723EFFC /* awsconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		A1A28956FB927015908CCC30 /* Event+Schema.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = "Event+Schema.swift"; path = "amplify/generated/models/Event+Schema.swift"; sourceTree = "<group>"; };
+		C454BAC02A47133481494EF6 /* CalendarEvent.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = CalendarEvent.swift; path = amplify/generated/models/CalendarEvent.swift; sourceTree = "<group>"; };
 		C727A3982B705A3A00959BE1 /* DailyCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCalendarView.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		FAD774892AD21AB600E332B1 /* Login:SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Login:SignUp.swift"; sourceTree = "<group>"; };
@@ -65,6 +71,7 @@
 				30AA0BBA2AD1BC0400344002 /* roombee */,
 				30AA0BB92AD1BC0400344002 /* Products */,
 				5CC4194A4479403EFD5252EA /* AmplifyConfig */,
+				B96C0A36C04DAA22EF84E56E /* AmplifyModels */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +116,16 @@
 				1E49ACB27DC1E7E9BFA368F2 /* amplifyconfiguration.json */,
 			);
 			name = AmplifyConfig;
+			sourceTree = "<group>";
+		};
+		B96C0A36C04DAA22EF84E56E /* AmplifyModels */ = {
+			isa = PBXGroup;
+			children = (
+				48255A30ECF74E10CDA58641 /* AmplifyModels.swift */,
+				A1A28956FB927015908CCC30 /* Event+Schema.swift */,
+				C454BAC02A47133481494EF6 /* CalendarEvent.swift */,
+			);
+			name = AmplifyModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,6 +218,9 @@
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
 				C727A3992B705A3A00959BE1 /* DailyCalendarView.swift in Sources */,
+				4DF5E7F8C7A581EF6D17B6CE /* AmplifyModels.swift in Sources */,
+				56D4D4150928526FFCB5C62E /* Event+Schema.swift in Sources */,
+				83469D7DB735933B4E0CE673 /* CalendarEvent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,7 +345,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
-				DEVELOPMENT_TEAM = JCPZ7WTSFP;
+				DEVELOPMENT_TEAM = A5XLR83FP4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -363,7 +383,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
-				DEVELOPMENT_TEAM = JCPZ7WTSFP;
+				DEVELOPMENT_TEAM = A5XLR83FP4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

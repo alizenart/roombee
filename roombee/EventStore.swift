@@ -9,9 +9,9 @@ import Foundation
 import Combine
 
 class EventStore: ObservableObject {
-  @Published var events: [Event] = []
+  @Published var events: [CalendarEvent] = []
   
-  func addEvent(_ newEvent: Event) {
+  func addEvent(_ newEvent: CalendarEvent) {
     events.append(newEvent)
     
 //    add backend logic here 

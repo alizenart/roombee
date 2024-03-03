@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct ContentView: View {
     var ourPurple = hexStringToUIColor(hex: "#381e38")

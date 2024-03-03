@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Event: Identifiable {
+struct CalendarEvent: Identifiable {
     let id = UUID()
     var startDate: Date
     var endDate: Date
@@ -22,7 +22,7 @@ class NewEventViewModel: ObservableObject {
 
 struct NewEventView: View {
   @ObservedObject var viewModel: NewEventViewModel
-  var onSave: (Event) -> Void
+  var onSave: (CalendarEvent) -> Void
   @Environment(\.dismiss) var dismiss
   
   var body: some View {
@@ -41,7 +41,7 @@ struct NewEventView: View {
         }
         ToolbarItem(placement: .navigationBarTrailing) {
           Button("Save") {
-            let newEvent = Event(startDate: viewModel.startDate, endDate: viewModel.endDate, title: viewModel.title)
+            let newEvent = CalendarEvent(startDate: viewModel.startDate, endDate: viewModel.endDate, title: viewModel.title)
             onSave(newEvent)
             dismiss()
           }
@@ -121,7 +121,7 @@ struct CalendarView: View {
     
   }
     
-  func eventCell(_ event: Event) -> some View {
+  func eventCell(_ event: CalendarEvent) -> some View {
       
       let duration = event.endDate.timeIntervalSince(event.startDate)
       let height = duration / 60 / 60 * hourHeight
