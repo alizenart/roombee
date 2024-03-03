@@ -1,3 +1,2 @@
 # roombee
-
-the best roommate communication app ever 
+the best roommate app :D

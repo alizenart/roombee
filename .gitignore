@@ -19,3 +19,8 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+xcuserdata/
+node_modules/
+package-lock.json
+.build/
