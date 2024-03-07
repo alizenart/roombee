@@ -1,0 +1,15 @@
+{
+  "roombee": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-roombee-roombee-160246-authRole",
+      "UnauthRoleArn": "arn:aws:iam::381492134677:role/amplify-roombee-roombee-160246-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::381492134677:role/amplify-roombee-roombee-160246-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-roombee-roombee-160246-deployment",
+      "UnauthRoleName": "amplify-roombee-roombee-160246-unauthRole",
+      "StackName": "amplify-roombee-roombee-160246",
+      "StackId": "arn:aws:cloudformation:us-east-2:381492134677:stack/amplify-roombee-roombee-160246/6f4153b0-dcce-11ee-a623-06cd3d23229f",
+      "AmplifyAppId": "d2hbjlrypo99y8"
+    }
+  }
+}

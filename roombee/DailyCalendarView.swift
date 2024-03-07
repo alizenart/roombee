@@ -14,6 +14,11 @@ struct DailyCalendarView: View {
     }
 }
 
-#Preview {
-    DailyCalendarView()
+//#Preview {
+//    DailyCalendarView()
+//}
+struct DailyCalendarView_Previews: PreviewProvider {
+    static var previews: some View {
+        DailyCalendarView()
+    }
 }
