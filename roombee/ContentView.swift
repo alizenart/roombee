@@ -9,15 +9,29 @@ import SwiftUI
 import Amplify
 
 struct ContentView: View {
+  @State private var isTimerDone = false
     var ourPurple = hexStringToUIColor(hex: "#381e38")
     var body: some View {
-        ZStack{
-            Color(ourPurple).ignoresSafeArea()
-            VStack {
-                Text("Roombee").font(.largeTitle).bold().foregroundColor(.yellow)
-            }
-            .padding()
+      if isTimerDone {
+        NavigationView {
+          SignUp() // go to signup view
         }
+      }
+      else {
+        ZStack{
+          Color(ourPurple).ignoresSafeArea()
+          VStack {
+            Text("Roombee").font(.largeTitle).bold().foregroundColor(.yellow)
+          }
+          .onAppear() {
+             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
+             // Set the state variable to true after 2 seconds
+             isTimerDone = true
+             }
+           }
+          .padding()
+        }
+      }
     }
 }
 

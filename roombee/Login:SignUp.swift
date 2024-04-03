@@ -7,25 +7,29 @@
 
 import SwiftUI
 
+
 struct SignUp: View {
     
     @State private var email = ""
     @State private var password = ""
     @State private var isSignUp = false
-    @State private var navigateToHomepage = false
+    
+    let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+    
+    let toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
     var body: some View {
         
         NavigationView {
             ZStack{
-                Color.purple
+                backgroundColor // Use the custom color here
                     .ignoresSafeArea()
-                Circle()
-                    .scale(1.7)
-                    .foregroundColor(.white.opacity(0.15))
-                Circle()
-                    .scale(1.35)
-                    .foregroundColor(.white)
+//                Circle()
+//                    .scale(1.7)
+//                    .foregroundColor(.white.opacity(0.15))
+//                Circle()
+//                    .scale(1.35)
+//                    .foregroundColor(.white)
                 
                 VStack{
                     if isSignUp {
@@ -38,22 +42,49 @@ struct SignUp: View {
                             .font(.largeTitle)
                             .bold()
                             .padding()
+                            .foregroundColor(.init(red: 73/255, green: 73/255, blue: 73/255))
                     }
-                    
-                    TextField("Email", text: $email)
+                    Text("Email").padding(.horizontal, -120)
+                        .padding(.bottom, -100)
+                        .foregroundColor(Color.gray)
+                        .font(.system(size: 15))
+                    TextField("", text: $email)
                         .padding()
-                        .frame(width:300, height:50)
-                        .background(Color.black.opacity(0.05))
+                        .frame(width:250, height:50)
+                        .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
                         .cornerRadius(10)
-                    SecureField("Password", text: $password)
-                        .padding()
-                        .frame(width:300, height:50)
-                        .background(Color.black.opacity(0.05))
-                        .cornerRadius(10)
+                        .padding(.bottom, 5)
                     
-                    Button(action: isSignUp ? signUp : login) {
-                        Text(isSignUp ? "Sign Up" : "Login")
-                    }
+                    Text("Password").padding(.horizontal, -120)
+                        .padding(.bottom, -100)
+                        .padding(.top, 10)
+                        .foregroundColor(Color.gray)
+                        .font(.system(size: 15))
+                    SecureField("", text: $password)
+                        .padding()
+                        .frame(width:250, height:50)
+                        .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
+                        .cornerRadius(10)
+                        .padding(.bottom, 10)
+                    
+                    if(isSignUp){
+                        Button(action: signUp) {
+                        Text("Sign Up").frame(width: 150, height: 30, alignment: .center)
+                                                    .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                                                    .foregroundColor(.white)
+                                                    .cornerRadius(10)
+                                            }
+                                        }
+                                        else {
+                                            NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())) {
+                                                Text("Login").frame(width: 150, height: 30, alignment: .center)
+                                                    .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                                                    .foregroundColor(.white)
+                                                    .cornerRadius(10)
+                                            }
+                                        }
+
+                    
                     
 
                     
@@ -61,11 +92,17 @@ struct SignUp: View {
                         isSignUp.toggle()
                     }) {
                         Text(isSignUp ? "Already have an account? Login!" : "Don't have an account? Sign Up!")
+                            .font(.system(size: 12))
                     }
                 }
-//                NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: String()), cal2: CalendarView(title: String()))), isActive: $navigateToHomepage) {
-//                                    EmptyView()  // This won't display anything but is necessary for the programmatic navigation
-//                                }
+        
+                
+                .padding()
+                .background(Rectangle()
+                    .foregroundColor(.init(red: 230/255, green: 217/255, blue: 197/255))
+                    .cornerRadius(15)
+                    .shadow(radius: 15))
+                .padding()
             }
             .navigationBarHidden(true)
         }
@@ -73,12 +110,6 @@ struct SignUp: View {
     
     func signUp() {
         // Your sign-up logic
-    }
-
-    func login() {
-        // Your login logic
-        // Navigate to HomepageView after a successful login
-        self.navigateToHomepage = true
     }
 }
 

@@ -21,6 +21,7 @@ public struct Event: Model {
       createdAt: nil,
       updatedAt: nil)
   }
+  
   internal init(id: String = UUID().uuidString,
       title: String,
       startDate: Temporal.DateTime,

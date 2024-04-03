@@ -14,6 +14,8 @@ struct roombeeApp: App {
   var eventStore = EventStore()
   
   init() { // default init and configure
+    print("hello???")
+
     configureAmplify()
   }
   

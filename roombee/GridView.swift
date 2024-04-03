@@ -25,7 +25,6 @@ struct GridView: View {
             Grid() {
                 GridRow {
                     cal
-                    cal2
                 }
             }
         }

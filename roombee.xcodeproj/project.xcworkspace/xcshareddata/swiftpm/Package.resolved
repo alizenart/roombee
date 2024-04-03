@@ -1,4 +1,5 @@
 {
+  "originHash" : "ac7439ef6e211b020a2cf0fce95d2080bfaa57c86c791bd33ffc85482994d172",
   "pins" : [
     {
       "identity" : "amplify-swift",
@@ -100,5 +101,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
