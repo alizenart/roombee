@@ -1,3 +1,8 @@
+xcuserdata/
+node_modules/
+package-lock.json
+.build/.DS-Store
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -19,8 +24,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-
-xcuserdata/
-node_modules/
-package-lock.json
-.build/.DS-Store
