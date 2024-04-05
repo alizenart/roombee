@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+//let curDate = Date()
+//let dates = generateDates(startingFrom: curDate, count: 7)
+
 
 struct SignUp: View {
     

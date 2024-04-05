@@ -67,55 +67,60 @@ struct CalendarView: View {
     let hourHeight = 50.0
     
     var body: some View {
-        VStack(alignment: .leading) {
-            
-            // Date headline
-            Text(title).bold()
-//            HStack {
-//                Text(date.formatted(.dateTime.day().month()))
-//                    .bold()
-//                Text(date.formatted(.dateTime.year()))
-//            }
-//            .font(.title)
-//            Text(date.formatted(.dateTime.weekday(.wide)))
-            
-            ScrollView {
-                ZStack(alignment: .topLeading) {
-                    
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(7..<18) { hour in
-                            HStack {
-                                Text("\(hour)")
-                                    .font(.caption)
-                                    .frame(width: 20, alignment: .trailing)
-                                Color.gray
-                                    .frame(height: 1)
+        ZStack{
+            toggleColor
+            VStack(alignment: .leading) {
+                
+                // Date headline
+                Text(title).bold()
+                    .foregroundColor(toggleColor)
+                //            HStack {
+                //                Text(date.formatted(.dateTime.day().month()))
+                //                    .bold()
+                //                Text(date.formatted(.dateTime.year()))
+                //            }
+                //            .font(.title)
+                //            Text(date.formatted(.dateTime.weekday(.wide)))
+                
+                ScrollView {
+                    ZStack(alignment: .topLeading) {
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(7..<18) { hour in
+                                HStack {
+                                    Text("\(hour)")
+                                        .font(.caption)
+                                        .frame(width: 20, alignment: .trailing)
+                                    Color.gray
+                                        .frame(height: 1)
+                                }
+                                .frame(height: hourHeight)
                             }
-                            .frame(height: hourHeight)
+                        }
+                        
+                        ForEach(eventStore.events) { event in
+                            eventCell(event)
                         }
                     }
-                    
-                  ForEach(eventStore.events) { event in
-                        eventCell(event)
+                }
+                Button("Add Event") {
+                    showingAddEventSheet = true
+                }
+                .sheet(isPresented: $showingAddEventSheet) {
+                    NewEventView(viewModel: NewEventViewModel()) { newEvent in
+                        eventStore.addEvent(newEvent)
                     }
                 }
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.black)
+                .cornerRadius(8)
+                
             }
-          Button("Add Event") {
-            showingAddEventSheet = true
-          }
-          .sheet(isPresented: $showingAddEventSheet) {
-            NewEventView(viewModel: NewEventViewModel()) { newEvent in
-              eventStore.addEvent(newEvent)
-            }
-          }
-          .padding()
-          .background(Color.red)
-          .foregroundColor(.black)
-          .cornerRadius(8)
-          
-        }
-        .padding()
-    }
+            .padding()
+        } //ZStack
+        .cornerRadius(30)
+    }//body
     
   func addNewEvent() {
     

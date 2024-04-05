@@ -7,26 +7,56 @@
 
 import SwiftUI
 
+
+let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+
+let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
+
+let ourOrange = Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255)
+
+let LighterPurple = Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255)
+
+let date = Date()
+let formatter = DateFormatter()
+
 struct HomepageView: View {
     @EnvironmentObject var eventStore: EventStore
-    var ourPurple = hexstringToUIColor(hex: "#381e38")
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
     
-//    let content = ContentView
-//    var hexFunc = content.hexStringToUIColor(hex: "#381e38")
+    //new variables -z
+    var schedCara: DatesCarousel {
+        let dates = generateDates(startingFrom: Date(), count: 7) // Adjust parameters as needed
+        return DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
+    }
+
     
     var body: some View {
         VStack {
-            Text("Roombee").font(.title).bold()
+            
+            
+            
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [.purple, .white]), startPoint: .bottom, endPoint: .center).ignoresSafeArea()
+                backgroundColor // Use the custom color here
+                    .ignoresSafeArea()
+                
                 VStack {
-                    HStack(spacing: 10){
+                    Text("Roombee")                        
+                        .font(.largeTitle)
+                        .foregroundColor(ourOrange)
+                        .fontWeight(.bold)
+                        .padding(.top, 20)
+                    
+                    HStack(spacing: 20){
                         yourStatus
                         roomStatus
-                    }.padding(.horizontal, 40).padding(.bottom, 40)
+                    }.padding(.horizontal, 40)
+//                        .padding(.bottom, 20)
+                        .padding(.top, 20)
+                    
+                    schedCara
+                        .padding()
                     calGrid
                 }
             }
@@ -40,58 +70,120 @@ struct StatusView: View {
     @State var title: String
     
     var body: some View {
-        let statusShape = RoundedRectangle(cornerRadius: 20)
+        let statusShape = RoundedRectangle(cornerRadius: 30)
         let bedIcon = Image(systemName: "bed.double.fill").foregroundColor(.white)
         let roomIcon = Image(systemName: "house").foregroundColor(.white)
         ZStack {
             statusShape
                 .fill()
-                .foregroundColor(.purple)
+                .foregroundColor(toggleColor)
                 .aspectRatio(1.0, contentMode: .fit)
             
             VStack {
                 Text(title)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .bold()
                 HStack{
                     Toggle(isOn: $isAsleep, label: {bedIcon})
-                }.padding(.leading, 10).padding(.trailing, 10)
+                }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
                     Toggle(isOn: $inRoom, label: {roomIcon})
-                }.padding(.leading, 10).padding(.trailing, 10)
+                }.padding(.leading, 20).padding(.trailing, 20)
             }
         }
-        
-        
-        
     }
 }
 
-func hexstringToUIColor (hex:String) -> UIColor {
-    var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
-    if (cString.hasPrefix("#")) {
-        cString.remove(at: cString.startIndex)
+
+struct DatesCarousel:View {
+    var dates: [Date] // Array of dates
+    var onDateSelected: (Date)-> Void
+    @Binding var selectedDate: Date
+
+    var body: some View {
+        ZStack {
+            VStack{
+                Text("Schedules")
+                    .font(.system(size:25))
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.top, 30)
+                    .padding(.leading, -170)
+                HStack{
+                    ForEach(dates, id: \.self) { date in
+                        DateToggle(date: date, today: Calendar.current.isDateInToday(date)) {
+                            onDateSelected(date)
+                        }
+                    }
+                }
+            }
+        }
     }
-
-    if ((cString.count) != 6) {
-        return UIColor.gray
-    }
-
-    var rgbValue:UInt64 = 0
-    Scanner(string: cString).scanHexInt64(&rgbValue)
-
-    return UIColor(
-        red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-        green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-        blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-        alpha: CGFloat(1.0)
-    )
 }
+
+func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
+    var dates = [Date]()
+    for day in 0..<count {
+        if let date = Calendar.current.date(byAdding: .day, value: day, to: startDate) {
+            dates.append(date)
+        }
+    }
+    return dates
+}
+
+
+struct DateToggle: View {
+//    var Month
+    var date : Date
+    var today: Bool
+    var onTapped: () -> Void  // Closure to be called when the toggle is tapped
+
+    var body: some View {
+        Button(action: onTapped) {
+            let statusShape = RoundedRectangle(cornerRadius: 10)
+            ZStack {
+                statusShape
+                    .fill()
+                    .foregroundColor(LighterPurple)
+                //                .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 45, height: 60)
+                
+                VStack {
+                    Text(monthName(from: date))
+                        .foregroundColor(.white)
+                        .bold()
+                        .font(.system(size:15))
+                    Text(MonthDay(from: date))
+                        .foregroundColor(.white)
+                        .bold()
+                        .font(.system(size:20))
+                }
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    func monthName(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM" // Format for abbreviated month name
+        return formatter.string(from: date)
+    }
+    
+    func MonthDay(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d" // Format for abbreviated month name
+        return formatter.string(from: date)
+    }
+}
+
 
 struct HomepageView_Previews: PreviewProvider {
     static var previews: some View {
-      HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())
+//        let dates = generateDates(startingFrom: Date(), count: 7)
+//        let schedCara = DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
+
+        HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())
     }
 }
 
