@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct Onboarding3_joinExisting: View {
+    
+    @State private var HiveCode = ""
+    
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
@@ -36,18 +39,22 @@ struct Onboarding3_joinExisting: View {
                             .font(.system(size: 20, weight : .bold))
                             .foregroundColor(.init(textColor))
                         
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(strokeColor, lineWidth: 2)
-                            .background(.white)
-                            .cornerRadius(10)
-                            .opacity(0.5)
-                            .frame(width: 225, height: 50)
-                            .padding(.bottom, 10)
+                        TextField("", text: $HiveCode)
+                            .multilineTextAlignment(.center)
                             .padding()
+                            .frame(width: 225, height: 50)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(strokeColor, lineWidth: 2)
+                                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
+                                    .opacity(0.5)
+                            )
+                            .cornerRadius(10)
+                            .padding(.bottom, 10)
+
                             
 
-
-                        Button(action: GoToHome){
+                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())){
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)

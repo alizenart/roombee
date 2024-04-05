@@ -60,8 +60,8 @@ struct Onboarding3_CreateRoom2: View {
                             
 
 
-                        Button(action: GoToGenerateCode){
-                            Text("Next")
+                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())){
+                            Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
                                 .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))

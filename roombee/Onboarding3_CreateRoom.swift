@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct Onboarding3_CreateRoom: View {
+    @State private var RoomName = ""
+    
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
@@ -44,13 +46,20 @@ struct Onboarding3_CreateRoom: View {
                                 .padding(.bottom, -5)
                                 .padding(.top, -10)
                             
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(strokeColor, lineWidth: 2)
-                            //                            .cornerRadius(15)
-                                .background(.white)
-                                .cornerRadius(10)
-                                .opacity(0.5)
+                            TextField("", text: $RoomName)
+                                .multilineTextAlignment(.center)
+                                .padding()
                                 .frame(width: 250, height: 50)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(strokeColor, lineWidth: 2)
+                                        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
+                                        .opacity(0.5)
+                                )
+                                .cornerRadius(10)
+                                .padding(.bottom, 10)
+
+                        
                             
                             Text("This can be changed in settings later")
                                 .font(.system(size: 12))
