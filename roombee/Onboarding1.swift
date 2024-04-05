@@ -24,7 +24,7 @@ struct Onboarding1: View {
     let genderOptions = ["Female", "Male", "Other"]
     
     var body: some View {
-        NavigationView{
+//        NavigationView{
             GeometryReader { geometry in
                 
                 ZStack{
@@ -97,20 +97,20 @@ struct Onboarding1: View {
                         }
                         
                         
-                        Button(action: GoBack) {
-                            Text("Go Back")
-                                .font(.system(size : 20, weight: .bold))
-                                .frame(width: 125, height: 40, alignment: .center)
-                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        .padding(.top, 10)
+//                        NavigationLink(destination: SignUp()) {
+//                            Text("Go Back")
+//                                .font(.system(size : 20, weight: .bold))
+//                                .frame(width: 125, height: 40, alignment: .center)
+//                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
+//                                .foregroundColor(.white)
+//                                .cornerRadius(10)
+//                        }
+//                        .padding(.top, 10)
                     }
                     
                     
-                }
-                .navigationBarHidden(true)
+//                }
+//                .navigationBarBackButtonHidden(true)
                 
             }
             

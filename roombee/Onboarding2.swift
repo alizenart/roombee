@@ -1,4 +1,4 @@
-
+//
 //  Onboarding2.swift
 //  roombee
 //
@@ -18,7 +18,7 @@ struct Onboarding2: View {
     
     
     var body: some View {
-        NavigationView{
+//        NavigationView{
             GeometryReader { geometry in
                 
                 ZStack{
@@ -33,7 +33,7 @@ struct Onboarding2: View {
                                 .bold()
                                 .padding()
                                 .foregroundColor(.init(textColor))
-                            Button(action: CreateRoom){
+                            NavigationLink(destination: Onboarding3_CreateRoom()){
                                 Text("Create Room")
                                     .font(.system(size : 25, weight: .bold))
                                     .frame(width: 225, height: 75, alignment: .center)
@@ -65,15 +65,15 @@ struct Onboarding2: View {
                         Spacer()
                         
                         // Nav Buttons
-                        NavigationLink(destination: Onboarding1()) {
-                            Text("Go Back")
-                                .font(.system(size : 20, weight: .bold))
-                                .frame(width: 125, height: 40, alignment: .center)
-                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }//button
-                        .padding(.top, 10)
+//                        NavigationLink(destination: Onboarding1()) {
+//                            Text("Go Back")
+//                                .font(.system(size : 20, weight: .bold))
+//                                .frame(width: 125, height: 40, alignment: .center)
+//                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
+//                                .foregroundColor(.white)
+//                                .cornerRadius(10)
+//                        }//button
+//                        .padding(.top, 10)
                         
                     }//vstack (big)
                 }//zstack
@@ -81,8 +81,9 @@ struct Onboarding2: View {
                 
                 
             } //geometry reader
-            .navigationBarHidden(true)
-        }// navigationview
+//            .navigationBarHidden(true)
+//            .navigationBarBackButtonHidden(true)
+//        }// navigationview
             
         } //body
     
