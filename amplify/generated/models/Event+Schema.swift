@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension Event {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case title
@@ -14,7 +14,7 @@ extension Event {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let event = Event.keys

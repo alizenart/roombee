@@ -12,13 +12,14 @@ struct GridView: View {
     var cal2: CalendarView
     
     var body: some View {
-        let date: Date = dateFrom(9, 5, 2023)
+        let date = Date()
         VStack{
             HStack {
                 Text(date.formatted(.dateTime.day().month()))
                     .bold()
                 Text(date.formatted(.dateTime.year()))
             }
+            .foregroundColor(toggleColor)
             .font(.title)
             Text(date.formatted(.dateTime.weekday(.wide)))
             

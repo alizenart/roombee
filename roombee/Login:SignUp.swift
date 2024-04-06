@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+//let curDate = Date()
+//let dates = generateDates(startingFrom: curDate, count: 7)
+
 
 struct SignUp: View {
     
@@ -68,7 +71,7 @@ struct SignUp: View {
                         .padding(.bottom, 10)
                     
                     if(isSignUp){
-                        Button(action: signUp) {
+                        NavigationLink(destination: Onboarding1()) {
                         Text("Sign Up").frame(width: 150, height: 30, alignment: .center)
                                                     .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
                                                     .foregroundColor(.white)
@@ -83,6 +86,8 @@ struct SignUp: View {
                                                     .cornerRadius(10)
                                             }
                                         }
+                    
+                   
 
                     
                     
@@ -104,8 +109,9 @@ struct SignUp: View {
                     .shadow(radius: 15))
                 .padding()
             }
-            .navigationBarHidden(true)
+            
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     func signUp() {
