@@ -34,32 +34,30 @@ struct HomepageView: View {
     
     var body: some View {
         VStack {
-            
-            
-            
-            ZStack {
-                backgroundColor // Use the custom color here
-                    .ignoresSafeArea()
+          ZStack {
+            backgroundColor // Use the custom color here
+              .ignoresSafeArea()
+            ScrollView {
+              VStack {
+                Text("Roombee")
+                  .font(.largeTitle)
+                  .foregroundColor(ourOrange)
+                  .fontWeight(.bold)
+                  .padding(.top, 20)
                 
-                VStack {
-                    Text("Roombee")                        
-                        .font(.largeTitle)
-                        .foregroundColor(ourOrange)
-                        .fontWeight(.bold)
-                        .padding(.top, 20)
-                    
-                    HStack(spacing: 20){
-                        yourStatus
-                        roomStatus
-                    }.padding(.horizontal, 40)
-//                        .padding(.bottom, 20)
-                        .padding(.top, 20)
-                    
-                    schedCara
-                        .padding()
-                    calGrid
-                }
+                HStack(spacing: 20){
+                  yourStatus
+                  roomStatus
+                }.padding(.horizontal, 40)
+                //                        .padding(.bottom, 20)
+                  .padding(.top, 20)
+                
+                schedCara
+                  .padding()
+                calGrid.padding([.leading, .trailing], 20)
+              }
             }
+          }
         }
     }
 }
@@ -68,6 +66,7 @@ struct StatusView: View {
     @State private var isAsleep = false
     @State private var inRoom = false
     @State var title: String
+    @State var canToggle: Bool
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -84,10 +83,12 @@ struct StatusView: View {
                     .foregroundColor(.black)
                     .bold()
                 HStack{
-                    Toggle(isOn: $isAsleep, label: {bedIcon})
+                  Toggle(isOn: $isAsleep, label: {bedIcon})
+                    .disabled(!canToggle)
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
-                    Toggle(isOn: $inRoom, label: {roomIcon})
+                  Toggle(isOn: $inRoom, label: {roomIcon})
+                    .disabled(!canToggle)
                 }.padding(.leading, 20).padding(.trailing, 20)
             }
         }
@@ -180,10 +181,7 @@ struct DateToggle: View {
 
 struct HomepageView_Previews: PreviewProvider {
     static var previews: some View {
-//        let dates = generateDates(startingFrom: Date(), count: 7)
-//        let schedCara = DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
-
-        HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())
+      HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
     }
 }
 

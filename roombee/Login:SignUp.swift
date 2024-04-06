@@ -79,7 +79,7 @@ struct SignUp: View {
                                             }
                                         }
                                         else {
-                                            NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:")).environmentObject(EventStore())) {
+                                            NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())) {
                                                 Text("Login").frame(width: 150, height: 30, alignment: .center)
                                                     .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
                                                     .foregroundColor(.white)

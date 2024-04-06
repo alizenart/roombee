@@ -9,7 +9,6 @@ import SwiftUI
 
 struct GridView: View {
     var cal: CalendarView
-    var cal2: CalendarView
     
     var body: some View {
         let date = Date()
@@ -34,6 +33,6 @@ struct GridView: View {
 
 struct GridView_Previews: PreviewProvider {
     static var previews: some View {
-        GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate"))
+        GridView(cal: CalendarView(title: "Me"))
     }
 }

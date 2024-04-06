@@ -1,22 +1,23 @@
 {
   "roombee": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-roombee-roombee-160246-authRole",
-      "UnauthRoleArn": "arn:aws:iam::381492134677:role/amplify-roombee-roombee-160246-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::381492134677:role/amplify-roombee-roombee-160246-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-roombee-roombee-160246-deployment",
-      "UnauthRoleName": "amplify-roombee-roombee-160246-unauthRole",
-      "StackName": "amplify-roombee-roombee-160246",
-      "StackId": "arn:aws:cloudformation:us-east-2:381492134677:stack/amplify-roombee-roombee-160246/6f4153b0-dcce-11ee-a623-06cd3d23229f",
-      "AmplifyAppId": "d2hbjlrypo99y8"
+      "AuthRoleName": "amplify-roombee-roombee-182953-authRole",
+      "UnauthRoleArn": "arn:aws:iam::381492134677:role/amplify-roombee-roombee-182953-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::381492134677:role/amplify-roombee-roombee-182953-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-roombee-roombee-182953-deployment",
+      "UnauthRoleName": "amplify-roombee-roombee-182953-unauthRole",
+      "StackName": "amplify-roombee-roombee-182953",
+      "StackId": "arn:aws:cloudformation:us-west-1:381492134677:stack/amplify-roombee-roombee-182953/1a697150-df36-11ee-bfbc-0654b0b6e361",
+      "AmplifyAppId": "de36qfobzcp9w"
     },
     "categories": {
       "api": {
         "amplifyDatasource": {}
       },
       "auth": {
-        "roombee078f6f5d": {}
+        "roombee078f6f5d": {},
+        "roombee6e9f48d0": {}
       }
     }
   }
