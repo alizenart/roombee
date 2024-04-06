@@ -24,6 +24,8 @@
 		C70BC7872B7EA15C008B5883 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7862B7EA15C008B5883 /* AWSCognitoAuthPlugin */; };
 		C70BC7892B7EA15C008B5883 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7882B7EA15C008B5883 /* AWSDataStorePlugin */; };
 		C70BC78B2B7EA15C008B5883 /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC78A2B7EA15C008B5883 /* AWSLocationGeoPlugin */; };
+		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
+		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
 		FAD7748A2AD21AB600E332B1 /* Login:SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD774892AD21AB600E332B1 /* Login:SignUp.swift */; };
 /* End PBXBuildFile section */
@@ -43,6 +45,8 @@
 		641C99D889D120338723EFFC /* awsconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		A1A28956FB927015908CCC30 /* Event+Schema.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = "Event+Schema.swift"; path = "amplify/generated/models/Event+Schema.swift"; sourceTree = "<group>"; };
 		C454BAC02A47133481494EF6 /* CalendarEvent.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = CalendarEvent.swift; path = amplify/generated/models/CalendarEvent.swift; sourceTree = "<group>"; };
+		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
+		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		FAD774892AD21AB600E332B1 /* Login:SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Login:SignUp.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,6 +97,8 @@
 				30AA0BC22AD1BC0800344002 /* Preview Content */,
 				30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */,
 				3068207F2AD1DEE100025437 /* CalendarView.swift */,
+				C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */,
+				C739AD002BBE5398001378D3 /* EventViewModel.swift */,
 				306820812AD1E26900025437 /* GridView.swift */,
 			);
 			path = roombee;
@@ -210,8 +216,10 @@
 				30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */,
 				FAD7748A2AD21AB600E332B1 /* Login:SignUp.swift in Sources */,
 				C775E0562B8BFC26009F644B /* EventStore.swift in Sources */,
+				C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */,
 				30AA0BBE2AD1BC0400344002 /* ContentView.swift in Sources */,
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
+				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
 				4DF5E7F8C7A581EF6D17B6CE /* AmplifyModels.swift in Sources */,
