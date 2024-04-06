@@ -8,8 +8,11 @@
 import SwiftUI
 import Amplify
 import AWSDataStorePlugin
+import AWSCognitoAuthPlugin
+
 
 @main
+
 struct roombeeApp: App {
   var eventStore = EventStore()
   
@@ -30,6 +33,9 @@ func configureAmplify() {
   let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels())
   do {
     try Amplify.add(plugin: dataStorePlugin)
+    //
+    try Amplify.add(plugin: AWSCognitoAuthPlugin()) // Add the Auth plugin
+
     try Amplify.configure()
     print("Initialized Amplify")
   } catch {
