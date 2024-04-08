@@ -14,6 +14,8 @@ import AWSDataStorePlugin
 @main
 
 struct roombeeApp: App {
+    @StateObject var authManager = AuthManager()
+
   var eventStore = EventStore()
   
   init() { // default init and configure
@@ -24,7 +26,17 @@ struct roombeeApp: App {
   
   var body: some Scene {
       WindowGroup {
-        ContentView().environmentObject(eventStore)
+//        ContentView().environmentObject(eventStore)
+          if authManager.isAuthenticated {
+              HomepageView(calGrid: GridView(cal: CalendarView(title: "Me"), cal2: CalendarView(title: "Roomate")), yourStatus: StatusView(title: "Me:"), roomStatus: StatusView(title: "Roommate:"))
+                  .environmentObject(EventStore())
+                  .environmentObject(authManager)
+
+          } else {
+              SignUp()
+                  .environmentObject(eventStore)
+                  .environmentObject(authManager)
+          }
       }
   }
 }

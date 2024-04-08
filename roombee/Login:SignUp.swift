@@ -9,13 +9,15 @@ import SwiftUI
 
 //let curDate = Date()
 //let dates = generateDates(startingFrom: curDate, count: 7)
-
-
 struct SignUp: View {
+    
+    @EnvironmentObject var authManager: AuthManager
     
     @State private var email = ""
     @State private var password = ""
     @State private var isSignUp = false
+    
+    @State private var isActive = false
     
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
@@ -35,22 +37,8 @@ struct SignUp: View {
 //                    .foregroundColor(.white)
                 
                 VStack{
-                    if isSignUp {
-                        Text("Sign Up")
-                            .font(.largeTitle)
-                            .bold()
-                            .padding()
-                    } else {
-                        Text("Login")
-                            .font(.largeTitle)
-                            .bold()
-                            .padding()
-                            .foregroundColor(.init(red: 73/255, green: 73/255, blue: 73/255))
-                    }
-                    Text("Email").padding(.horizontal, -120)
-                        .padding(.bottom, -100)
-                        .foregroundColor(Color.gray)
-                        .font(.system(size: 15))
+                    HomepageToggle(isSignUp: isSignUp)
+                    
                     TextField("", text: $email)
                         .padding()
                         .frame(width:250, height:50)
@@ -78,6 +66,7 @@ struct SignUp: View {
                                                     .cornerRadius(10)
                                             }
                                         }
+<<<<<<< Updated upstream
                                         else {
                                             NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())) {
                                                 Text("Login").frame(width: 150, height: 30, alignment: .center)
@@ -88,9 +77,22 @@ struct SignUp: View {
                                         }
                     
                    
+=======
+                    else {
+                        Button(action: {
+                            // Place the sign-in action here
+                            authManager.signIn(email: email, password: password)
+                        }) {
+                            Text("Login")
+                                .frame(width: 150, height: 30, alignment: .center)
+                                .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+>>>>>>> Stashed changes
 
-                    
-                    
+                                        }
+ 
 
                     
                     Button(action: {
@@ -100,8 +102,6 @@ struct SignUp: View {
                             .font(.system(size: 12))
                     }
                 }
-        
-                
                 .padding()
                 .background(Rectangle()
                     .foregroundColor(.init(red: 230/255, green: 217/255, blue: 197/255))
@@ -114,8 +114,35 @@ struct SignUp: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    func signUp() {
-        // Your sign-up logic
+    func signUp(email: String, password: String) {
+//        let userAttributes = [AuthUserAttribute(.email, value: email)]
+//        let options = AuthSignUpRequest.Options(userAttributes: userAttributes)
+    }
+}
+
+struct HomepageToggle: View {
+    var isSignUp : Bool
+
+    var body: some View {
+        VStack{
+            if isSignUp {
+                Text("Sign Up")
+                    .font(.largeTitle)
+                    .bold()
+                    .padding()
+            }
+            else {
+                Text("Login")
+                    .font(.largeTitle)
+                    .bold()
+                    .padding()
+                    .foregroundColor(.init(red: 73/255, green: 73/255, blue: 73/255))
+            }
+            Text("Email").padding(.horizontal, -120)
+                .padding(.bottom, -100)
+                .foregroundColor(Color.gray)
+                .font(.system(size: 15))
+        }
     }
 }
 

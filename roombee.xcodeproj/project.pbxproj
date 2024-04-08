@@ -22,6 +22,7 @@
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
 		680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */; };
 		680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */; };
+		680FEBF22BC11836002B3642 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBF12BC11836002B3642 /* AuthStore.swift */; };
 		83469D7DB735933B4E0CE673 /* CalendarEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C454BAC02A47133481494EF6 /* CalendarEvent.swift */; };
 		C359588EB91F965B1C6BF5A1 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 1E49ACB27DC1E7E9BFA368F2 /* amplifyconfiguration.json */; };
 		C70BC7832B7EA15C008B5883 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7822B7EA15C008B5883 /* AWSAPIPlugin */; };
@@ -53,6 +54,7 @@
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
 		680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_joinExisting.swift; sourceTree = "<group>"; };
 		680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom2.swift; sourceTree = "<group>"; };
+		680FEBF12BC11836002B3642 /* AuthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		A1A28956FB927015908CCC30 /* Event+Schema.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = "Event+Schema.swift"; path = "amplify/generated/models/Event+Schema.swift"; sourceTree = "<group>"; };
 		C454BAC02A47133481494EF6 /* CalendarEvent.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = CalendarEvent.swift; path = amplify/generated/models/CalendarEvent.swift; sourceTree = "<group>"; };
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */,
 				680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */,
 				C775E0552B8BFC26009F644B /* EventStore.swift */,
+				680FEBF12BC11836002B3642 /* AuthStore.swift */,
 				30AA0BBF2AD1BC0800344002 /* Assets.xcassets */,
 				30AA0BC12AD1BC0800344002 /* roombee.entitlements */,
 				30AA0BC22AD1BC0800344002 /* Preview Content */,
@@ -239,6 +242,7 @@
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
 				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
+				680FEBF22BC11836002B3642 /* AuthStore.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
 				680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */,
 				4DF5E7F8C7A581EF6D17B6CE /* AmplifyModels.swift in Sources */,

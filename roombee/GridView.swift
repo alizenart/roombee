@@ -18,7 +18,7 @@ struct GridView: View {
                     .bold()
                 Text(date.formatted(.dateTime.year()))
             }
-            .foregroundColor(toggleColor)
+            .foregroundColor(.white)
             .font(.title)
             Text(date.formatted(.dateTime.weekday(.wide)))
             
