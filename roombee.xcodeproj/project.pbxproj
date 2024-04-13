@@ -14,21 +14,11 @@
 		30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BBF2AD1BC0800344002 /* Assets.xcassets */; };
 		30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */; };
 		30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */; };
-		345A398B59DFC987D091D22D /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 641C99D889D120338723EFFC /* awsconfiguration.json */; };
-		4DF5E7F8C7A581EF6D17B6CE /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48255A30ECF74E10CDA58641 /* AmplifyModels.swift */; };
-		56D4D4150928526FFCB5C62E /* Event+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A28956FB927015908CCC30 /* Event+Schema.swift */; };
 		680FEBE42BBF641F002B3642 /* Onboarding1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE32BBF641F002B3642 /* Onboarding1.swift */; };
 		680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE52BBF6463002B3642 /* Onboarding2.swift */; };
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
 		680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */; };
 		680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */; };
-		83469D7DB735933B4E0CE673 /* CalendarEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C454BAC02A47133481494EF6 /* CalendarEvent.swift */; };
-		C359588EB91F965B1C6BF5A1 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 1E49ACB27DC1E7E9BFA368F2 /* amplifyconfiguration.json */; };
-		C70BC7832B7EA15C008B5883 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7822B7EA15C008B5883 /* AWSAPIPlugin */; };
-		C70BC7852B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7842B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin */; };
-		C70BC7872B7EA15C008B5883 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7862B7EA15C008B5883 /* AWSCognitoAuthPlugin */; };
-		C70BC7892B7EA15C008B5883 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC7882B7EA15C008B5883 /* AWSDataStorePlugin */; };
-		C70BC78B2B7EA15C008B5883 /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = C70BC78A2B7EA15C008B5883 /* AWSLocationGeoPlugin */; };
 		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
@@ -36,7 +26,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1E49ACB27DC1E7E9BFA368F2 /* amplifyconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		3068207F2AD1DEE100025437 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		306820812AD1E26900025437 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		30AA0BB82AD1BC0400344002 /* roombee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roombee.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,15 +35,11 @@
 		30AA0BC12AD1BC0800344002 /* roombee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = roombee.entitlements; sourceTree = "<group>"; };
 		30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageView.swift; sourceTree = "<group>"; };
-		48255A30ECF74E10CDA58641 /* AmplifyModels.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = AmplifyModels.swift; path = amplify/generated/models/AmplifyModels.swift; sourceTree = "<group>"; };
-		641C99D889D120338723EFFC /* awsconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		680FEBE32BBF641F002B3642 /* Onboarding1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding1.swift; sourceTree = "<group>"; };
 		680FEBE52BBF6463002B3642 /* Onboarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2.swift; sourceTree = "<group>"; };
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
 		680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_joinExisting.swift; sourceTree = "<group>"; };
 		680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom2.swift; sourceTree = "<group>"; };
-		A1A28956FB927015908CCC30 /* Event+Schema.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = "Event+Schema.swift"; path = "amplify/generated/models/Event+Schema.swift"; sourceTree = "<group>"; };
-		C454BAC02A47133481494EF6 /* CalendarEvent.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = CalendarEvent.swift; path = amplify/generated/models/CalendarEvent.swift; sourceTree = "<group>"; };
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
@@ -66,11 +51,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C70BC7832B7EA15C008B5883 /* AWSAPIPlugin in Frameworks */,
-				C70BC78B2B7EA15C008B5883 /* AWSLocationGeoPlugin in Frameworks */,
-				C70BC7852B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin in Frameworks */,
-				C70BC7872B7EA15C008B5883 /* AWSCognitoAuthPlugin in Frameworks */,
-				C70BC7892B7EA15C008B5883 /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,8 +62,6 @@
 			children = (
 				30AA0BBA2AD1BC0400344002 /* roombee */,
 				30AA0BB92AD1BC0400344002 /* Products */,
-				5CC4194A4479403EFD5252EA /* AmplifyConfig */,
-				B96C0A36C04DAA22EF84E56E /* AmplifyModels */,
 			);
 			sourceTree = "<group>";
 		};
@@ -127,25 +105,6 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		5CC4194A4479403EFD5252EA /* AmplifyConfig */ = {
-			isa = PBXGroup;
-			children = (
-				641C99D889D120338723EFFC /* awsconfiguration.json */,
-				1E49ACB27DC1E7E9BFA368F2 /* amplifyconfiguration.json */,
-			);
-			name = AmplifyConfig;
-			sourceTree = "<group>";
-		};
-		B96C0A36C04DAA22EF84E56E /* AmplifyModels */ = {
-			isa = PBXGroup;
-			children = (
-				48255A30ECF74E10CDA58641 /* AmplifyModels.swift */,
-				A1A28956FB927015908CCC30 /* Event+Schema.swift */,
-				C454BAC02A47133481494EF6 /* CalendarEvent.swift */,
-			);
-			name = AmplifyModels;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -163,11 +122,6 @@
 			);
 			name = roombee;
 			packageProductDependencies = (
-				C70BC7822B7EA15C008B5883 /* AWSAPIPlugin */,
-				C70BC7842B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin */,
-				C70BC7862B7EA15C008B5883 /* AWSCognitoAuthPlugin */,
-				C70BC7882B7EA15C008B5883 /* AWSDataStorePlugin */,
-				C70BC78A2B7EA15C008B5883 /* AWSLocationGeoPlugin */,
 			);
 			productName = roombee;
 			productReference = 30AA0BB82AD1BC0400344002 /* roombee.app */;
@@ -198,7 +152,6 @@
 			);
 			mainGroup = 30AA0BAF2AD1BC0400344002;
 			packageReferences = (
-				C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */,
 			);
 			productRefGroup = 30AA0BB92AD1BC0400344002 /* Products */;
 			projectDirPath = "";
@@ -216,8 +169,6 @@
 			files = (
 				30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */,
 				30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */,
-				345A398B59DFC987D091D22D /* awsconfiguration.json in Resources */,
-				C359588EB91F965B1C6BF5A1 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,10 +192,7 @@
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
 				680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */,
-				4DF5E7F8C7A581EF6D17B6CE /* AmplifyModels.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
-				56D4D4150928526FFCB5C62E /* Event+Schema.swift in Sources */,
-				83469D7DB735933B4E0CE673 /* CalendarEvent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,45 +406,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/aws-amplify/amplify-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.26.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		C70BC7822B7EA15C008B5883 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */;
-			productName = AWSAPIPlugin;
-		};
-		C70BC7842B7EA15C008B5883 /* AWSCloudWatchLoggingPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */;
-			productName = AWSCloudWatchLoggingPlugin;
-		};
-		C70BC7862B7EA15C008B5883 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */;
-			productName = AWSCognitoAuthPlugin;
-		};
-		C70BC7882B7EA15C008B5883 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */;
-			productName = AWSDataStorePlugin;
-		};
-		C70BC78A2B7EA15C008B5883 /* AWSLocationGeoPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C70BC7812B7EA15C008B5883 /* XCRemoteSwiftPackageReference "amplify-swift" */;
-			productName = AWSLocationGeoPlugin;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 30AA0BB02AD1BC0400344002 /* Project object */;
 }

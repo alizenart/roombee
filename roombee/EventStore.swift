@@ -15,13 +15,6 @@ class EventStore: ObservableObject {
     events.append(newEvent)
     
 //    add backend logic here 
-//    Amplify.DataStore.save(newEvent) { result in
-//        switch result {
-//        case .success(let savedEvent):
-//            print("Event saved: \(savedEvent)")
-//        case .failure(let error):
-//            print("Error saving event: \(error)")
-//        }
-//    }
+
   }
 }
