@@ -93,6 +93,7 @@
 				C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */,
 				C739AD002BBE5398001378D3 /* EventViewModel.swift */,
 				306820812AD1E26900025437 /* GridView.swift */,
+				4C1E8F062BC4A3F700849D73 /* TaskView.swift */,
 			);
 			path = roombee;
 			sourceTree = "<group>";
@@ -188,6 +189,7 @@
 				680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */,
 				30AA0BBE2AD1BC0400344002 /* ContentView.swift in Sources */,
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
+				4C1E8F072BC4A3F700849D73 /* TaskView.swift in Sources */,
 				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
@@ -317,7 +319,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
-				DEVELOPMENT_TEAM = A5XLR83FP4;
+				DEVELOPMENT_TEAM = 28ZKG238S8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -355,7 +357,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
-				DEVELOPMENT_TEAM = A5XLR83FP4;
+				DEVELOPMENT_TEAM = 28ZKG238S8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

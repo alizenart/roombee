@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
 
 let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
 
@@ -85,6 +85,14 @@ struct StatusView: View {
                 HStack{
                   Toggle(isOn: $isAsleep, label: {bedIcon})
                     .disabled(!canToggle)
+                    .onChange(of: isAsleep) { isOn in
+                            if isOn && canToggle{
+                                backgroundColor = .black
+                            }
+                            else {
+                            backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+                            }
+                    }
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
                   Toggle(isOn: $inRoom, label: {roomIcon})
