@@ -14,6 +14,8 @@ struct CalendarEvent: Identifiable {
     var title: String
 }
 
+var ourPurple = hexStringToUIColor(hex: "#381e38")
+
 class NewEventViewModel: ObservableObject {
   @Published var title: String = ""
   @Published var startDate: Date = Date()
@@ -112,10 +114,10 @@ struct CalendarView: View {
                     }
                 }
                 .padding()
-                .background(Color.red)
-                .foregroundColor(.black)
+                .background(Color(ourPurple))
+                .foregroundColor(.white)
                 .cornerRadius(8)
-                
+                .bold()
             }
             .padding()
         } //ZStack
