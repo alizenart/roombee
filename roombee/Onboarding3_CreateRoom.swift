@@ -20,92 +20,92 @@ struct Onboarding3_CreateRoom: View {
     
     
     var body: some View {
-//        NavigationView{
+        //        NavigationView{
+        
+        GeometryReader { geometry in
             
-            GeometryReader { geometry in
+            ZStack{
+                backgroundColor
+                    .ignoresSafeArea()
                 
-                ZStack{
-                    backgroundColor
-                        .ignoresSafeArea()
-                    
-                    VStack(spacing: 10){
-                        VStack{
-                            Text("Create")
-                                .font(.largeTitle)
-                                .bold()
-                                .foregroundColor(.init(textColor))
-                                .padding(.bottom, 10)
-                                .padding(.top, 20)
-                            Text("What's the name of your hive?")
-                                .frame(width: 275, alignment: .center)
-                                .font(.system(size: 25, weight : .bold))
-                                .foregroundColor(.init(textColor))
-                            //                            .padding(.leading, 20)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                                .padding(.bottom, -5)
-                                .padding(.top, -10)
-                            
-                            TextField("", text: $RoomName)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                                .frame(width: 250, height: 50)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(strokeColor, lineWidth: 2)
-                                        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
-                                        .opacity(0.5)
-                                )
+                VStack(spacing: 10){
+                    VStack{
+                        Text("Create")
+                            .font(.largeTitle)
+                            .bold()
+                            .foregroundColor(.init(textColor))
+                            .padding(.bottom, 10)
+                            .padding(.top, 20)
+                        Text("What's the name of your hive?")
+                            .frame(width: 275, alignment: .center)
+                            .font(.system(size: 25, weight : .bold))
+                            .foregroundColor(.init(textColor))
+                        //                            .padding(.leading, 20)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .padding(.bottom, -5)
+                            .padding(.top, -10)
+                        
+                        TextField("", text: $RoomName)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .frame(width: 250, height: 50)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(strokeColor, lineWidth: 2)
+                                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
+                                    .opacity(0.5)
+                            )
+                            .cornerRadius(10)
+                            .padding(.bottom, 10)
+                        
+                        
+                        
+                        Text("This can be changed in settings later")
+                            .font(.system(size: 12))
+                            .foregroundColor(.init(textColor))
+                            .padding(.bottom, 20)
+                        
+                        
+                        
+                        
+                        NavigationLink(destination: Onboarding3_CreateRoom2()){
+                            Text("Next")
+                                .font(.system(size : 25, weight: .bold))
+                                .frame(width: 175, height: 60, alignment: .center)
+                                .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                                .foregroundColor(.white)
                                 .cornerRadius(10)
-                                .padding(.bottom, 10)
-
+                        }
                         
-                            
-                            Text("This can be changed in settings later")
-                                .font(.system(size: 12))
-                                .foregroundColor(.init(textColor))
-                                .padding(.bottom, 20)
-                            
-                            
-                            
-                            
-                            NavigationLink(destination: Onboarding3_CreateRoom2()){
-                                Text("Next")
-                                    .font(.system(size : 25, weight: .bold))
-                                    .frame(width: 175, height: 60, alignment: .center)
-                                    .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                            }
-                            
-//                            NavigationLink(destination: Onboarding2()) {
-//                                Text("Go Back")
-//                                    .font(.system(size : 20, weight: .bold))
-//                                    .frame(width: 125, height: 40, alignment: .center)
-//                                    .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-//                                    .foregroundColor(.white)
-//                                    .cornerRadius(10)
-//                            }//button
-//                            .padding(.top, 10)
-                            
-                        } //vstack (mini)
-                        .padding()
-                        .background(Rectangle()
-                            .foregroundColor(.init(toggleColor))
-                            .cornerRadius(15)
-                            .shadow(radius: 15))
-                        .padding()
+                        //                            NavigationLink(destination: Onboarding2()) {
+                        //                                Text("Go Back")
+                        //                                    .font(.system(size : 20, weight: .bold))
+                        //                                    .frame(width: 125, height: 40, alignment: .center)
+                        //                                    .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
+                        //                                    .foregroundColor(.white)
+                        //                                    .cornerRadius(10)
+                        //                            }//button
+                        //                            .padding(.top, 10)
                         
-                        
-                    }//vstack (big)
-                }//zstack
-                
-                
-                
-            } //geometry reader
-//        }// Nav
+                    } //vstack (mini)
+                    .padding()
+                    .background(Rectangle()
+                        .foregroundColor(.init(toggleColor))
+                        .cornerRadius(15)
+                        .shadow(radius: 15))
+                    .padding()
+                    
+                    
+                }//vstack (big)
+            }//zstack
             
-        } //body
+            
+            
+        } //geometry reader
+        //        }// Nav
+        
+    } //body
     
     
     func GoBack() {

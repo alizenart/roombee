@@ -24,93 +24,93 @@ struct Onboarding1: View {
     let genderOptions = ["Female", "Male", "Other"]
     
     var body: some View {
-//        NavigationView{
-            GeometryReader { geometry in
-                
-                ZStack{
-                    backgroundColor
-                        .ignoresSafeArea()
-                    // everything vstack
-                    VStack{
-                        Spacer().frame(height: geometry.size.height / 5) // Adjust this to change the starting position
-                        
-                        
-                        //vstack for the toggle
-                        VStack(spacing: 10){
-                            Text("Create your profile")
-                                .font(.largeTitle)
-                                .bold()
-                                .padding()
-                                .foregroundColor(.init(textColor))
-                            TextField("First Name", text: $firstName)
-                                .padding()
-                                .frame(width:250, height:50)
-                                .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
-                                .cornerRadius(10)
-                            
-                            TextField("Last Name", text: $lastName)
-                                .padding()
-                                .frame(width:250, height:50)
-                                .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                            DatePicker("Birthday", selection: $birthDate,
-                                       in: ...Date(), // Limits the selectable dates up to today
-                                       displayedComponents: .date // Shows only the date picker
-                            )
+        //        NavigationView{
+        GeometryReader { geometry in
+            
+            ZStack{
+                backgroundColor
+                    .ignoresSafeArea()
+                // everything vstack
+                VStack{
+                    Spacer().frame(height: geometry.size.height / 5) // Adjust this to change the starting position
+                    
+                    
+                    //vstack for the toggle
+                    VStack(spacing: 10){
+                        Text("Create your profile")
+                            .font(.largeTitle)
+                            .bold()
+                            .padding()
+                            .foregroundColor(.init(textColor))
+                        TextField("First Name", text: $firstName)
                             .padding()
                             .frame(width:250, height:50)
-                            
-                            Picker("Gender", selection: $gender) {
-                                ForEach(genderOptions, id: \.self) { gender in
-                                    Text(gender).tag(gender)
-                                }
-                            }
-                            .pickerStyle(MenuPickerStyle()) // Use MenuPickerStyle for a dropdown effect
+                            .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
+                            .cornerRadius(10)
+                        
+                        TextField("Last Name", text: $lastName)
+                            .padding()
                             .frame(width:250, height:50)
-                            //                        .padding()
-                            
-                            
-                        }
+                            .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
+                            .cornerRadius(10)
+                            .padding()
+                        
+                        DatePicker("Birthday", selection: $birthDate,
+                                   in: ...Date(), // Limits the selectable dates up to today
+                                   displayedComponents: .date // Shows only the date picker
+                        )
                         .padding()
-                        .background(Rectangle()
-                            .foregroundColor(.init(toggleColor))
-                            .cornerRadius(15)
-                            .shadow(radius: 15))
-                        .padding()
+                        .frame(width:250, height:50)
                         
-                        Spacer()
-                        
-                        //Buttons
-                        NavigationLink(destination: Onboarding2()) {
-                            Text("Next")
-                                .font(.system(size : 30, weight: .bold))
-                                .frame(width: 150, height: 50, alignment: .center)
-                                .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                            
+                        Picker("Gender", selection: $gender) {
+                            ForEach(genderOptions, id: \.self) { gender in
+                                Text(gender).tag(gender)
+                            }
                         }
-                        .navigationDestination(isPresented: $ShowNextView) {
-                            Onboarding2()
-                        }
+                        .pickerStyle(MenuPickerStyle()) // Use MenuPickerStyle for a dropdown effect
+                        .frame(width:250, height:50)
+                        //                        .padding()
                         
                         
-//                        NavigationLink(destination: SignUp()) {
-//                            Text("Go Back")
-//                                .font(.system(size : 20, weight: .bold))
-//                                .frame(width: 125, height: 40, alignment: .center)
-//                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-//                                .foregroundColor(.white)
-//                                .cornerRadius(10)
-//                        }
-//                        .padding(.top, 10)
+                    }
+                    .padding()
+                    .background(Rectangle()
+                        .foregroundColor(.init(toggleColor))
+                        .cornerRadius(15)
+                        .shadow(radius: 15))
+                    .padding()
+                    
+                    Spacer()
+                    
+                    //Buttons
+                    NavigationLink(destination: Onboarding2()) {
+                        Text("Next")
+                            .font(.system(size : 30, weight: .bold))
+                            .frame(width: 150, height: 50, alignment: .center)
+                            .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        
+                    }
+                    .navigationDestination(isPresented: $ShowNextView) {
+                        Onboarding2()
                     }
                     
                     
-//                }
-//                .navigationBarBackButtonHidden(true)
+                    //                        NavigationLink(destination: SignUp()) {
+                    //                            Text("Go Back")
+                    //                                .font(.system(size : 20, weight: .bold))
+                    //                                .frame(width: 125, height: 40, alignment: .center)
+                    //                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
+                    //                                .foregroundColor(.white)
+                    //                                .cornerRadius(10)
+                    //                        }
+                    //                        .padding(.top, 10)
+                }
+                
+                
+                //                }
+                //                .navigationBarBackButtonHidden(true)
                 
             }
             
@@ -126,7 +126,7 @@ struct Onboarding1: View {
     }
 }
 
-    
+
 
 
 struct Onboarding1_Previews: PreviewProvider {

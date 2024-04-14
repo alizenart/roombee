@@ -52,10 +52,10 @@ struct Onboarding3_joinExisting: View {
                             )
                             .cornerRadius(10)
                             .padding(.bottom, 10)
-
-                            
-
-                      NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())){
+                        
+                        
+                        
+                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())){
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -64,15 +64,15 @@ struct Onboarding3_joinExisting: View {
                                 .cornerRadius(10)
                         }
                         
-//                        Button(action: GoBack) {
-//                            Text("Go Back")
-//                                .font(.system(size : 20, weight: .bold))
-//                                .frame(width: 125, height: 40, alignment: .center)
-//                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-//                                .foregroundColor(.white)
-//                                .cornerRadius(10)
-//                        }//button
-//                        .padding(.top, 10)
+                        //                        Button(action: GoBack) {
+                        //                            Text("Go Back")
+                        //                                .font(.system(size : 20, weight: .bold))
+                        //                                .frame(width: 125, height: 40, alignment: .center)
+                        //                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
+                        //                                .foregroundColor(.white)
+                        //                                .cornerRadius(10)
+                        //                        }//button
+                        //                        .padding(.top, 10)
                         
                     } //vstack (mini)
                     .padding()
@@ -81,20 +81,20 @@ struct Onboarding3_joinExisting: View {
                         .cornerRadius(15)
                         .shadow(radius: 15))
                     .padding()
-                
-
-                
-                
-
                     
-        }//vstack (big)
-                }//zstack
-                
-                
-                
-            } //geometry reader
+                    
+                    
+                    
+                    
+                    
+                }//vstack (big)
+            }//zstack
             
-        } //body
+            
+            
+        } //geometry reader
+        
+    } //body
     
     
     func GoBack() {
