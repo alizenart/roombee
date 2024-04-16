@@ -20,176 +20,64 @@ let date = Date()
 let formatter = DateFormatter()
 
 struct HomepageView: View {
-    @EnvironmentObject var eventStore: EventStore
-    var calGrid: GridView
-    var yourStatus: StatusView
-    var roomStatus: StatusView
-    
-    //new variables -z
-    var schedCara: DatesCarousel {
-        let dates = generateDates(startingFrom: Date(), count: 7) // Adjust parameters as needed
-        return DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
-    }
-    
-    
+    @EnvironmentObject var navManager: NavManager
+    @EnvironmentObject var authManager: AuthManager
+
+    @State private var isActive: Bool = true  // State to control navigation or visibility.
+
     var body: some View {
-        VStack {
-            ZStack {
-                backgroundColor // Use the custom color here
-                    .ignoresSafeArea()
-                ScrollView {
-                    VStack {
-                        Text("Roombee")
-                            .font(.largeTitle)
-                            .foregroundColor(ourOrange)
-                            .fontWeight(.bold)
-                            .padding(.top, 20)
-                        
-                        HStack(spacing: 20){
-                            yourStatus
-                            roomStatus
-                        }.padding(.horizontal, 40)
-                        //                        .padding(.bottom, 20)
-                            .padding(.top, 20)
-                        
-                        schedCara
-                            .padding()
-                        calGrid.padding([.leading, .trailing], 20)
-                    }
+        ZStack {
+            Group {
+                switch navManager.selectedSideMenuTab {
+                case 0:
+                    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false))
+                        .environmentObject(EventStore())
+                        .environmentObject(authManager)
+                        .environmentObject(navManager)
+                case 1:
+                    Onboarding1()
+                case 2:
+                    SettingsView()
+                        .environmentObject(EventStore())
+                        .environmentObject(authManager)
+                        .environmentObject(navManager)
+                case 3:
+                    EmptyView()  // Use EmptyView or another placeholder.
+                default:
+                    Text("Unknown Selection")
                 }
             }
-        }
-    }
-}
 
-struct StatusView: View {
-    @State private var isAsleep = false
-    @State private var inRoom = false
-    @State var title: String
-    @State var canToggle: Bool
-    
-    var body: some View {
-        let statusShape = RoundedRectangle(cornerRadius: 30)
-        let bedIcon = Image(systemName: "bed.double.fill").foregroundColor(.white)
-        let roomIcon = Image(systemName: "house").foregroundColor(.white)
-        ZStack {
-            statusShape
-                .fill()
-                .foregroundColor(toggleColor)
-                .aspectRatio(1.0, contentMode: .fit)
-            
             VStack {
-                Text(title)
-                    .foregroundColor(.black)
-                    .bold()
-                HStack{
-                    Toggle(isOn: $isAsleep, label: {bedIcon})
-                        .disabled(!canToggle)
-                        .onChange(of: isAsleep) { isOn in
-                            if isOn && canToggle{
-                                backgroundColor = .black
-                            }
-                            else {
-                                backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
-                            }
-                        }
-                }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
-                    Toggle(isOn: $inRoom, label: {roomIcon})
-                        .disabled(!canToggle)
-                }.padding(.leading, 20).padding(.trailing, 20)
-            }
-        }
-    }
-}
-
-
-
-struct DatesCarousel:View {
-    var dates: [Date] // Array of dates
-    var onDateSelected: (Date)-> Void
-    @Binding var selectedDate: Date
-    
-    var body: some View {
-        ZStack {
-            VStack{
-                Text("Schedules")
-                    .font(.system(size:25))
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding(.top, 30)
-                    .padding(.leading, -170)
-                HStack{
-                    ForEach(dates, id: \.self) { date in
-                        DateToggle(date: date, today: Calendar.current.isDateInToday(date)) {
-                            onDateSelected(date)
+                    Button(action: {
+                        navManager.openSideMenu()
+                    }) {
+                        VStack (spacing: 3){
+                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
                         }
                     }
+                    .padding(.trailing, 50)
+                    .frame(width: 400, alignment: .leading)
                 }
+                .padding(.leading, 30)
+                .frame(width: 400, alignment: .leading)
+                Spacer()
+            }
+
+            if navManager.presentSideMenu {
+                SideMenuView(navManager: navManager)
+                    .transition(.move(edge: .leading))
+                    .animation(.easeInOut, value: navManager.presentSideMenu)
+            }
+        }
+        .onChange(of: navManager.selectedSideMenuTab) { newValue in
+            if newValue == 3 {
+                authManager.signOut()
+                navManager.selectedSideMenuTab = 0 // Reset tab or navigate as needed
             }
         }
     }
 }
-
-func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
-    var dates = [Date]()
-    for day in 0..<count {
-        if let date = Calendar.current.date(byAdding: .day, value: day, to: startDate) {
-            dates.append(date)
-        }
-    }
-    return dates
-}
-
-
-struct DateToggle: View {
-    //    var Month
-    var date : Date
-    var today: Bool
-    var onTapped: () -> Void  // Closure to be called when the toggle is tapped
-    
-    var body: some View {
-        Button(action: onTapped) {
-            let statusShape = RoundedRectangle(cornerRadius: 10)
-            ZStack {
-                statusShape
-                    .fill()
-                    .foregroundColor(LighterPurple)
-                //                .aspectRatio(1.0, contentMode: .fit)
-                    .frame(width: 45, height: 60)
-                
-                VStack {
-                    Text(monthName(from: date))
-                        .foregroundColor(.white)
-                        .bold()
-                        .font(.system(size:15))
-                    Text(MonthDay(from: date))
-                        .foregroundColor(.white)
-                        .bold()
-                        .font(.system(size:20))
-                }
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-    
-    func monthName(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM" // Format for abbreviated month name
-        return formatter.string(from: date)
-    }
-    
-    func MonthDay(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d" // Format for abbreviated month name
-        return formatter.string(from: date)
-    }
-}
-
-
-struct HomepageView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
-    }
-}
-

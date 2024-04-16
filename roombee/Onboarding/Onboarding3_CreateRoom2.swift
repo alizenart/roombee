@@ -1,16 +1,19 @@
 //
-//  Onboarding3-joinExisting.swift
+//  Onboarding3_CreateRoom2.swift
 //  roombee
 //
-//  Created by Ziye Wang on 4/3/24.
+//  Created by Ziye Wang on 4/5/24.
 //
 
 import SwiftUI
 
 
-struct Onboarding3_joinExisting: View {
-    
-    @State private var HiveCode = ""
+
+struct Onboarding3_CreateRoom2: View {
+    @EnvironmentObject var authManager: AuthManager
+
+    @State private var email = ""
+    @State private var password = ""
     
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
@@ -30,32 +33,44 @@ struct Onboarding3_joinExisting: View {
                 
                 VStack(spacing: 10){
                     VStack{
-                        Text("Join")
+                        Text("Create")
                             .font(.largeTitle)
                             .bold()
                             .foregroundColor(.init(textColor))
                             .padding(.bottom, 10)
                             .padding(.top, 20)
-                        Text("Enter Hive Code:")
-                            .font(.system(size: 20, weight : .bold))
+                        Text("Here is your custom Hive Code:")
+                            .frame(width: 275, alignment: .center)
+                            .font(.system(size: 25, weight : .bold))
                             .foregroundColor(.init(textColor))
-                        
-                        TextField("", text: $HiveCode)
+                        //                            .padding(.leading, 20)
                             .multilineTextAlignment(.center)
+                        
                             .padding()
-                            .frame(width: 225, height: 50)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(strokeColor, lineWidth: 2)
-                                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
-                                    .opacity(0.5)
-                            )
+                            .padding(.bottom, -5)
+                        
+                        Text("Share this code with your roommates!")
+                            .font(.system(size: 15))
+                            .foregroundColor(.init(textColor))
+                        //                            .padding(.bottom, 20)
+                        
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(strokeColor, lineWidth: 2)
+                        //                            .cornerRadius(15)
+                            .background(.white)
                             .cornerRadius(10)
-                            .padding(.bottom, 10)
+                            .opacity(0.5)
+                            .frame(width: 250, height: 50)
+                            .padding(.bottom, 20)
                         
                         
                         
-                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())){
+                        
+                        
+                        Button(action: {
+                            // Place the sign-in action here
+                            authManager.signIn(email: email, password: password)
+                        }) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -64,16 +79,7 @@ struct Onboarding3_joinExisting: View {
                                 .cornerRadius(10)
                         }
                         
-                        //                        Button(action: GoBack) {
-                        //                            Text("Go Back")
-                        //                                .font(.system(size : 20, weight: .bold))
-                        //                                .frame(width: 125, height: 40, alignment: .center)
-                        //                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-                        //                                .foregroundColor(.white)
-                        //                                .cornerRadius(10)
-                        //                        }//button
-                        //                        .padding(.top, 10)
-                        
+
                     } //vstack (mini)
                     .padding()
                     .background(Rectangle()
@@ -101,7 +107,7 @@ struct Onboarding3_joinExisting: View {
         //going back to signup/login page
     }
     
-    func GoToHome() {
+    func GoToGenerateCode() {
         //create go to home logic
     }
     
@@ -110,11 +116,6 @@ struct Onboarding3_joinExisting: View {
     }
     
 } //Onboarding2
-
-
-
-struct Onboarding3_joinExisting_Previews: PreviewProvider {
-    static var previews: some View {
-        Onboarding3_joinExisting()
-    }
+#Preview {
+    Onboarding3_CreateRoom2()
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUp: View {
+    @EnvironmentObject var authManager: AuthManager
     
     @State private var email = ""
     @State private var password = ""
@@ -68,8 +69,12 @@ struct SignUp: View {
                         }
                     }
                     else {
-                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())) {
-                            Text("Login").frame(width: 150, height: 30, alignment: .center)
+                        Button(action: {
+                            // Place the sign-in action here
+                            authManager.signIn(email: email, password: password)
+                        }) {
+                            Text("Login")
+                                .frame(width: 150, height: 30, alignment: .center)
                                 .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
