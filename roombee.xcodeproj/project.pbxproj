@@ -19,6 +19,14 @@
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
 		680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */; };
 		680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */; };
+		68E735FA2BCC4C5200D94A95 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735F92BCC4C5200D94A95 /* AuthStore.swift */; };
+		68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */; };
+		68E736002BCC688900D94A95 /* HomeSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */; };
+		68E736052BCCFA0500D94A95 /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E736042BCCFA0500D94A95 /* SideMenuView.swift */; };
+		68E736092BCD939B00D94A95 /* SideMenuSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */; };
+		68E7360B2BCDDB5000D94A95 /* NavManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7360A2BCDDB5000D94A95 /* NavManager.swift */; };
+		68E7360D2BCDDF0B00D94A95 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7360C2BCDDF0B00D94A95 /* SettingsView.swift */; };
+		68E7360F2BCDE08B00D94A95 /* HomepageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7360E2BCDE08B00D94A95 /* HomepageContent.swift */; };
 		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
@@ -40,6 +48,14 @@
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
 		680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_joinExisting.swift; sourceTree = "<group>"; };
 		680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom2.swift; sourceTree = "<group>"; };
+		68E735F92BCC4C5200D94A95 /* AuthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
+		68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardStore.swift; sourceTree = "<group>"; };
+		68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSideBarView.swift; sourceTree = "<group>"; };
+		68E736042BCCFA0500D94A95 /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
+		68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuSwiftUI.swift; sourceTree = "<group>"; };
+		68E7360A2BCDDB5000D94A95 /* NavManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavManager.swift; sourceTree = "<group>"; };
+		68E7360C2BCDDF0B00D94A95 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		68E7360E2BCDE08B00D94A95 /* HomepageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageContent.swift; sourceTree = "<group>"; };
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
@@ -76,24 +92,26 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+				68E735F92BCC4C5200D94A95 /* AuthStore.swift */,
+				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
+				68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				FAD774892AD21AB600E332B1 /* Login:SignUp.swift */,
 				30AA0BBD2AD1BC0400344002 /* ContentView.swift */,
-				680FEBE32BBF641F002B3642 /* Onboarding1.swift */,
-				680FEBE52BBF6463002B3642 /* Onboarding2.swift */,
-				680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */,
-				680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */,
-				680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */,
+				68E736102BCE0D5D00D94A95 /* Onboarding */,
 				C775E0552B8BFC26009F644B /* EventStore.swift */,
 				30AA0BBF2AD1BC0800344002 /* Assets.xcassets */,
 				30AA0BC12AD1BC0800344002 /* roombee.entitlements */,
 				30AA0BC22AD1BC0800344002 /* Preview Content */,
 				30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */,
+				68E7360E2BCDE08B00D94A95 /* HomepageContent.swift */,
+				68E7360C2BCDDF0B00D94A95 /* SettingsView.swift */,
+				68E736012BCC6EE600D94A95 /* navBar */,
+				68E736042BCCFA0500D94A95 /* SideMenuView.swift */,
 				3068207F2AD1DEE100025437 /* CalendarView.swift */,
 				C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */,
 				C739AD002BBE5398001378D3 /* EventViewModel.swift */,
 				306820812AD1E26900025437 /* GridView.swift */,
-				4C1E8F062BC4A3F700849D73 /* TaskView.swift */,
 			);
 			path = roombee;
 			sourceTree = "<group>";
@@ -104,6 +122,27 @@
 				30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		68E736012BCC6EE600D94A95 /* navBar */ = {
+			isa = PBXGroup;
+			children = (
+				68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */,
+				68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */,
+			);
+			path = navBar;
+			sourceTree = "<group>";
+		};
+		68E736102BCE0D5D00D94A95 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				680FEBE32BBF641F002B3642 /* Onboarding1.swift */,
+				680FEBE52BBF6463002B3642 /* Onboarding2.swift */,
+				680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */,
+				680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */,
+				680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -181,20 +220,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
+				68E736092BCD939B00D94A95 /* SideMenuSwiftUI.swift in Sources */,
 				30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */,
 				680FEBE42BBF641F002B3642 /* Onboarding1.swift in Sources */,
 				FAD7748A2AD21AB600E332B1 /* Login:SignUp.swift in Sources */,
+				68E7360B2BCDDB5000D94A95 /* NavManager.swift in Sources */,
+				68E736052BCCFA0500D94A95 /* SideMenuView.swift in Sources */,
 				C775E0562B8BFC26009F644B /* EventStore.swift in Sources */,
 				C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */,
 				680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */,
+				68E735FA2BCC4C5200D94A95 /* AuthStore.swift in Sources */,
 				30AA0BBE2AD1BC0400344002 /* ContentView.swift in Sources */,
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
-				4C1E8F072BC4A3F700849D73 /* TaskView.swift in Sources */,
 				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
+				68E7360F2BCDE08B00D94A95 /* HomepageContent.swift in Sources */,
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
+				68E736002BCC688900D94A95 /* HomeSideBarView.swift in Sources */,
 				680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
+				68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */,
+				68E7360D2BCDDF0B00D94A95 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
