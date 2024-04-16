@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct Onboarding1: View {
+
+    
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var birthDate = Date()

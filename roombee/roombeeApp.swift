@@ -10,17 +10,25 @@ import SwiftUI
 @main
 
 struct roombeeApp: App {
-//  var eventStore = EventStore()
-//  
-//  init() { // default init and configure
-//    print("hello???")
-//
-//    configureAmplify()
-//  }
-  
-  var body: some Scene {
-      WindowGroup {
-        ContentView()
-      }
+    @StateObject var authManager = AuthManager()
+    @StateObject var navManager = NavManager()
+    var eventStore = EventStore()
+    
+    var body: some Scene {
+        WindowGroup {
+  //        ContentView().environmentObject(eventStore)
+            if authManager.isAuthenticated {
+                HomepageView()
+                    .environmentObject(EventStore())
+                    .environmentObject(authManager)
+                    .environmentObject(navManager)
+
+            } else {
+                SignUp()
+                    .environmentObject(EventStore())
+                    .environmentObject(authManager)
+            }
+        }
+    }
   }
-}
+
