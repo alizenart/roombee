@@ -1,7 +1,0 @@
-type Event @model {
-  id: ID!
-  title: String!
-  startTime: AWSDateTime!
-  endTime: AWSDateTime!
-  createdBy: String!
-}
