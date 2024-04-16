@@ -30,34 +30,34 @@ struct HomepageView: View {
         let dates = generateDates(startingFrom: Date(), count: 7) // Adjust parameters as needed
         return DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
     }
-
+    
     
     var body: some View {
         VStack {
-          ZStack {
-            backgroundColor // Use the custom color here
-              .ignoresSafeArea()
-            ScrollView {
-              VStack {
-                Text("Roombee")
-                  .font(.largeTitle)
-                  .foregroundColor(ourOrange)
-                  .fontWeight(.bold)
-                  .padding(.top, 20)
-                
-                HStack(spacing: 20){
-                  yourStatus
-                  roomStatus
-                }.padding(.horizontal, 40)
-                //                        .padding(.bottom, 20)
-                  .padding(.top, 20)
-                
-                schedCara
-                  .padding()
-                calGrid.padding([.leading, .trailing], 20)
-              }
+            ZStack {
+                backgroundColor // Use the custom color here
+                    .ignoresSafeArea()
+                ScrollView {
+                    VStack {
+                        Text("Roombee")
+                            .font(.largeTitle)
+                            .foregroundColor(ourOrange)
+                            .fontWeight(.bold)
+                            .padding(.top, 20)
+                        
+                        HStack(spacing: 20){
+                            yourStatus
+                            roomStatus
+                        }.padding(.horizontal, 40)
+                        //                        .padding(.bottom, 20)
+                            .padding(.top, 20)
+                        
+                        schedCara
+                            .padding()
+                        calGrid.padding([.leading, .trailing], 20)
+                    }
+                }
             }
-          }
         }
     }
 }
@@ -83,20 +83,20 @@ struct StatusView: View {
                     .foregroundColor(.black)
                     .bold()
                 HStack{
-                  Toggle(isOn: $isAsleep, label: {bedIcon})
-                    .disabled(!canToggle)
-                    .onChange(of: isAsleep) { isOn in
+                    Toggle(isOn: $isAsleep, label: {bedIcon})
+                        .disabled(!canToggle)
+                        .onChange(of: isAsleep) { isOn in
                             if isOn && canToggle{
                                 backgroundColor = .black
                             }
                             else {
-                            backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+                                backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
                             }
-                    }
+                        }
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
-                  Toggle(isOn: $inRoom, label: {roomIcon})
-                    .disabled(!canToggle)
+                    Toggle(isOn: $inRoom, label: {roomIcon})
+                        .disabled(!canToggle)
                 }.padding(.leading, 20).padding(.trailing, 20)
             }
         }
@@ -109,7 +109,7 @@ struct DatesCarousel:View {
     var dates: [Date] // Array of dates
     var onDateSelected: (Date)-> Void
     @Binding var selectedDate: Date
-
+    
     var body: some View {
         ZStack {
             VStack{
@@ -143,11 +143,11 @@ func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
 
 
 struct DateToggle: View {
-//    var Month
+    //    var Month
     var date : Date
     var today: Bool
     var onTapped: () -> Void  // Closure to be called when the toggle is tapped
-
+    
     var body: some View {
         Button(action: onTapped) {
             let statusShape = RoundedRectangle(cornerRadius: 10)
@@ -189,7 +189,7 @@ struct DateToggle: View {
 
 struct HomepageView_Previews: PreviewProvider {
     static var previews: some View {
-      HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
+        HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
     }
 }
 

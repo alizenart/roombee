@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-//let curDate = Date()
-//let dates = generateDates(startingFrom: curDate, count: 7)
-
-
 struct SignUp: View {
     
     @State private var email = ""
@@ -22,25 +18,18 @@ struct SignUp: View {
     let toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
     var body: some View {
-        
         NavigationView {
             ZStack{
-                backgroundColor // Use the custom color here
+                backgroundColor
                     .ignoresSafeArea()
-//                Circle()
-//                    .scale(1.7)
-//                    .foregroundColor(.white.opacity(0.15))
-//                Circle()
-//                    .scale(1.35)
-//                    .foregroundColor(.white)
-                
                 VStack{
                     if isSignUp {
                         Text("Sign Up")
                             .font(.largeTitle)
                             .bold()
                             .padding()
-                    } else {
+                    }
+                    else {
                         Text("Login")
                             .font(.largeTitle)
                             .bold()
@@ -70,29 +59,22 @@ struct SignUp: View {
                         .cornerRadius(10)
                         .padding(.bottom, 10)
                     
-                    if(isSignUp){
+                    if (isSignUp) {
                         NavigationLink(destination: Onboarding1()) {
-                        Text("Sign Up").frame(width: 150, height: 30, alignment: .center)
-                                                    .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
-                                                    .foregroundColor(.white)
-                                                    .cornerRadius(10)
-                                            }
-                                        }
-                                        else {
-                                            NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())) {
-                                                Text("Login").frame(width: 150, height: 30, alignment: .center)
-                                                    .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
-                                                    .foregroundColor(.white)
-                                                    .cornerRadius(10)
-                                            }
-                                        }
-                    
-                   
-
-                    
-                    
-
-                    
+                            Text("Sign Up").frame(width: 150, height: 30, alignment: .center)
+                                .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                    }
+                    else {
+                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())) {
+                            Text("Login").frame(width: 150, height: 30, alignment: .center)
+                                .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                    }
                     Button(action: {
                         isSignUp.toggle()
                     }) {
@@ -100,8 +82,6 @@ struct SignUp: View {
                             .font(.system(size: 12))
                     }
                 }
-        
-                
                 .padding()
                 .background(Rectangle()
                     .foregroundColor(.init(red: 230/255, green: 217/255, blue: 197/255))
@@ -109,11 +89,9 @@ struct SignUp: View {
                     .shadow(radius: 15))
                 .padding()
             }
-            
         }
         .navigationBarBackButtonHidden(true)
     }
-    
     func signUp() {
         // Your sign-up logic
     }

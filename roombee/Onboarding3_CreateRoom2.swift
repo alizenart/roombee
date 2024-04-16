@@ -38,31 +38,31 @@ struct Onboarding3_CreateRoom2: View {
                             .frame(width: 275, alignment: .center)
                             .font(.system(size: 25, weight : .bold))
                             .foregroundColor(.init(textColor))
-//                            .padding(.leading, 20)
+                        //                            .padding(.leading, 20)
                             .multilineTextAlignment(.center)
-
+                        
                             .padding()
                             .padding(.bottom, -5)
                         
                         Text("Share this code with your roommates!")
                             .font(.system(size: 15))
                             .foregroundColor(.init(textColor))
-//                            .padding(.bottom, 20)
+                        //                            .padding(.bottom, 20)
                         
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(strokeColor, lineWidth: 2)
-//                            .cornerRadius(15)
+                        //                            .cornerRadius(15)
                             .background(.white)
                             .cornerRadius(10)
                             .opacity(0.5)
                             .frame(width: 250, height: 50)
                             .padding(.bottom, 20)
-
                         
-                            
-
-
-                      NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())){
+                        
+                        
+                        
+                        
+                        NavigationLink(destination: HomepageView(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())){
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -71,15 +71,15 @@ struct Onboarding3_CreateRoom2: View {
                                 .cornerRadius(10)
                         }
                         
-//                        Button(action: GoBack) {
-//                            Text("Go Back")
-//                                .font(.system(size : 20, weight: .bold))
-//                                .frame(width: 125, height: 40, alignment: .center)
-//                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-//                                .foregroundColor(.white)
-//                                .cornerRadius(10)
-//                        }//button
-//                        .padding(.top, 10)
+                        //                        Button(action: GoBack) {
+                        //                            Text("Go Back")
+                        //                                .font(.system(size : 20, weight: .bold))
+                        //                                .frame(width: 125, height: 40, alignment: .center)
+                        //                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
+                        //                                .foregroundColor(.white)
+                        //                                .cornerRadius(10)
+                        //                        }//button
+                        //                        .padding(.top, 10)
                         
                     } //vstack (mini)
                     .padding()
@@ -88,20 +88,20 @@ struct Onboarding3_CreateRoom2: View {
                         .cornerRadius(15)
                         .shadow(radius: 15))
                     .padding()
-                
-
-                
-                
-
                     
-        }//vstack (big)
-                }//zstack
-                
-                
-                
-            } //geometry reader
+                    
+                    
+                    
+                    
+                    
+                }//vstack (big)
+            }//zstack
             
-        } //body
+            
+            
+        } //geometry reader
+        
+    } //body
     
     
     func GoBack() {
