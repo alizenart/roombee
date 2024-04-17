@@ -49,7 +49,7 @@ struct SideMenuView: View {
                 VStack {
                     ProfileImageView()
                         .frame(height: 140)
-                        .padding(.top, geometry.safeAreaInsets.top+50)
+                        .padding(.top, geometry.safeAreaInsets.top+30)
                         .padding(.bottom, 30)
 
                     ForEach(SideMenuRowType.allCases, id: \.self) { row in
