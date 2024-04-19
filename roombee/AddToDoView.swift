@@ -32,27 +32,29 @@ struct AddToDoView: View {
     }
     
     var body: some View {
-        Form {
-            TextField("Title", text: $newToDo.title)
-                .focused($focusedField, equals: .title)
-        }
-        .navigationTitle("New Reminder")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                      Button(action: cancel) {
+        NavigationView {
+            Form {
+                TextField("Title", text: $newToDo.title)
+                    .focused($focusedField, equals: .title)
+            }
+            .navigationTitle("New Reminder")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: cancel) {
                         Text("Cancel")
-                      }
                     }
-            ToolbarItem(placement: .confirmationAction) {
-                Button(action: add) {
-                    Text("Add")}
-                .disabled(newToDo.title.isEmpty)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: add) {
+                        Text("Add")}
+                    .disabled(newToDo.title.isEmpty)
+                }
+            }
+            .onAppear {
+                focusedField = .title
             }
         }
-        .onAppear {
-                focusedField = .title
-              }
     }
 }
 
