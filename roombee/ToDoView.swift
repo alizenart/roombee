@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ToDoView: View {
-    @State private var tasks = Tasks.samples
-    
+    @State private var tasks = Task.samples
     @State
     private var addpresent = false
     

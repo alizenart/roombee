@@ -10,8 +10,8 @@ import SwiftUI
 
 struct AddToDoView: View {
     @State
-    private var newToDo = Tasks(title:"")
-    var onCommit: (_ newToDo: Tasks) -> Void
+    private var newToDo = Task(title:"")
+    var onCommit: (_ newToDo: Task) -> Void
     
     @Environment(\.dismiss)
     private var dismiss
