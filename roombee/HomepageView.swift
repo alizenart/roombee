@@ -35,7 +35,7 @@ struct HomepageView: View {
                         .environmentObject(authManager)
                         .environmentObject(navManager)
                 case 1:
-                    Onboarding1()
+                    ToDoView()
                 case 2:
                     SettingsView()
                         .environmentObject(EventStore())

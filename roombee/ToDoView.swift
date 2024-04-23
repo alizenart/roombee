@@ -7,10 +7,8 @@
 
 import SwiftUI
 
-struct todolist: View {
-    @State 
-    private var todos = Tasks.samples
-    
+struct ToDoView: View {
+    @State private var tasks = Task.samples
     @State
     private var addpresent = false
     
@@ -19,17 +17,19 @@ struct todolist: View {
     }
     
     var body: some View {
-        List($todos) {$todo in
-            HStack {
-                Image(systemName: todo.status
-                      ? "largecircle.fill.circle"
-                      : "circle")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-                .onTapGesture {
-                    todo.status.toggle()
+        NavigationView {
+            List($tasks) {$task in
+                HStack {
+                    Image(systemName: task.status
+                          ? "largecircle.fill.circle"
+                          : "circle")
+                    .imageScale(.large)
+                    .foregroundColor(.accentColor)
+                    .onTapGesture {
+                        task.status.toggle()
+                    }
+                    Text(task.title)
                 }
-                Text(todo.title)
             }
             .toolbar {
                 ToolbarItemGroup(placement: .bottomBar) {
@@ -39,23 +39,20 @@ struct todolist: View {
                             Text("New Reminder")
                         }
                     }
-                    Spacer()}
-                
+                    Spacer()
+                }
             }
             .sheet(isPresented: $addpresent) {
-                  addview { todo in
-                      todos.append(todo)
-                  }
+                AddToDoView { task in
+                    tasks.append(task)
+                }
             }
         }
     }
 }
 
-
-struct ToDoView_Previews: PreviewProvider {
-  static var previews: some View {
-    NavigationStack {
-      todolist()
+struct TodoView_Previews: PreviewProvider {
+    static var previews: some View {
+        ToDoView()
     }
-  }
 }
