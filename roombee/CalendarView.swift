@@ -20,10 +20,21 @@ class NewEventViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var startDate: Date = Date()
     @Published var endDate: Date = Date()
+    
+    //
+    init(selectedDate: Date) {
+        let calendar = Calendar.current
+        self.startDate = calendar.startOfDay(for: selectedDate)
+        self.endDate = calendar.date(byAdding: .hour, value: 1, to: startDate) ?? startDate
+    }
 }
 
 struct NewEventView: View {
     @ObservedObject var viewModel: NewEventViewModel
+    //
+    @EnvironmentObject var eventStore : EventStore
+    //
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
     
@@ -40,6 +51,7 @@ struct NewEventView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(backgroundColor)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
@@ -47,6 +59,7 @@ struct NewEventView: View {
                         onSave(newEvent)
                         dismiss()
                     }
+                    .foregroundColor(backgroundColor)
                 }
             }
         }
@@ -55,77 +68,92 @@ struct NewEventView: View {
 
 struct CalendarView: View {
     @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
+    
     var title: String
     @State private var showingAddEventSheet = false
-    
-    let date: Date = dateFrom(9, 5, 2023)
-    
-    //    @State var events: [Event] = [
-    //        Event(startDate: dateFrom(9,5,2023,7,0), endDate: dateFrom(9,5,2023,8,0), title: "Interview"),
-    //        Event(startDate: dateFrom(9,5,2023,9,0), endDate: dateFrom(9,5,2023,10,0), title: "Friend's Coming Over"),
-    //        Event(startDate: dateFrom(9,5,2023,11,0), endDate: dateFrom(9,5,2023,12,00), title: "Project Meeting")
-    //    ]
+    @State private var initialScrollOffset: CGFloat?
+
     
     let hourHeight = 50.0
     
     var body: some View {
         ZStack{
-            toggleColor
+            creamColor
             VStack(alignment: .leading) {
                 
                 // Date headline
                 Text(title).bold()
                     .foregroundColor(toggleColor)
-                //            HStack {
-                //                Text(date.formatted(.dateTime.day().month()))
-                //                    .bold()
-                //                Text(date.formatted(.dateTime.year()))
-                //            }
-                //            .font(.title)
-                //            Text(date.formatted(.dateTime.weekday(.wide)))
+                
                 
                 ScrollView {
-                    ZStack(alignment: .topLeading) {
+                    ScrollViewReader {value in
                         
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(7..<18) { hour in
-                                HStack {
-                                    Text("\(hour)")
-                                        .font(.caption)
-                                        .frame(width: 20, alignment: .trailing)
-                                    Color.gray
-                                        .frame(height: 1)
+                        ZStack(alignment: .topLeading) {
+                            
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(0..<24, id: \.self) { hour in
+                                    hourView(hour)
                                 }
-                                .frame(height: hourHeight)
+                            }
+                            
+                            ForEach(eventStore.events) { event in
+                                eventCell(event)
                             }
                         }
-                        
-                        ForEach(eventStore.events) { event in
-                            eventCell(event)
+                        .onAppear {
+                            // Scroll to 7 AM initially
+                            value.scrollTo(7, anchor: .top)
                         }
                     }
+                    
                 }
-                Button("Add Event") {
-                    showingAddEventSheet = true
-                }
-                .sheet(isPresented: $showingAddEventSheet) {
-                    NewEventView(viewModel: NewEventViewModel()) { newEvent in
-                        eventStore.addEvent(newEvent)
-                    }
-                }
-                .padding()
-                .background(Color(ourPurple))
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .bold()
+                addButton()
             }
             .padding()
         } //ZStack
         .cornerRadius(30)
     }//body
+    func hourView(_ hour: Int) -> some View {
+        let hourLabel = hour == 0 ? "12 AM" : (hour <= 12 ? "\(hour) AM" : "\(hour - 12) PM")
+        return HStack {
+            Text(hourLabel)
+                .font(.caption)
+                .frame(width: 40, alignment: .trailing)
+            Color.gray.frame(height: 1)
+        }
+        .frame(height: hourHeight)
+        .id(hour)
+    }
     
-    func addNewEvent() {
-        
+    func addButton() -> some View {
+        Button(action: {
+            showingAddEventSheet = true
+        }) {
+            ZStack {
+                hexagonShape()
+                    .frame(width: 70, height: 80)
+                    .foregroundColor(backgroundColor)
+                
+                Text("+")
+                    .font(.system(size: 36))
+                    .foregroundColor(.white)
+                    .bold()
+            }
+        }
+        .sheet(isPresented: $showingAddEventSheet) {
+            NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
+                eventStore.addEvent(newEvent)
+            }
+        }
+        .padding()
+    }
+
+    private func filteredEvents(for date: Date) -> [CalendarEvent] {
+        eventStore.events.filter { event in
+            Calendar.current.isDate(event.startDate, inSameDayAs: date)
+        }
     }
     
     func eventCell(_ event: CalendarEvent) -> some View {
@@ -151,13 +179,13 @@ struct CalendarView: View {
         .frame(height: height, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(.purple).opacity(0.5)
+                .fill(LighterPurple)
         )
         .padding(.trailing, 30)
+        .padding(.leading, 50)  
+
         .offset(x: 30, y: offset + 24)
-        
     }
-    
 }
 
 

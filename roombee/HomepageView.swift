@@ -16,12 +16,18 @@ let ourOrange = Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255)
 
 let LighterPurple = Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255)
 
+let highlightYellow = Color(red: 230/255, green: 178/255, blue: 81/255)
+
+let creamColor = Color(red:231/255, green:224/255, blue:215/255)
+
+
 let date = Date()
 let formatter = DateFormatter()
 
 struct HomepageView: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
 
     @State private var isActive: Bool = true  // State to control navigation or visibility.
 
@@ -34,6 +40,7 @@ struct HomepageView: View {
                         .environmentObject(EventStore())
                         .environmentObject(authManager)
                         .environmentObject(navManager)
+                        .environmentObject(selectedDateManager)
                 case 1:
                     ToDoView()
                 case 2:

@@ -11,6 +11,7 @@ struct HomepageContent: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var navManager: NavManager
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
 
 
     var calGrid: GridView
@@ -18,8 +19,10 @@ struct HomepageContent: View {
     var roomStatus: StatusView
     
     var schedCara: DatesCarousel {
-        let dates = generateDates(startingFrom: Date(), count: 7) // Adjust parameters as needed
-        return DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
+        let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7)
+        return DatesCarousel(dates: dates, onDateSelected: { date in
+            selectedDateManager.SelectedDate = date
+        })
     }
     
     
@@ -44,7 +47,7 @@ struct HomepageContent: View {
                         //                        .padding(.bottom, 20)
                             .padding(.top, 20)
                         
-                        schedCara
+                        schedCara.environmentObject(selectedDateManager)
                             .padding()
                         calGrid.padding([.leading, .trailing], 20)
                     }
@@ -64,8 +67,8 @@ struct StatusView: View {
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
-        let bedIcon = Image(systemName: "bed.double.fill").foregroundColor(.white)
-        let roomIcon = Image(systemName: "house").foregroundColor(.white)
+        let bedIcon = Image(systemName: "bed.double.fill").foregroundColor(backgroundColor)
+        let roomIcon = Image(systemName: "house")            .foregroundColor(backgroundColor)
         ZStack {
             statusShape
                 .fill()
@@ -97,38 +100,47 @@ struct StatusView: View {
     }
 }
 
-
-
-struct DatesCarousel:View {
-    var dates: [Date] // Array of dates
-    var onDateSelected: (Date)-> Void
-    @Binding var selectedDate: Date
+struct DatesCarousel: View {
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
+    var dates: [Date]
+    var onDateSelected: (Date) -> Void
     
     var body: some View {
-        ZStack {
-            VStack{
-                Text("Schedules")
-                    .font(.system(size:25))
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding(.top, 30)
-                    .padding(.leading, -170)
-                HStack{
-                    ForEach(dates, id: \.self) { date in
-                        DateToggle(date: date, today: Calendar.current.isDateInToday(date)) {
-                            onDateSelected(date)
-                        }
-                    }
+        VStack {
+            Text("Schedules")
+                .font(.system(size:25))
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .padding(.top, 30)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 20)
+            
+            HStack {
+                ForEach(dates, id: \.self) { date in DateToggle(date: date, today: Calendar.current.isDateInToday(date)) {
+//                    onDateSelected(date)
+                    selectedDateManager.SelectedDate = date
+                }
                 }
             }
         }
     }
 }
 
+
+
+
 func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
     var dates = [Date]()
+    var current = startDate
+    
+    let calendar = Calendar.current
+    let weekday = calendar.component(.weekday, from: current)
+    let daysToGoBack = weekday - calendar.firstWeekday
+    if let lastSunday = calendar.date(byAdding: .day, value: -daysToGoBack, to: current) {
+        current = lastSunday
+    }
     for day in 0..<count {
-        if let date = Calendar.current.date(byAdding: .day, value: day, to: startDate) {
+        if let date = calendar.date(byAdding: .day, value: day, to: current) {
             dates.append(date)
         }
     }
@@ -137,10 +149,10 @@ func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
 
 
 struct DateToggle: View {
-    //    var Month
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
     var date : Date
     var today: Bool
-    var onTapped: () -> Void  // Closure to be called when the toggle is tapped
+    var onTapped: () -> Void
     
     var body: some View {
         Button(action: onTapped) {
@@ -148,7 +160,7 @@ struct DateToggle: View {
             ZStack {
                 statusShape
                     .fill()
-                    .foregroundColor(LighterPurple)
+                    .foregroundColor(selectedDateManager.isDateSelected(date) ? highlightYellow : LighterPurple)  
                 //                .aspectRatio(1.0, contentMode: .fit)
                     .frame(width: 45, height: 60)
                 
