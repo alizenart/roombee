@@ -30,6 +30,7 @@ struct roombeeApp: App {
     @StateObject var authViewModel = AuthenticationViewModel()
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
+    @StateObject var apiManager = APIManager()
     var eventStore = EventStore()
     
     var body: some Scene {
@@ -38,6 +39,19 @@ struct roombeeApp: App {
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
+  //        ContentView().environmentObject(eventStore)
+            if authManager.isAuthenticated {
+                HomepageView()
+                    .environmentObject(EventStore())
+                    .environmentObject(authManager)
+                    .environmentObject(navManager)
+                    .environmentObject(apiManager)
+
+            } else {
+                SignUp()
+                    .environmentObject(EventStore())
+                    .environmentObject(authManager)
+            }
         }
     }
 }

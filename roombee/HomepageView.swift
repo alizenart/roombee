@@ -29,36 +29,45 @@ struct HomepageView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var navManager: NavManager
-    @State private var isActive: Bool = true
-    
-    private func signOut() {
-        authViewModel.signOut()
-    }
-    
+    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var apiManager: APIManager
+
+    @State private var isActive: Bool = true  // State to control navigation or visibility.
+
     var body: some View {
-        NavigationView {
-            ZStack {
-                backgroundColor // Use the custom color here
-                    .ignoresSafeArea()
-                Group {
-                    switch navManager.selectedSideMenuTab {
-                    case 0:
-                        HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false))
-                            .environmentObject(EventStore())
-                            .environmentObject(authViewModel)
-                            .environmentObject(navManager)
-                            .environmentObject(selectedDateManager)
-                    case 1:
-                        ToDoView()
-                        //                case 2:
-                        //                    SettingsView()
-                        //                        .environmentObject(EventStore())
-                        //                        .environmentObject(authManager)
-                        //                        .environmentObject(navManager)
-                    case 2:
-                        EmptyView()  // Use EmptyView or another placeholder.
-                    default:
-                        Text("Unknown Selection")
+        ZStack {
+            Group {
+                switch navManager.selectedSideMenuTab {
+                case 0:
+                    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false))
+                        .environmentObject(EventStore())
+                        .environmentObject(authManager)
+                        .environmentObject(navManager)
+                        .environmentObject(apiManager)
+                case 1:
+                    ToDoView()
+                case 2:
+                    SettingsView()
+                        .environmentObject(EventStore())
+                        .environmentObject(authManager)
+                        .environmentObject(navManager)
+                case 3:
+                    EmptyView()  // Use EmptyView or another placeholder.
+                default:
+                    Text("Unknown Selection")
+                }
+            }
+
+            VStack {
+                HStack {
+                    Button(action: {
+                        navManager.openSideMenu()
+                    }) {
+                        VStack (spacing: 3){
+                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                        }
                     }
                 }
                 //                ScrollView {

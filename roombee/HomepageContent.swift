@@ -12,6 +12,7 @@ struct HomepageContent: View {
     @EnvironmentObject var authManager: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var apiManager : APIManager
 
 
     var calGrid: GridView
@@ -44,6 +45,9 @@ struct HomepageContent: View {
                             yourStatus
                             roomStatus
                         }.padding(.horizontal, 40)
+                        Button("API Call") {
+                            apiManager.changeToggleState(userId: 80003, state: "is_sleeping")
+                        }
                         //                        .padding(.bottom, 20)
                             .padding(.top, 20)
                         

@@ -55,5 +55,5 @@ func sendUserData(userId: Int, state: String) {
 }
 
 // Call the function with specific user_id and state
-//example use sendUserData(userId: 80003, state: "is_sleeping")
+//example use changeToggleState(userId: 80003, state: "is_sleeping")
 
