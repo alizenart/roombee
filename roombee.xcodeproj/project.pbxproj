@@ -22,6 +22,8 @@
 		684DBD402BCF49BB009EE8DD /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD3F2BCF49BB009EE8DD /* Task.swift */; };
 		684DBD422BCF49C4009EE8DD /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD412BCF49C4009EE8DD /* ToDoView.swift */; };
 		684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD432BCF49C9009EE8DD /* AddToDoView.swift */; };
+		68900F212BD4E30600FFC62D /* SelectedDateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68900F202BD4E30600FFC62D /* SelectedDateManager.swift */; };
+		68D2922D2BE0335E00E3741E /* Hexagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D2922C2BE0335E00E3741E /* Hexagon.swift */; };
 		68E735FA2BCC4C5200D94A95 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735F92BCC4C5200D94A95 /* AuthStore.swift */; };
 		68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */; };
 		68E736002BCC688900D94A95 /* HomeSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */; };
@@ -53,6 +55,8 @@
 		684DBD3F2BCF49BB009EE8DD /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		684DBD412BCF49C4009EE8DD /* ToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
 		684DBD432BCF49C9009EE8DD /* AddToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToDoView.swift; sourceTree = "<group>"; };
+		68900F202BD4E30600FFC62D /* SelectedDateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedDateManager.swift; sourceTree = "<group>"; };
+		68D2922C2BE0335E00E3741E /* Hexagon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hexagon.swift; sourceTree = "<group>"; };
 		68E735F92BCC4C5200D94A95 /* AuthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardStore.swift; sourceTree = "<group>"; };
 		68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSideBarView.swift; sourceTree = "<group>"; };
@@ -96,10 +100,11 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				68E735F92BCC4C5200D94A95 /* AuthStore.swift */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
+				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
 				68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */,
-				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				FAD774892AD21AB600E332B1 /* Login:SignUp.swift */,
 				30AA0BBD2AD1BC0400344002 /* ContentView.swift */,
 				68E736102BCE0D5D00D94A95 /* Onboarding */,
@@ -112,6 +117,7 @@
 				68E7360C2BCDDF0B00D94A95 /* SettingsView.swift */,
 				68E736012BCC6EE600D94A95 /* navBar */,
 				3068207F2AD1DEE100025437 /* CalendarView.swift */,
+				68D2922C2BE0335E00E3741E /* Hexagon.swift */,
 				C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */,
 				C739AD002BBE5398001378D3 /* EventViewModel.swift */,
 				306820812AD1E26900025437 /* GridView.swift */,
@@ -234,6 +240,7 @@
 				68E7360B2BCDDB5000D94A95 /* NavManager.swift in Sources */,
 				C775E0562B8BFC26009F644B /* EventStore.swift in Sources */,
 				C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */,
+				68900F212BD4E30600FFC62D /* SelectedDateManager.swift in Sources */,
 				684DBD422BCF49C4009EE8DD /* ToDoView.swift in Sources */,
 				684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */,
 				680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */,
@@ -244,6 +251,7 @@
 				68E7360F2BCDE08B00D94A95 /* HomepageContent.swift in Sources */,
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
+				68D2922D2BE0335E00E3741E /* Hexagon.swift in Sources */,
 				68E736002BCC688900D94A95 /* HomeSideBarView.swift in Sources */,
 				680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
