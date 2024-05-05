@@ -12,6 +12,7 @@ import SwiftUI
 struct roombeeApp: App {
     @StateObject var authManager = AuthManager()
     @StateObject var navManager = NavManager()
+    @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
     
     var body: some Scene {
@@ -22,6 +23,7 @@ struct roombeeApp: App {
                     .environmentObject(EventStore())
                     .environmentObject(authManager)
                     .environmentObject(navManager)
+                    .environmentObject(selectedDate)
 
             } else {
                 SignUp()

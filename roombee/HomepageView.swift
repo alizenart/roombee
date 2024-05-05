@@ -15,13 +15,19 @@ let ourOrange = Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255)
 
 let LighterPurple = Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255)
 
+let highlightYellow = Color(red: 230/255, green: 178/255, blue: 81/255)
+
+let creamColor = Color(red:231/255, green:224/255, blue:215/255)
+
+
 let date = Date()
 let formatter = DateFormatter()
 
 struct HomepageView: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var authManager: AuthManager
-    var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
+
 
     @State private var isActive: Bool = true  // State to control navigation or visibility.
 
@@ -34,14 +40,15 @@ struct HomepageView: View {
                         .environmentObject(EventStore())
                         .environmentObject(authManager)
                         .environmentObject(navManager)
+                        .environmentObject(selectedDateManager)
                 case 1:
                     ToDoView()
+//                case 2:
+//                    SettingsView()
+//                        .environmentObject(EventStore())
+//                        .environmentObject(authManager)
+//                        .environmentObject(navManager)
                 case 2:
-                    SettingsView()
-                        .environmentObject(EventStore())
-                        .environmentObject(authManager)
-                        .environmentObject(navManager)
-                case 3:
                     EmptyView()  // Use EmptyView or another placeholder.
                 default:
                     Text("Unknown Selection")
@@ -74,9 +81,9 @@ struct HomepageView: View {
             }
         }
         .onChange(of: navManager.selectedSideMenuTab) { newValue in
-            if newValue == 3 {
+            if newValue == 2 {
                 authManager.signOut()
-                navManager.selectedSideMenuTab = 0 // Reset tab or navigate as needed
+                navManager.selectedSideMenuTab = 0 
             }
         }
     }
