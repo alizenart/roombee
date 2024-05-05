@@ -43,12 +43,12 @@ struct HomepageView: View {
                         .environmentObject(selectedDateManager)
                 case 1:
                     ToDoView()
+//                case 2:
+//                    SettingsView()
+//                        .environmentObject(EventStore())
+//                        .environmentObject(authManager)
+//                        .environmentObject(navManager)
                 case 2:
-                    SettingsView()
-                        .environmentObject(EventStore())
-                        .environmentObject(authManager)
-                        .environmentObject(navManager)
-                case 3:
                     EmptyView()  // Use EmptyView or another placeholder.
                 default:
                     Text("Unknown Selection")
@@ -81,9 +81,9 @@ struct HomepageView: View {
             }
         }
         .onChange(of: navManager.selectedSideMenuTab) { newValue in
-            if newValue == 3 {
+            if newValue == 2 {
                 authManager.signOut()
-                navManager.selectedSideMenuTab = 0 // Reset tab or navigate as needed
+                navManager.selectedSideMenuTab = 0 
             }
         }
     }

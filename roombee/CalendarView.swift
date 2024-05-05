@@ -29,6 +29,8 @@ class NewEventViewModel: ObservableObject {
     }
 }
 
+
+//the popup when you press the plus button
 struct NewEventView: View {
     @ObservedObject var viewModel: NewEventViewModel
     //
@@ -39,30 +41,40 @@ struct NewEventView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView {
-            Form {
-                TextField("Title", text: $viewModel.title)
-                DatePicker("Start Time", selection: $viewModel.startDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-                DatePicker("End Time", selection: $viewModel.endDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-            }
-            .navigationTitle("New Event")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .foregroundColor(backgroundColor)
+        ZStack{
+            creamColor
+            NavigationView {
+                Form {
+                    TextField("Name of Event", text: $viewModel.title)
+                        .frame(width: 300, height: 50)
+                        .font(.system(size: 20))
+                    DatePicker("Start Time", selection: $viewModel.startDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+                    DatePicker("End Time", selection: $viewModel.endDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        let newEvent = CalendarEvent(startDate: viewModel.startDate, endDate: viewModel.endDate, title: viewModel.title)
-                        onSave(newEvent)
-                        dismiss()
+                .background(creamColor)
+                .navigationTitle("New Event")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .foregroundColor(backgroundColor)
                     }
-                    .foregroundColor(backgroundColor)
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Save") {
+                            let newEvent = CalendarEvent(startDate: viewModel.startDate, endDate: viewModel.endDate, title: viewModel.title)
+                            //
+                            eventStore.addEvent(newEvent)
+                            //
+                            onSave(newEvent)
+                            dismiss()
+                        }
+                        .foregroundColor(backgroundColor)
+                    }
                 }
-            }
-        }
+            }// navigation view
+        }// zstack
+        
     }
 }
 
@@ -137,7 +149,7 @@ struct CalendarView: View {
                     .foregroundColor(backgroundColor)
                 
                 Text("+")
-                    .font(.system(size: 36))
+                    .font(.system(size: 45))
                     .foregroundColor(.white)
                     .bold()
             }

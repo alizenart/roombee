@@ -21,17 +21,6 @@ class SelectedDateManager: ObservableObject {
     func showSelectedCalendar( _ date: Date) {
         
     }
-//    func moveToNextWeek() {
-//        if let newDate = Calendar.current.date(byAdding: .day, value: 7, to: SelectedDate) {
-//            SelectedDate = newDate
-//        }
-//    }
-//
-//    func moveToPreviousWeek() {
-//        if let newDate = Calendar.current.date(byAdding: .day, value: -7, to: SelectedDate) {
-//            SelectedDate = newDate
-//        }
-//    }
     
     // need function that will open the grid view for SelectedDate
     

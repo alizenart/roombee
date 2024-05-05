@@ -10,8 +10,8 @@ import SwiftUI
 enum SideMenuRowType: Int, CaseIterable {
     case home = 0
     case task = 1
-    case setting = 2
-    case signout = 3
+//    case setting = 2
+    case signout = 2
     
     var title: String {
         switch self {
@@ -19,8 +19,8 @@ enum SideMenuRowType: Int, CaseIterable {
             return "Home"
         case .task:
             return "Task"
-        case .setting:
-            return "Settings"
+//        case .setting:
+//            return "Settings"
         case .signout:
             return "SignOut"
         }
@@ -32,8 +32,8 @@ enum SideMenuRowType: Int, CaseIterable {
             return "HomeIcon"
         case .task:
             return "TaskIcon"
-        case .setting:
-            return "SettingIcon"
+//        case .setting:
+//            return "SettingIcon"
         case .signout:
             return "SignOutIcon"
         }
