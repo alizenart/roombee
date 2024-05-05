@@ -20,7 +20,7 @@ class APIManager: ObservableObject {
         // Serialize your data into JSON
         if let jsonData = try? JSONSerialization.data(withJSONObject: userData, options: []) {
             // Create the URL object
-            guard let url = URL(string: "https://ryo3s2u3i9.execute-api.us-east-1.amazonaws.com/prod") else {
+            guard let url = URL(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/toggle") else {
                 print("Invalid URL")
                 return
             }
@@ -53,5 +53,61 @@ class APIManager: ObservableObject {
         } else {
             print("Failed to serialize userData into JSON")
         }
+    }//changeToggleState
+    
+    /*"event_id": 0,
+      "user_id": 0,
+      "event_title": "ROOMBEE LAUNCH",
+      "start_time": "2024-05-02 10:30:00",
+      "end_time": "2024-05-02 12:30:00",
+      "approved": false
+    */
+    func addEvent(eventId: Int, userId: Int, eventTitle: String, startTime: String, endTime: String, approved: Bool) {
+        // Construct the URL with query string parameters
+        guard var urlComponents = URLComponents(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/event") else {
+            print("Invalid URL")
+            return
+        }
+        
+        // Add query string parameters
+        urlComponents.queryItems = [
+            URLQueryItem(name: "event_id", value: "\(eventId)"),
+            URLQueryItem(name: "user_id", value: "\(userId)"),
+            URLQueryItem(name: "event_title", value: eventTitle),
+            URLQueryItem(name: "start_time", value: startTime),
+            URLQueryItem(name: "end_time", value: endTime),
+            URLQueryItem(name: "approved", value: "\(approved)")
+        ]
+        
+        // Create the URL object
+        guard let url = urlComponents.url else {
+            print("Failed to create URL")
+            return
+        }
+        
+        // Create the URLRequest object
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        // Create a URLSession task
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error occurred: \(error)")
+                return
+            }
+            
+            if let response = response as? HTTPURLResponse, response.statusCode != 200 {
+                print("Server responded with status code: \(response.statusCode)")
+                return
+            }
+            
+            if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                print("Response data: \(dataString)")
+            }
+        }
+        
+        // Start the task
+        task.resume()
     }
+
 }

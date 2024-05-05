@@ -45,7 +45,16 @@ struct HomepageContent: View {
                             yourStatus
                             roomStatus
                         }.padding(.horizontal, 40)
-                        Button("API Call") {
+                        Button("Add Event") {
+                            apiManager.addEvent(eventId: 3, userId: 3, eventTitle: "Alison Test", startTime: "2024-05-05 10:30:00",
+                                                endTime:"2024-05-05 12:30:00",
+                                                approved: true)
+                            
+                            //(userId: 80003, state: "is_sleeping")
+                        }
+                        //                        .padding(.bottom, 20)
+                            .padding(.top, 20)
+                        Button("Toggle User 8003") {
                             apiManager.changeToggleState(userId: 80003, state: "is_sleeping")
                         }
                         //                        .padding(.bottom, 20)
