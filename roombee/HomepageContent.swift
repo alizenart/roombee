@@ -81,10 +81,10 @@ struct StatusView: View {
                         .disabled(!canToggle)
                         .onChange(of: isAsleep) { isOn in
                             if isOn && canToggle{
-                                backgroundColor = .black
+                                //backgroundColor = .black
                             }
                             else {
-                                backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+                                //backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
                             }
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)

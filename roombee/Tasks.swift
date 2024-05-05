@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Tasks: Identifiable {
+struct Tasks: Identifiable, Hashable {
     let id = UUID()
     var title: String
     var status = false
