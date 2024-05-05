@@ -66,6 +66,7 @@ struct ToDoView: View {
                                     .padding(.bottom, 5)
                                 
                             }
+
                         }
                         Spacer()
                     }
@@ -79,6 +80,7 @@ struct ToDoView: View {
             }//zstack
         } // nav view
     } // body
+
 }
 
 

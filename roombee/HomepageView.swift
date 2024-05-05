@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-
-var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+let backgroundColor = Color(red: 56/255, green: 30/255, blue: 56/255)
 
 let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
 
@@ -28,6 +27,7 @@ struct HomepageView: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+
 
     @State private var isActive: Bool = true  // State to control navigation or visibility.
 

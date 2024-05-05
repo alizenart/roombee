@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 enum SideMenuRowType: Int, CaseIterable {
     case home = 0
     case task = 1
