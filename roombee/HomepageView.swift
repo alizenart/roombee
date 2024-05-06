@@ -29,6 +29,7 @@ struct HomepageView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
 
+
     @State private var isActive: Bool = true  // State to control navigation or visibility.
 
     var body: some View {

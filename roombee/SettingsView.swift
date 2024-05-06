@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct SettingsView: View {
+    // why ??? how does this work
     @EnvironmentObject var navManager: NavManager
-
+    
     var body: some View {
         ZStack{
-            backgroundColor.ignoresSafeArea()
+            backgroundColor
+                .ignoresSafeArea()
             Text("Settings Page")
                 .foregroundColor(.white)
 
