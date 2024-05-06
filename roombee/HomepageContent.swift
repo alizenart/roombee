@@ -82,6 +82,7 @@ struct StatusView: View {
                 HStack{
                     Toggle(isOn: $isAsleep, label: {bedIcon})
                         .disabled(!canToggle)
+
                         .onChange(of: isAsleep) { isOn in
                             if isOn && canToggle{
                                 //backgroundColor = .black
