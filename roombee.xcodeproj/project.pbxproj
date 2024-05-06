@@ -34,7 +34,6 @@
 		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
-		FAD7748A2AD21AB600E332B1 /* Login:SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD774892AD21AB600E332B1 /* Login:SignUp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,7 +66,6 @@
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
-		FAD774892AD21AB600E332B1 /* Login:SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Login:SignUp.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +103,6 @@
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
 				68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */,
-				FAD774892AD21AB600E332B1 /* Login:SignUp.swift */,
 				30AA0BBD2AD1BC0400344002 /* ContentView.swift */,
 				68E736102BCE0D5D00D94A95 /* Onboarding */,
 				C775E0552B8BFC26009F644B /* EventStore.swift */,
@@ -236,7 +233,6 @@
 				30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */,
 				680FEBE42BBF641F002B3642 /* Onboarding1.swift in Sources */,
 				684DBD402BCF49BB009EE8DD /* Task.swift in Sources */,
-				FAD7748A2AD21AB600E332B1 /* Login:SignUp.swift in Sources */,
 				68E7360B2BCDDB5000D94A95 /* NavManager.swift in Sources */,
 				C775E0562B8BFC26009F644B /* EventStore.swift in Sources */,
 				C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */,
