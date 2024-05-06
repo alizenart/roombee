@@ -32,6 +32,7 @@
 		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
+		C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FE5F632BE06F9E00161711 /* APIService.swift */; };
 		FAD7748A2AD21AB600E332B1 /* Login:SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD774892AD21AB600E332B1 /* Login:SignUp.swift */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		C7FE5F632BE06F9E00161711 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		FAD774892AD21AB600E332B1 /* Login:SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Login:SignUp.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,6 +98,7 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+				C7FE5F632BE06F9E00161711 /* APIService.swift */,
 				68E735F92BCC4C5200D94A95 /* AuthStore.swift */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */,
@@ -226,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
+				C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */,
 				68E736092BCD939B00D94A95 /* SideMenuSwiftUI.swift in Sources */,
 				30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */,
 				680FEBE42BBF641F002B3642 /* Onboarding1.swift in Sources */,

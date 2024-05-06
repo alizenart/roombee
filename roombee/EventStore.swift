@@ -13,6 +13,7 @@ class EventStore: ObservableObject {
   
   func addEvent(_ newEvent: CalendarEvent) {
     events.append(newEvent)
+    print("new event: ", newEvent)
     
 //    add backend logic here 
 
