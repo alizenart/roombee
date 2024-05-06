@@ -78,8 +78,11 @@ import SwiftUI
 
 struct AddToDoView: View {
     @State
-    private var newToDo = Tasks(title:"", priority:.chillin, category: .none)
+    var newToDo = Tasks(title:"", priority:.chillin, category: .none)
     var onCommit: (_ newToDo: Tasks) -> Void
+    let options = ["low", "medium", "urgent"]
+    @State
+    private var selectedOption = 0
     
     @Environment(\.dismiss)
     private var dismiss
@@ -101,26 +104,50 @@ struct AddToDoView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                TextField("Title", text: $newToDo.title)
-                    .focused($focusedField, equals: .title)
-            }
-            .navigationTitle("New Reminder")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: cancel) {
-                        Text("Cancel")
+            ZStack {
+                backgroundColor.ignoresSafeArea()
+                Form {
+                    TextField("Title", text: $newToDo.title)
+                        .focused($focusedField, equals: .title)
+                    Section(header: Text("Priority")) {
+                        Picker(selection: $selectedOption, label: Text("")) {
+                            ForEach(0..<3) { index in
+                                Text(self.options[index]).tag(index)
+                                    .frame(minHeight: 50, alignment: .center)
+                            }
+                        }
+                    }
+                    .onChange(of: selectedOption) { newValue in
+                        switch newValue {
+                        case 0:
+                            newToDo.priority = .chillin
+                        case 1:
+                            newToDo.priority = .medium
+                        case 2:
+                            newToDo.priority = .urgent
+                        default:
+                            break
+                        }
                     }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: add) {
-                        Text("Add")}
-                    .disabled(newToDo.title.isEmpty)
+                .scrollContentBackground(.hidden)
+                .navigationTitle("New Reminder")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(action: cancel) {
+                            Text("Cancel")
+                        }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: add) {
+                            Text("Add")}
+                        .disabled(newToDo.title.isEmpty)
+                    }
                 }
-            }
-            .onAppear {
-                focusedField = .title
+                .onAppear {
+                    focusedField = .title
+                }
             }
         }
     }

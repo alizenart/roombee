@@ -44,10 +44,10 @@ extension Tasks {
   ]
 }
 
-enum TaskPriority {
-    case chillin
-    case medium
-    case urgent
+enum TaskPriority:String {
+    case chillin = "low"
+    case medium = "medium"
+    case urgent = "urgent"
 }
 
 enum TaskCategory {
