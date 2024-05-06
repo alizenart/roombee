@@ -9,8 +9,9 @@ import SwiftUI
 
 struct CalendarEvent: Identifiable {
     let id = UUID()
-    var startDate: Date
-    var endDate: Date
+    var dateEvent: Date
+    var startTimeCal: Date
+    var endTimeCal: Date
     var title: String
 }
 
@@ -18,41 +19,55 @@ var ourPurple = hexStringToUIColor(hex: "#381e38")
 
 class NewEventViewModel: ObservableObject {
     @Published var title: String = ""
-    @Published var startDate: Date = Date()
-    @Published var endDate: Date = Date()
+    @Published var dateEvent: Date = Date()
+    @Published var startTime: Date = Date()
+    @Published var endTime: Date = Date()
     
-    //
     init(selectedDate: Date) {
         let calendar = Calendar.current
-        self.startDate = calendar.startOfDay(for: selectedDate)
-        self.endDate = calendar.date(byAdding: .hour, value: 1, to: startDate) ?? startDate
+        self.dateEvent = calendar.startOfDay(for: selectedDate)
+        self.startTime = calendar.startOfDay(for: selectedDate)
+        self.endTime = calendar.date(byAdding: .hour, value: 1, to: startTime) ?? startTime
     }
 }
+
 
 
 //the popup when you press the plus button
 struct NewEventView: View {
     @ObservedObject var viewModel: NewEventViewModel
-    //
-    @EnvironmentObject var eventStore : EventStore
-    //
+    @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
     
+
+    
     var body: some View {
-        ZStack{
+        ZStack {
             creamColor
             NavigationView {
                 Form {
                     TextField("Name of Event", text: $viewModel.title)
-                        .frame(width: 300, height: 50)
+                        .frame(width: 300, height: 40)
                         .font(.system(size: 20))
-                    DatePicker("Start Time", selection: $viewModel.startDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-                    DatePicker("End Time", selection: $viewModel.endDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+                    
+                    Section(header: Text("Date").font(.system(size: 20))) {
+                        DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
+                            .datePickerStyle(GraphicalDatePickerStyle())
+                    }
+                    Section(header: Text("Start & End Time").font(.system(size: 20))){
+                        DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(WheelDatePickerStyle())
+                        DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(WheelDatePickerStyle())
+                    }
                 }
+                .scrollContentBackground(.hidden)
+                .foregroundColor(backgroundColor)
                 .background(creamColor)
                 .navigationTitle("New Event")
+                
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button("Cancel") {
@@ -62,21 +77,20 @@ struct NewEventView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Save") {
-                            let newEvent = CalendarEvent(startDate: viewModel.startDate, endDate: viewModel.endDate, title: viewModel.title)
-                            //
+                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
                             eventStore.addEvent(newEvent)
-                            //
                             onSave(newEvent)
                             dismiss()
                         }
                         .foregroundColor(backgroundColor)
-                    }
-                }
-            }// navigation view
-        }// zstack
-        
+                    } // ToolbarItem
+                } // toolbar
+
+            }
+        }
     }
 }
+
 
 struct CalendarView: View {
     @EnvironmentObject var eventStore: EventStore
@@ -145,10 +159,11 @@ struct CalendarView: View {
         }) {
             ZStack {
                 hexagonShape()
-                    .frame(width: 70, height: 80)
+                    .frame(width: 50, height: 60)
                     .foregroundColor(backgroundColor)
                 
                 Text("+")
+                    .padding(.bottom, 5)
                     .font(.system(size: 45))
                     .foregroundColor(.white)
                     .bold()
@@ -161,28 +176,28 @@ struct CalendarView: View {
         }
         .padding()
     }
-
-    private func filteredEvents(for date: Date) -> [CalendarEvent] {
-        eventStore.events.filter { event in
-            Calendar.current.isDate(event.startDate, inSameDayAs: date)
-        }
-    }
+//
+//    private func filteredEvents(for date: Date) -> [CalendarEvent] {
+//        eventStore.events.filter { event in
+//            Calendar.current.isDate(event.startDate, inSameDayAs: date)
+//        }
+//    }
     
     func eventCell(_ event: CalendarEvent) -> some View {
         
-        let duration = event.endDate.timeIntervalSince(event.startDate)
+        let duration = event.endTimeCal.timeIntervalSince(event.startTimeCal)
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startDate)
-        let minute = calendar.component(.minute, from: event.startDate)
+        let hour = calendar.component(.hour, from: event.startTimeCal)
+        let minute = calendar.component(.minute, from: event.startTimeCal)
         let offset = Double(hour-7) * (hourHeight)
         //                      + Double(minute)/60 ) * hourHeight
         
         print(hour, minute, Double(hour-7) + Double(minute)/60 )
         
         return VStack(alignment: .leading) {
-            Text(event.startDate.formatted(.dateTime.hour().minute()))
+            Text(event.startTimeCal.formatted(.dateTime.hour().minute()))
             Text(event.title).bold()
         }
         .font(.caption)
@@ -194,7 +209,7 @@ struct CalendarView: View {
                 .fill(LighterPurple)
         )
         .padding(.trailing, 30)
-        .padding(.leading, 50)  
+        .padding(.leading, 50)
 
         .offset(x: 30, y: offset + 24)
     }
