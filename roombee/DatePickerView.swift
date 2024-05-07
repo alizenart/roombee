@@ -15,7 +15,8 @@ struct DatePickerModule: View {
             DatePicker("Birthday", selection: $viewModel.birthDate,
                        in: ...Date(),
                        displayedComponents: .date
-            )
+            ).font(.title3).bold().foregroundColor(viewModel.backgroundColor)
+            .padding(.horizontal, 25)  // Reduced horizontal padding
         }
         .padding()
     }

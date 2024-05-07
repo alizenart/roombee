@@ -7,7 +7,6 @@ struct ContentView: View {
     var body: some View {
         switch viewModel.authenticationState {
         case .authenticated:
-            // Display the main interface
             HomepageView(calGrid: GridView(cal: CalendarView(title: viewModel.firstName)),
                          yourStatus: StatusView(title: "\(viewModel.firstName):", canToggle: true),
                          roomStatus: StatusView(title: "Roommate:", canToggle: false))

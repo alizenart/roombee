@@ -30,10 +30,8 @@ struct HomepageView: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var navManager: NavManager
     
-    
     private func signOut() {
         authViewModel.signOut()
-        LoginView().environmentObject(authViewModel)
     }
     
     var calGrid: GridView

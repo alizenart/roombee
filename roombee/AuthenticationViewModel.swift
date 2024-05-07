@@ -138,6 +138,7 @@ extension AuthenticationViewModel {
     do {
       try Auth.auth().signOut()
       isUserSignedIn = false
+      switchFlow()
     }
     catch {
       print(error)
