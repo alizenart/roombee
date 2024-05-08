@@ -43,7 +43,7 @@ class AuthenticationViewModel: ObservableObject {
   @Published var errorMessage = ""
   @Published var user: User?
   @Published var displayName = ""
-  @Published var user_id = UUID().uuidString
+  @Published var user_id: String?
   @Published var hive_code: String? = "nil"
     
   @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
@@ -138,6 +138,14 @@ extension AuthenticationViewModel {
     do {
       try Auth.auth().signOut()
       isUserSignedIn = false
+      authenticationState = .unauthenticated
+      email = ""
+      password = ""
+      confirmPassword = ""
+      firstName = ""
+      lastName = ""
+      birthDate = Date()
+      gender = ""
       switchFlow()
     }
     catch {
@@ -166,6 +174,7 @@ extension AuthenticationViewModel {
       
       // Format the birthDate to an ISO 8601 string
       let dateString = dateFormatter.string(from: birthDate)
+      user_id = UUID().uuidString
       
       let jsonObject = [
         "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "password_hash": password]

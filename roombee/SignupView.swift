@@ -4,7 +4,8 @@ import Combine
 struct SignupView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @State private var shouldNavigate = false
-    
+    @State private var showingPasswordAlert = false
+
     var body: some View {
         ZStack {
             viewModel.backgroundColor.ignoresSafeArea()
@@ -52,8 +53,11 @@ struct SignupView: View {
     
     var continueButton: some View {
         Button(action: {
-            if viewModel.isValid {
+            if (viewModel.isValid && (viewModel.password == viewModel.confirmPassword)) {
                 shouldNavigate = true
+            }
+            else {
+                showingPasswordAlert = true
             }
         }) {
             if viewModel.authenticationState != .authenticating {
@@ -71,6 +75,9 @@ struct SignupView: View {
         .frame(width: 250, height: 50)
         .buttonStyle(.borderedProminent)
         .padding()
+        .alert("Passwords do not match", isPresented: $showingPasswordAlert) {
+                Button("OK", role: .cancel) { }
+        }
     }
 }
 
