@@ -13,7 +13,21 @@ struct HomepageContent: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var apiManager : APIManager
+    
+    @State var yourStatusToggleSleeping: Bool = false
+    @State var yourStatusToggleInRoom: Bool = false
 
+    /*private func fetchInitialToggleState() {
+    Task {
+            do {
+                let toggleState = try await apiManager.getToggleState(userId: 80003)
+                yourStatusToggleSleeping = toggleState.isSleeping
+                yourStatusToggleInRoom = toggleState.inRoom
+            } catch {
+                print("Failed to fetch toggle states: \(error)")
+            }
+        }
+    }*/
 
     var calGrid: GridView
     var yourStatus: StatusView
@@ -54,17 +68,27 @@ struct HomepageContent: View {
                         }
                         //                        .padding(.bottom, 20)
                             .padding(.top, 20)
-                        Button("Toggle User 8003") {
+                        Button("Toggle User 8003 room") {
+                            apiManager.changeToggleState(userId: 80003, state: "in_room")
+                        }
+                        Button("Toggle User 8003 sleep") {
                             apiManager.changeToggleState(userId: 80003, state: "is_sleeping")
                         }
+                        
+                        Button("Get User 8003 data") {
+                            apiManager.getToggleState(userId: 80003)
+                        }
+                        
                         //                        .padding(.bottom, 20)
                             .padding(.top, 20)
                         
                         schedCara.environmentObject(selectedDateManager)
                             .padding()
                         calGrid.padding([.leading, .trailing], 20)
-                    }
-                }
+                    }//ZStack
+                }.onAppear{
+                    //fetchInitialToggleState()
+                }//VStack
                         
             }
         }
@@ -77,10 +101,11 @@ struct HomepageContent: View {
 
 
 struct StatusView: View {
-    @State private var isAsleep = false
+    @State private var isSleeping = false
     @State private var inRoom = false
     @State var title: String
     @State var canToggle: Bool
+    @EnvironmentObject var apiManager : APIManager
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -97,21 +122,24 @@ struct StatusView: View {
                     .foregroundColor(.black)
                     .bold()
                 HStack{
-                    Toggle(isOn: $isAsleep, label: {bedIcon})
+                    Toggle(isOn: $isSleeping, label: {bedIcon})
                         .disabled(!canToggle)
-
-                        .onChange(of: isAsleep) { isOn in
+                        .onChange(of: isSleeping) { isOn in
                             if isOn && canToggle{
                                 //backgroundColor = .black
                             }
                             else {
                                 //backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
                             }
+                            apiManager.changeToggleState(userId: 80003, state: "is_sleeping")
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
                     Toggle(isOn: $inRoom, label: {roomIcon})
                         .disabled(!canToggle)
+                        .onChange(of: inRoom) { isOn in
+                            apiManager.changeToggleState(userId: 80003, state: "in_room")
+                        }
                 }.padding(.leading, 20).padding(.trailing, 20)
             }
         }

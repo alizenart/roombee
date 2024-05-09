@@ -62,6 +62,45 @@ class APIManager: ObservableObject {
       "end_time": "2024-05-02 12:30:00",
       "approved": false
     */
+    func getToggleState(userId: Int) {
+        // Create the URL object with query parameters
+        guard var urlComponents = URLComponents(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/toggle") else {
+            print("Invalid URL")
+            return
+        }
+        urlComponents.queryItems = [URLQueryItem(name: "user_id", value: String(userId))]
+        
+        // Create the URLRequest object
+        guard let url = urlComponents.url else {
+            print("Invalid URL")
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        // Create a URLSession task
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error occurred: \(error)")
+                return
+            }
+            
+            if let response = response as? HTTPURLResponse, response.statusCode != 200 {
+                print("Server responded with status code: \(response.statusCode)")
+                return
+            }
+            
+            if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                print("Response data: \(dataString)")
+                // Depending on your application's requirements, you may process the response data here
+            }
+        }
+        
+        // Start the task
+        task.resume()
+    }
+
+    
     func addEvent(eventId: Int, userId: Int, eventTitle: String, startTime: String, endTime: String, approved: Bool) {
         // Construct the URL with query string parameters
         guard var urlComponents = URLComponents(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/event") else {

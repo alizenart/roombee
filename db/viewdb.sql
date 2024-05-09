@@ -2,4 +2,4 @@ use roombee;
 
 -- SELECT * from users;
 
-SELECT * from events;
+SELECT * from toggles;
