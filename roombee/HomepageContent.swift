@@ -125,19 +125,21 @@ struct StatusView: View {
                     Toggle(isOn: $isSleeping, label: {bedIcon})
                         .disabled(!canToggle)
                         .onChange(of: isSleeping) { isOn in
+                            print("isSleeping toggled to \(isOn)")
+                            apiManager.changeToggleState(userId: 80003, state: "is_sleeping")
                             if isOn && canToggle{
                                 //backgroundColor = .black
                             }
                             else {
                                 //backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
                             }
-                            apiManager.changeToggleState(userId: 80003, state: "is_sleeping")
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
                     Toggle(isOn: $inRoom, label: {roomIcon})
                         .disabled(!canToggle)
                         .onChange(of: inRoom) { isOn in
+                            print("inRoom toggled to \(isOn)")
                             apiManager.changeToggleState(userId: 80003, state: "in_room")
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)

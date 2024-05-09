@@ -33,15 +33,15 @@ struct HomepageView: View {
     @EnvironmentObject var apiManager: APIManager
 
     @State private var isActive: Bool = true  // State to control navigation or visibility.
-
+    
+    @State var demoIsSleeping = false
+    @State var demoInRoom = false
+    
     var body: some View {
         ZStack {
             Group {
                 switch navManager.selectedSideMenuTab {
                 case 0:
-                    @State var demoIsSleeping = false
-                    @State var demoInRoom = false
-                    
                     HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $demoIsSleeping, inRoom: $demoInRoom), roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $demoIsSleeping, inRoom: $demoInRoom))
                         .environmentObject(EventStore())
                         .environmentObject(authManager)
