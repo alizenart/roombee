@@ -6,6 +6,7 @@
 //
 //  Created by Alina Chen on 4/29/24.
 //
+/*
 import Foundation
 class APIService {
   static let shared = APIService()
@@ -42,3 +43,4 @@ class APIService {
     }.resume()
   }
 }
+*/

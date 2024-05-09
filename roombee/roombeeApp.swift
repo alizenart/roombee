@@ -46,12 +46,22 @@ struct roombeeApp: App {
                     .environmentObject(authManager)
                     .environmentObject(navManager)
                     .environmentObject(apiManager)
+                    .onAppear {
+                        APIManager.shared.fetchToggles { toggles, error in
+                            if let toggles = toggles {
+                                print("got events from api call \(toggles)")
+                            } else if let error = error {
+                                print("error fetching toggles: \(error)")
+                            }
+                        }
+                    }
 
             } else {
                 SignUp()
                     .environmentObject(EventStore())
                     .environmentObject(authManager)
             }
+            
         }
     }
 }
