@@ -6,20 +6,12 @@
 //
 
 import SwiftUI
-
-struct CalendarEvent: Identifiable {
-    let id = UUID()
-    var startDate: Date
-    var endDate: Date
-    var title: String
-}
-
 var ourPurple = hexStringToUIColor(hex: "#381e38")
 
 class NewEventViewModel: ObservableObject {
     @Published var title: String = ""
-    @Published var startDate: Date = Date()
-    @Published var endDate: Date = Date()
+    @Published var startTime: Date = Date()
+    @Published var endTime: Date = Date()
 }
 
 struct NewEventView: View {
@@ -31,8 +23,8 @@ struct NewEventView: View {
         NavigationView {
             Form {
                 TextField("Title", text: $viewModel.title)
-                DatePicker("Start Time", selection: $viewModel.startDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-                DatePicker("End Time", selection: $viewModel.endDate, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+                DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+                DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
             }
             .navigationTitle("New Event")
             .toolbar {
@@ -43,7 +35,7 @@ struct NewEventView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        let newEvent = CalendarEvent(startDate: viewModel.startDate, endDate: viewModel.endDate, title: viewModel.title)
+                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
                         onSave(newEvent)
                         dismiss()
                     }
@@ -76,13 +68,6 @@ struct CalendarView: View {
                 // Date headline
                 Text(title).bold()
                     .foregroundColor(toggleColor)
-                //            HStack {
-                //                Text(date.formatted(.dateTime.day().month()))
-                //                    .bold()
-                //                Text(date.formatted(.dateTime.year()))
-                //            }
-                //            .font(.title)
-                //            Text(date.formatted(.dateTime.weekday(.wide)))
                 
                 ScrollView {
                     ZStack(alignment: .topLeading) {
@@ -130,20 +115,20 @@ struct CalendarView: View {
     
     func eventCell(_ event: CalendarEvent) -> some View {
         
-        let duration = event.endDate.timeIntervalSince(event.startDate)
+        let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startDate)
-        let minute = calendar.component(.minute, from: event.startDate)
+        let hour = calendar.component(.hour, from: event.startTime)
+        let minute = calendar.component(.minute, from: event.startTime)
         let offset = Double(hour-7) * (hourHeight)
         //                      + Double(minute)/60 ) * hourHeight
         
         print(hour, minute, Double(hour-7) + Double(minute)/60 )
         
         return VStack(alignment: .leading) {
-            Text(event.startDate.formatted(.dateTime.hour().minute()))
-            Text(event.title).bold()
+            Text(event.startTime.formatted(.dateTime.hour().minute()))
+            Text(event.eventTitle).bold()
         }
         .font(.caption)
         .frame(maxWidth: .infinity, alignment: .leading)

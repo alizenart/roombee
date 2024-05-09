@@ -19,7 +19,8 @@ ALTER TABLE users AUTO_INCREMENT = 80001; -- starting value
 
 CREATE TABLE events
 (
-  event_id int not null, 
+  -- event_id int not null, 
+  event_id VARCHAR(255) not null,
   user_id int not null, 
   event_title VARCHAR(255),
   start_time DATETIME not null, 

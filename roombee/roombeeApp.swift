@@ -22,6 +22,15 @@ struct roombeeApp: App {
                     .environmentObject(EventStore())
                     .environmentObject(authManager)
                     .environmentObject(navManager)
+                    .onAppear {
+                      APIService.shared.fetchEvents { events, error in
+                        if let events = events {
+                          print("got events from api call \(events)")
+                        } else if let error = error {
+                          print("error fetching events: \(error)")
+                        }
+                      }
+                    }
 
             } else {
                 SignUp()
