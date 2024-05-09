@@ -9,6 +9,36 @@ import SwiftUI
 import Foundation
 
 class APIManager: ObservableObject {
+    static let shared = APIManager()
+    static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
+    static let getEventsEndpoint = "/event/?user_id=80003"
+    
+    func fetchToggles(completion: @escaping ([Toggle]?, Error?) -> Void) {
+        guard let url = URL(string: APIManager.baseURL + APIManager.getEventsEndpoint) else{
+            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+          }
+        
+        URLSession.shared.dataTask(with: url) { data, res, error in
+          guard let data = data, error == nil else {
+            completion(nil, error)
+            return
+          }
+          
+          do {
+    //        this isn't gonna work perfectly bc the fields don't completely line up
+            print("json string data: \(String(data: data, encoding: .utf8))")
+            let events = try JSONDecoder().decode([CalendarEvent].self, from: data)
+            print("events grabbed: ", events)
+            DispatchQueue.main.async {
+              completion(events, nil)
+            }
+          } catch {
+            completion(nil, error)
+          }
+        }.resume()
+      }
+    
     
     func changeToggleState(userId: Int, state: String) {
         // Use the function parameters to build the userData dictionary
