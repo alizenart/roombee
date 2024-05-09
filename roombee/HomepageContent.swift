@@ -17,18 +17,6 @@ struct HomepageContent: View {
     @State var yourStatusToggleSleeping: Bool = false
     @State var yourStatusToggleInRoom: Bool = false
 
-    /*private func fetchInitialToggleState() {
-    Task {
-            do {
-                let toggleState = try await apiManager.getToggleState(userId: 80003)
-                yourStatusToggleSleeping = toggleState.isSleeping
-                yourStatusToggleInRoom = toggleState.inRoom
-            } catch {
-                print("Failed to fetch toggle states: \(error)")
-            }
-        }
-    }*/
-
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
@@ -56,8 +44,8 @@ struct HomepageContent: View {
                             .padding(.top, 20)
                         
                         HStack(spacing: 20){
-                            yourStatus
-                            roomStatus
+                            StatusView(title: "Me:", canToggle: true, isSleeping: $yourStatusToggleSleeping, inRoom: $yourStatusToggleInRoom)
+                            StatusView(title: "Roommate:", canToggle: false, isSleeping: $yourStatusToggleSleeping, inRoom: $yourStatusToggleInRoom)
                         }.padding(.horizontal, 40)
                         Button("Add Event") {
                             apiManager.addEvent(eventId: 3, userId: 3, eventTitle: "Alison Test", startTime: "2024-05-05 10:30:00",
@@ -86,10 +74,22 @@ struct HomepageContent: View {
                             .padding()
                         calGrid.padding([.leading, .trailing], 20)
                     }//ZStack
-                }.onAppear{
-                    //fetchInitialToggleState()
-                }//VStack
-                        
+                }
+            }
+            
+        }.onAppear{
+            fetchInitialToggleState()
+        }
+    }
+    private func fetchInitialToggleState() {
+        apiManager.fetchToggles { toggles, error in
+            if let toggles = toggles, let firstToggle = toggles.first {
+                DispatchQueue.main.async {
+                    yourStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    yourStatusToggleInRoom = (firstToggle.inRoom != 0)
+                }
+            } else if let error = error {
+                print("error fetching toggles: \(error)")
             }
         }
         .onAppear(perform: {
@@ -101,10 +101,10 @@ struct HomepageContent: View {
 
 
 struct StatusView: View {
-    @State private var isSleeping = false
-    @State private var inRoom = false
     @State var title: String
     @State var canToggle: Bool
+    @Binding var isSleeping : Bool
+    @Binding var inRoom : Bool
     @EnvironmentObject var apiManager : APIManager
     
     var body: some View {
@@ -241,5 +241,10 @@ struct DateToggle: View {
 
 
 #Preview {
-    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
+    HomepageContent(
+        calGrid: GridView(cal: CalendarView(title: "Me")),
+        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false)),
+        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false))
+        )
+        .environmentObject(EventStore())
 }

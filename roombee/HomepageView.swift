@@ -39,7 +39,10 @@ struct HomepageView: View {
             Group {
                 switch navManager.selectedSideMenuTab {
                 case 0:
-                    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false))
+                    @State var demoIsSleeping = false
+                    @State var demoInRoom = false
+                    
+                    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $demoIsSleeping, inRoom: $demoInRoom), roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $demoIsSleeping, inRoom: $demoInRoom))
                         .environmentObject(EventStore())
                         .environmentObject(authManager)
                         .environmentObject(navManager)
