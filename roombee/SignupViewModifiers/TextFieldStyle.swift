@@ -16,6 +16,6 @@ struct TextFieldStyle: ViewModifier {
             .overlay(Rectangle().frame(height: 1).padding(.top, 5), alignment: .bottomLeading)
             .cornerRadius(10)
             .padding(.bottom, 5)
-            .autocapitalization(.none)
+            .autocapitalization(UITextAutocapitalizationType.words)
     }
 }
