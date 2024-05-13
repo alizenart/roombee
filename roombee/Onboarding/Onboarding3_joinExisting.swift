@@ -9,11 +9,12 @@ import SwiftUI
 
 
 struct Onboarding3_joinExisting: View {
-    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
     
     @State private var HiveCode = ""
     @State private var email = ""
     @State private var password = ""
+    @Environment(\.dismiss) var dismiss
     
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
@@ -56,10 +57,7 @@ struct Onboarding3_joinExisting: View {
                             .cornerRadius(10)
                             .padding(.bottom, 10)
                         
-                        Button(action: {
-                            // Place the sign-in action here
-                            authManager.signIn(email: email, password: password)
-                        }) {
+                        Button(action: signInWithEmailPassword) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -92,6 +90,13 @@ struct Onboarding3_joinExisting: View {
         
     } //body
     
+    private func signInWithEmailPassword() {
+        Task {
+            if await authViewModel.signInWithEmailPassword() == true {
+                dismiss()
+            }
+        }
+    }
     
     func GoBack() {
         //going back to signup/login page
@@ -104,7 +109,6 @@ struct Onboarding3_joinExisting: View {
     func JoinRoom() {
         //join room logic
     }
-    
 } //Onboarding2
 
 
