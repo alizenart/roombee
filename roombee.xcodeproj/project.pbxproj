@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		306820802AD1DEE100025437 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068207F2AD1DEE100025437 /* CalendarView.swift */; };
 		306820822AD1E26900025437 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306820812AD1E26900025437 /* GridView.swift */; };
-		308DFDCF2BE848AB00640B62 /* AWSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 308DFDCE2BE848AB00640B62 /* AWSCore */; };
-		308DFDD12BE848AB00640B62 /* AWSLambda in Frameworks */ = {isa = PBXBuildFile; productRef = 308DFDD02BE848AB00640B62 /* AWSLambda */; };
+		3070E3642BF1B40E00C9CAAB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3070E3632BF1B40E00C9CAAB /* FirebaseAnalytics */; };
+		3070E3662BF1B40E00C9CAAB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3070E3652BF1B40E00C9CAAB /* FirebaseAuth */; };
+		3070E3692BF1B43100C9CAAB /* AWSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3070E3682BF1B43100C9CAAB /* AWSCore */; };
+		3070E36B2BF1B43100C9CAAB /* AWSLambda in Frameworks */ = {isa = PBXBuildFile; productRef = 3070E36A2BF1B43100C9CAAB /* AWSLambda */; };
 		308DFDD52BE869F600640B62 /* ContinueSignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD42BE869F600640B62 /* ContinueSignUp.swift */; };
 		308DFDD72BE9D2E400640B62 /* TextFieldModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD62BE9D2E300640B62 /* TextFieldModifier.swift */; };
 		308DFDD92BE9D30700640B62 /* LabelStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD82BE9D30700640B62 /* LabelStyleModifier.swift */; };
@@ -19,8 +21,6 @@
 		308DFDE12BE9D95900640B62 /* FormLabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDE02BE9D95900640B62 /* FormLabelStyle.swift */; };
 		308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDE22BE9DB9F00640B62 /* BackgroundFormModifier.swift */; };
 		309D676A2BCCEAC500C343FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 309D67692BCCEAC500C343FF /* GoogleService-Info.plist */; };
-		309D676D2BCCEBE800C343FF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 309D676C2BCCEBE800C343FF /* FirebaseAuth */; };
-		309D676F2BCCEC5A00C343FF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 309D676E2BCCEC5A00C343FF /* FirebaseAnalytics */; };
 		309D67712BCE478900C343FF /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309D67702BCE478900C343FF /* AuthenticationViewModel.swift */; };
 		309D67732BCE4C6C00C343FF /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309D67722BCE4C6C00C343FF /* AuthenticationView.swift */; };
 		309D67752BCE4E1600C343FF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309D67742BCE4E1600C343FF /* LoginView.swift */; };
@@ -105,10 +105,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				308DFDCF2BE848AB00640B62 /* AWSCore in Frameworks */,
-				308DFDD12BE848AB00640B62 /* AWSLambda in Frameworks */,
-				309D676F2BCCEC5A00C343FF /* FirebaseAnalytics in Frameworks */,
-				309D676D2BCCEBE800C343FF /* FirebaseAuth in Frameworks */,
+				3070E3692BF1B43100C9CAAB /* AWSCore in Frameworks */,
+				3070E36B2BF1B43100C9CAAB /* AWSLambda in Frameworks */,
+				3070E3642BF1B40E00C9CAAB /* FirebaseAnalytics in Frameworks */,
+				3070E3662BF1B40E00C9CAAB /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,10 +237,10 @@
 			);
 			name = roombee;
 			packageProductDependencies = (
-				309D676C2BCCEBE800C343FF /* FirebaseAuth */,
-				309D676E2BCCEC5A00C343FF /* FirebaseAnalytics */,
-				308DFDCE2BE848AB00640B62 /* AWSCore */,
-				308DFDD02BE848AB00640B62 /* AWSLambda */,
+				3070E3632BF1B40E00C9CAAB /* FirebaseAnalytics */,
+				3070E3652BF1B40E00C9CAAB /* FirebaseAuth */,
+				3070E3682BF1B43100C9CAAB /* AWSCore */,
+				3070E36A2BF1B43100C9CAAB /* AWSLambda */,
 			);
 			productName = roombee;
 			productReference = 30AA0BB82AD1BC0400344002 /* roombee.app */;
@@ -271,8 +271,8 @@
 			);
 			mainGroup = 30AA0BAF2AD1BC0400344002;
 			packageReferences = (
-				309D676B2BCCEBE800C343FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				308DFDCD2BE848AB00640B62 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */,
+				3070E3622BF1B40E00C9CAAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				3070E3672BF1B43100C9CAAB /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */,
 			);
 			productRefGroup = 30AA0BB92AD1BC0400344002 /* Products */;
 			projectDirPath = "";
@@ -555,7 +555,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		308DFDCD2BE848AB00640B62 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */ = {
+		3070E3622BF1B40E00C9CAAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.25.0;
+			};
+		};
+		3070E3672BF1B43100C9CAAB /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/aws-amplify/aws-sdk-ios-spm";
 			requirement = {
@@ -563,36 +571,28 @@
 				minimumVersion = 2.36.1;
 			};
 		};
-		309D676B2BCCEBE800C343FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.24.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		308DFDCE2BE848AB00640B62 /* AWSCore */ = {
+		3070E3632BF1B40E00C9CAAB /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 308DFDCD2BE848AB00640B62 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
-			productName = AWSCore;
+			package = 3070E3622BF1B40E00C9CAAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
 		};
-		308DFDD02BE848AB00640B62 /* AWSLambda */ = {
+		3070E3652BF1B40E00C9CAAB /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 308DFDCD2BE848AB00640B62 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
-			productName = AWSLambda;
-		};
-		309D676C2BCCEBE800C343FF /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 309D676B2BCCEBE800C343FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 3070E3622BF1B40E00C9CAAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		309D676E2BCCEC5A00C343FF /* FirebaseAnalytics */ = {
+		3070E3682BF1B43100C9CAAB /* AWSCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 309D676B2BCCEBE800C343FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
+			package = 3070E3672BF1B43100C9CAAB /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSCore;
+		};
+		3070E36A2BF1B43100C9CAAB /* AWSLambda */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3070E3672BF1B43100C9CAAB /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSLambda;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
