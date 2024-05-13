@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomepageContent: View {
     @EnvironmentObject var eventStore: EventStore
-    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var authManager: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
 

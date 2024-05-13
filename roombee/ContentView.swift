@@ -2,15 +2,18 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
+    @StateObject var navManager = NavManager()
+    @StateObject var selectedDate = SelectedDateManager()
     @State private var isTimerDone = false
 
     var body: some View {
         switch viewModel.authenticationState {
         case .authenticated:
-            HomepageView(calGrid: GridView(cal: CalendarView(title: viewModel.firstName)),
-                         yourStatus: StatusView(title: "\(viewModel.firstName):", canToggle: true),
-                         roomStatus: StatusView(title: "Roommate:", canToggle: false))
+            HomepageView()
             .environmentObject(EventStore())
+            .environmentObject(viewModel)
+            .environmentObject(navManager)
+            .environmentObject(selectedDate)
 
         case .authenticating, .unauthenticated:
             if isTimerDone {

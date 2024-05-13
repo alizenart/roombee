@@ -29,21 +29,11 @@ struct HomepageView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var navManager: NavManager
+    @State private var isActive: Bool = true
     
     private func signOut() {
         authViewModel.signOut()
     }
-    
-    var calGrid: GridView
-    var yourStatus: StatusView
-    var roomStatus: StatusView
-    
-    //new variables -z
-    var schedCara: DatesCarousel {
-        let dates = generateDates(startingFrom: Date(), count: 7) // Adjust parameters as needed
-        return DatesCarousel(dates: dates, onDateSelected: { _ in }, selectedDate: .constant(Date()))
-    }
-    
     
     var body: some View {
         NavigationView {

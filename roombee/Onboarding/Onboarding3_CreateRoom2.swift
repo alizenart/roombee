@@ -10,11 +10,12 @@ import SwiftUI
 
 
 struct Onboarding3_CreateRoom2: View {
-    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
 
     @State private var email = ""
     @State private var password = ""
-    
+    @Environment(\.dismiss) var dismiss
+
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
@@ -67,10 +68,7 @@ struct Onboarding3_CreateRoom2: View {
                         
                         
                         
-                        Button(action: {
-                            // Place the sign-in action here
-                            authManager.signIn(email: email, password: password)
-                        }) {
+                        Button(action: signInWithEmailPassword) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -113,6 +111,14 @@ struct Onboarding3_CreateRoom2: View {
     
     func JoinRoom() {
         //join room logic
+    }
+    
+    private func signInWithEmailPassword() {
+        Task {
+            if await authViewModel.signInWithEmailPassword() == true {
+                dismiss()
+            }
+        }
     }
     
 } //Onboarding2

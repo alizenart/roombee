@@ -42,7 +42,6 @@
 		684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD432BCF49C9009EE8DD /* AddToDoView.swift */; };
 		68900F212BD4E30600FFC62D /* SelectedDateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68900F202BD4E30600FFC62D /* SelectedDateManager.swift */; };
 		68D2922D2BE0335E00E3741E /* Hexagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D2922C2BE0335E00E3741E /* Hexagon.swift */; };
-		68E735FA2BCC4C5200D94A95 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735F92BCC4C5200D94A95 /* AuthStore.swift */; };
 		68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */; };
 		68E736002BCC688900D94A95 /* HomeSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */; };
 		68E736092BCD939B00D94A95 /* SideMenuSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */; };
@@ -88,7 +87,6 @@
 		684DBD432BCF49C9009EE8DD /* AddToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToDoView.swift; sourceTree = "<group>"; };
 		68900F202BD4E30600FFC62D /* SelectedDateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedDateManager.swift; sourceTree = "<group>"; };
 		68D2922C2BE0335E00E3741E /* Hexagon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hexagon.swift; sourceTree = "<group>"; };
-		68E735F92BCC4C5200D94A95 /* AuthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardStore.swift; sourceTree = "<group>"; };
 		68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSideBarView.swift; sourceTree = "<group>"; };
 		68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuSwiftUI.swift; sourceTree = "<group>"; };
@@ -118,11 +116,6 @@
 		3070E3762BF1BF4400C9CAAB /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				680FEBE32BBF641F002B3642 /* Onboarding1.swift */,
-				680FEBE52BBF6463002B3642 /* Onboarding2.swift */,
-				680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */,
-				680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */,
-				680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -169,7 +162,6 @@
 				3070E3762BF1BF4400C9CAAB /* Onboarding */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
-				68E735F92BCC4C5200D94A95 /* AuthStore.swift */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
 				68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */,
@@ -267,7 +259,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					30AA0BB72AD1BC0400344002 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -334,13 +326,11 @@
 				308DFDDD2BE9D88A00640B62 /* TextFieldStyle.swift in Sources */,
 				309D67712BCE478900C343FF /* AuthenticationViewModel.swift in Sources */,
 				680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */,
-				68E735FA2BCC4C5200D94A95 /* AuthStore.swift in Sources */,
 				30AA0BBE2AD1BC0400344002 /* ContentView.swift in Sources */,
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
 				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
 				68E7360F2BCDE08B00D94A95 /* HomepageContent.swift in Sources */,
 				309D67752BCE4E1600C343FF /* LoginView.swift in Sources */,
-				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
 				309D677B2BD0D29C00C343FF /* DatePickerView.swift in Sources */,
 				306820822AD1E26900025437 /* GridView.swift in Sources */,
 				30AA0BBC2AD1BC0400344002 /* roombeeApp.swift in Sources */,
@@ -392,9 +382,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -450,9 +442,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -476,6 +470,7 @@
 				CODE_SIGN_ENTITLEMENTS = roombee/roombee.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
 				DEVELOPMENT_TEAM = 28ZKG238S8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -514,6 +509,7 @@
 				CODE_SIGN_ENTITLEMENTS = roombee/roombee.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
 				DEVELOPMENT_TEAM = 28ZKG238S8;
 				ENABLE_HARDENED_RUNTIME = YES;

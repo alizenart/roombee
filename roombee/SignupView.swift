@@ -38,16 +38,17 @@ struct SignupView: View {
             TextField("", text: $viewModel.email)
                 .modifier(TextFieldStyle())
                 .textContentType(.username)
-            
+                .padding()
             FormLabelStyle(text: "Password")
             SecureField("", text: $viewModel.password)
                 .modifier(TextFieldStyle())
                 .textContentType(.oneTimeCode)
-            
+                .padding()
             FormLabelStyle(text: "Confirm Password")
             SecureField("", text: $viewModel.confirmPassword)
                 .modifier(TextFieldStyle())
                 .textContentType(.oneTimeCode)
+                .padding()
         }
     }
     

@@ -35,7 +35,7 @@ struct roombeeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(authViewModel)
-                .environmentObject(EventStore())
+                .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
         }
