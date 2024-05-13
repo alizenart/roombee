@@ -41,6 +41,9 @@ class APIManager: ObservableObject {
     
     func changeToggleState(userId: Int, state: String) {
         // Use the function parameters to build the userData dictionary
+        
+       
+        
         let userData: [String: Any] = [
             "user_id": userId,
             "state": state
