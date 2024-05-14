@@ -25,6 +25,7 @@ struct HomepageContent: View {
     
     let myUserId = 80003
     let roomieUserId = 80002
+    @State private var pollingTimer: Timer?
     
     var schedCara: DatesCarousel {
         let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7)
@@ -84,7 +85,10 @@ struct HomepageContent: View {
             
         }.onAppear{
             fetchMyInitialToggleState(userId: myUserId)
-            fetchRoomieInitialToggleState(userId: roomieUserId)
+            startRoomieStatusPolling(userId: roomieUserId)
+        }
+        .onDisappear {
+            stopRoomieStatusPolling()
         }
     }
     private func fetchMyInitialToggleState(userId: Int) {
@@ -97,6 +101,15 @@ struct HomepageContent: View {
             } else if let error = error {
                 print("error fetching toggles: \(error)")
             }
+        }
+    }
+    private func startRoomieStatusPolling(userId: Int) {
+        // Invalidate existing timer to ensure we don't create multiple instances
+        pollingTimer?.invalidate()
+        
+        // Create a new Timer that calls `fetchRoomieInitialToggleState` every 5 seconds
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            self.fetchRoomieInitialToggleState(userId: userId)
         }
     }
     private func fetchRoomieInitialToggleState(userId: Int) {
@@ -115,6 +128,11 @@ struct HomepageContent: View {
             NotificationService.shared.todoNotif()
         })
     }
+    
+    private func stopRoomieStatusPolling() {
+        pollingTimer?.invalidate()
+    }
+    
 }
 
 
