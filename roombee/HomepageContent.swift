@@ -14,12 +14,17 @@ struct HomepageContent: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var apiManager : APIManager
     
-    @State var yourStatusToggleSleeping: Bool = false
-    @State var yourStatusToggleInRoom: Bool = false
+    @State var myStatusToggleSleeping: Bool = false
+    @State var myStatusToggleInRoom: Bool = false
+    @State var roomieStatusToggleSleeping: Bool = false
+    @State var roomieStatusToggleInRoom: Bool = false
 
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
+    
+    let myUserId = 80003
+    let roomieUserId = 80002
     
     var schedCara: DatesCarousel {
         let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7)
@@ -44,8 +49,8 @@ struct HomepageContent: View {
                             .padding(.top, 20)
                         
                         HStack(spacing: 20){
-                            StatusView(title: "Me:", canToggle: true, isSleeping: $yourStatusToggleSleeping, inRoom: $yourStatusToggleInRoom)
-                            StatusView(title: "Roommate:", canToggle: false, isSleeping: $yourStatusToggleSleeping, inRoom: $yourStatusToggleInRoom)
+                            StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom)
+                            StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom)
                         }.padding(.horizontal, 40)
                         Button("Add Event") {
                             apiManager.addEvent(eventId: 3, userId: 3, eventTitle: "Alison Test", startTime: "2024-05-05 10:30:00",
@@ -78,15 +83,28 @@ struct HomepageContent: View {
             }
             
         }.onAppear{
-            fetchInitialToggleState()
+            fetchMyInitialToggleState(userId: myUserId)
+            fetchRoomieInitialToggleState(userId: roomieUserId)
         }
     }
-    private func fetchInitialToggleState() {
-        apiManager.fetchToggles { toggles, error in
+    private func fetchMyInitialToggleState(userId: Int) {
+        apiManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
-                    yourStatusToggleSleeping = (firstToggle.isSleeping != 0)
-                    yourStatusToggleInRoom = (firstToggle.inRoom != 0)
+                    myStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    myStatusToggleInRoom = (firstToggle.inRoom != 0)
+                }
+            } else if let error = error {
+                print("error fetching toggles: \(error)")
+            }
+        }
+    }
+    private func fetchRoomieInitialToggleState(userId: Int) {
+        apiManager.fetchToggles(userId: userId) { toggles, error in
+            if let toggles = toggles, let firstToggle = toggles.first {
+                DispatchQueue.main.async {
+                    roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
                 }
             } else if let error = error {
                 print("error fetching toggles: \(error)")

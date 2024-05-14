@@ -11,10 +11,11 @@ import Foundation
 class APIManager: ObservableObject {
     static let shared = APIManager()
     static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
-    static let getTogglesEndpoint = "/toggle/?user_id=80003"
+    static let getTogglesEndpoint = "/toggle/?user_id="
     
-    func fetchToggles(completion: @escaping ([ToggleInfo]?, Error?) -> Void) {
-            guard let url = URL(string: APIManager.baseURL + APIManager.getTogglesEndpoint) else {
+    func fetchToggles(userId: Int, completion: @escaping ([ToggleInfo]?, Error?) -> Void) {
+            let endpoint = APIManager.getTogglesEndpoint + "\(userId)"
+            guard let url = URL(string: APIManager.baseURL + endpoint) else {
                 completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
                 return
             }
