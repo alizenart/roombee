@@ -26,6 +26,9 @@ class AuthenticationViewModel: ObservableObject {
   @Published var email = ""
   @Published var password = ""
   @Published var confirmPassword = ""
+  @Published var in_room = 0
+  @Published var is_sleeping = 0
+  
     
   @Published var firstName = ""
   @Published var lastName = ""
@@ -177,7 +180,7 @@ extension AuthenticationViewModel {
       user_id = UUID().uuidString
       
       let jsonObject = [
-        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "password_hash": password]
+        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
       ] as [String : Any]
       
       lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in

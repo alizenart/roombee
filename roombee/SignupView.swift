@@ -5,7 +5,7 @@ struct SignupView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @State private var shouldNavigate = false
     @State private var showingPasswordAlert = false
-
+    
     var body: some View {
         ZStack {
             viewModel.backgroundColor.ignoresSafeArea()
@@ -36,9 +36,10 @@ struct SignupView: View {
         Group {
             FormLabelStyle(text: "Email")
             TextField("", text: $viewModel.email)
-                .modifier(TextFieldStyle())
+                .modifier(TextFieldModifier())
                 .textContentType(.username)
                 .padding()
+                .autocapitalization(.none)
             FormLabelStyle(text: "Password")
             SecureField("", text: $viewModel.password)
                 .modifier(TextFieldStyle())
