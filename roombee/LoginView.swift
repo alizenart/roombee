@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var email = ""
-    @State private var password = ""
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     
@@ -18,7 +16,6 @@ struct LoginView: View {
                         .foregroundColor(Color(red: 73/255, green: 73/255, blue: 73/255))
                     
                     loginForm
-                    
                     
                     Button(action: signInWithEmailPassword) {
                         loginButtonContent
@@ -55,11 +52,11 @@ struct LoginView: View {
     var loginForm: some View {
         Group {
             LabelText(text: "Email")
-            TextField("", text: $email)
+            TextField("", text: $viewModel.email)
                 .modifier(TextFieldModifier())
             
             LabelText(text: "Password")
-            SecureField("", text: $password)
+            SecureField("", text: $viewModel.password)
                 .modifier(TextFieldModifier())
         }
     }

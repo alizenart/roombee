@@ -4,7 +4,8 @@ import Combine
 struct ContinueSignUp: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
-    
+    @State private var showingAlert = false
+
     var body: some View {
         ZStack {
             BackgroundView()
