@@ -20,7 +20,6 @@
 		308DFDDF2BE9D8A700640B62 /* LabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDDE2BE9D8A700640B62 /* LabelStyle.swift */; };
 		308DFDE12BE9D95900640B62 /* FormLabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDE02BE9D95900640B62 /* FormLabelStyle.swift */; };
 		308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDE22BE9DB9F00640B62 /* BackgroundFormModifier.swift */; };
-		309D676A2BCCEAC500C343FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 309D67692BCCEAC500C343FF /* GoogleService-Info.plist */; };
 		309D67712BCE478900C343FF /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309D67702BCE478900C343FF /* AuthenticationViewModel.swift */; };
 		309D67732BCE4C6C00C343FF /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309D67722BCE4C6C00C343FF /* AuthenticationView.swift */; };
 		309D67752BCE4E1600C343FF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309D67742BCE4E1600C343FF /* LoginView.swift */; };
@@ -32,6 +31,7 @@
 		30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BBF2AD1BC0800344002 /* Assets.xcassets */; };
 		30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */; };
 		30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */; };
+		4C2365B52BF6B37B00D6FE49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */; };
 		680FEBE42BBF641F002B3642 /* Onboarding1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE32BBF641F002B3642 /* Onboarding1.swift */; };
 		680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE52BBF6463002B3642 /* Onboarding2.swift */; };
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
@@ -63,7 +63,6 @@
 		308DFDDE2BE9D8A700640B62 /* LabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelStyle.swift; sourceTree = "<group>"; };
 		308DFDE02BE9D95900640B62 /* FormLabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLabelStyle.swift; sourceTree = "<group>"; };
 		308DFDE22BE9DB9F00640B62 /* BackgroundFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFormModifier.swift; sourceTree = "<group>"; };
-		309D67692BCCEAC500C343FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		309D67702BCE478900C343FF /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		309D67722BCE4C6C00C343FF /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		309D67742BCE4E1600C343FF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -77,6 +76,7 @@
 		30AA0BC12AD1BC0800344002 /* roombee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = roombee.entitlements; sourceTree = "<group>"; };
 		30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageView.swift; sourceTree = "<group>"; };
+		4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		680FEBE32BBF641F002B3642 /* Onboarding1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding1.swift; sourceTree = "<group>"; };
 		680FEBE52BBF6463002B3642 /* Onboarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2.swift; sourceTree = "<group>"; };
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
@@ -162,6 +162,7 @@
 				3070E3762BF1BF4400C9CAAB /* Onboarding */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
+				4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
 				68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */,
@@ -170,7 +171,6 @@
 				68E736102BCE0D5D00D94A95 /* Onboarding */,
 				C775E0552B8BFC26009F644B /* EventStore.swift */,
 				30AA0BBF2AD1BC0800344002 /* Assets.xcassets */,
-				309D67692BCCEAC500C343FF /* GoogleService-Info.plist */,
 				30AA0BC12AD1BC0800344002 /* roombee.entitlements */,
 				30AA0BC22AD1BC0800344002 /* Preview Content */,
 				30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */,
@@ -295,7 +295,7 @@
 			files = (
 				30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */,
 				30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */,
-				309D676A2BCCEAC500C343FF /* GoogleService-Info.plist in Resources */,
+				4C2365B52BF6B37B00D6FE49 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
