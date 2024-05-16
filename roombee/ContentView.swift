@@ -1,63 +1,64 @@
-//
-//  ContentView.swift
-//  roombee
-//
-//  Created by Adwait Ganguly on 10/7/23.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var viewModel: AuthenticationViewModel
+    @StateObject var navManager = NavManager()
+    @StateObject var selectedDate = SelectedDateManager()
     @State private var isTimerDone = false
-    var ourPurple = hexStringToUIColor(hex: "#381e38")
+
     var body: some View {
-        if isTimerDone {
-            NavigationView {
-                SignUp() // go to signup view
+        switch viewModel.authenticationState {
+        case .authenticated:
+            HomepageView()
+            .environmentObject(EventStore())
+            .environmentObject(viewModel)
+            .environmentObject(navManager)
+            .environmentObject(selectedDate)
+
+        case .authenticating, .unauthenticated:
+            if isTimerDone {
+                NavigationView {
+                    LoginView().environmentObject(viewModel)
+                }
+            } else {
+                splashScreen
             }
         }
-        else {
-            ZStack{
-                Color(ourPurple).ignoresSafeArea()
-                VStack {
-                    Text("Roombee").font(.largeTitle).bold().foregroundColor(.yellow)
-                }
-                .onAppear() {
-                    Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
-                        // Set the state variable to true after 2 seconds
-                        isTimerDone = true
-                    }
-                }
-                .padding()
+    }
+    
+    var splashScreen: some View {
+        ZStack {
+            Color(hex: "#381e38").ignoresSafeArea()
+            VStack {
+                Text("Roombee").font(.largeTitle).bold().foregroundColor(.yellow)
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                isTimerDone = true
             }
         }
     }
 }
 
-func hexStringToUIColor (hex:String) -> UIColor {
-    var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-    
-    if (cString.hasPrefix("#")) {
-        cString.remove(at: cString.startIndex)
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let scanner = Scanner(string: hex.hasPrefix("#") ? String(hex.dropFirst()) : hex)
+        var rgbValue: UInt64 = 0
+        scanner.scanHexInt64(&rgbValue)
+        let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
+        let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
+        let blue = Double(rgbValue & 0x0000FF) / 255.0
+        self.init(red: red, green: green, blue: blue)
     }
-    
-    if ((cString.count) != 6) {
-        return UIColor.gray
-    }
-    
-    var rgbValue:UInt64 = 0
-    Scanner(string: cString).scanHexInt64(&rgbValue)
-    
-    return UIColor(
-        red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-        green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-        blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-        alpha: CGFloat(1.0)
-    )
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(AuthenticationViewModel())
     }
 }
+
+
+

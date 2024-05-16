@@ -6,31 +6,39 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseCore
+import FirebaseAuth
+import AWSLambda
+import AWSCore
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        
+        FirebaseApp.configure()
+        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: ProcessInfo.processInfo.environment["ROOMBEE_ADWAIT_IAMUSER_ACCESSKEY"] ?? "", secretKey: ProcessInfo.processInfo.environment["ROOMBEE_ADWAIT_IAMUSER_SECRETKEY"] ?? "")
+        let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
+        AWSServiceManager.default().defaultServiceConfiguration = configuration
+        return true
+    }
+}
 
 @main
-
 struct roombeeApp: App {
-    @StateObject var authManager = AuthManager()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @StateObject var authViewModel = AuthenticationViewModel()
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
     
     var body: some Scene {
         WindowGroup {
-  //        ContentView().environmentObject(eventStore)
-            if authManager.isAuthenticated {
-                HomepageView()
-                    .environmentObject(EventStore())
-                    .environmentObject(authManager)
-                    .environmentObject(navManager)
-                    .environmentObject(selectedDate)
-
-            } else {
-                SignUp()
-                    .environmentObject(EventStore())
-                    .environmentObject(authManager)
-            }
+            ContentView().environmentObject(authViewModel)
+                .environmentObject(eventStore)
+                .environmentObject(navManager)
+                .environmentObject(selectedDate)
         }
     }
-  }
+}
 

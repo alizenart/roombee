@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomepageContent: View {
     @EnvironmentObject var eventStore: EventStore
-    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var authManager: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
 
@@ -82,6 +82,7 @@ struct StatusView: View {
                 HStack{
                     Toggle(isOn: $isAsleep, label: {bedIcon})
                         .disabled(!canToggle)
+
                         .onChange(of: isAsleep) { isOn in
                             if isOn && canToggle{
                                 //backgroundColor = .black
