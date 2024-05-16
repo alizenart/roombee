@@ -125,6 +125,6 @@ struct Onboarding3_CreateRoom: View {
 
 struct Onboarding3_CreateRoom_Previews: PreviewProvider {
     static var previews: some View {
-        Onboarding3_CreateRoom()
+        Onboarding3_CreateRoom().environmentObject(AuthenticationViewModel())
     }
 }

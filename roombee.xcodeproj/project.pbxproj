@@ -113,13 +113,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3070E3762BF1BF4400C9CAAB /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Onboarding;
-			sourceTree = "<group>";
-		};
 		308DFDDA2BE9D73C00640B62 /* LoginViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,7 +152,6 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
-				3070E3762BF1BF4400C9CAAB /* Onboarding */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */,
@@ -216,7 +208,6 @@
 		68E736102BCE0D5D00D94A95 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				680FEBE32BBF641F002B3642 /* Onboarding1.swift */,
 				680FEBE52BBF6463002B3642 /* Onboarding2.swift */,
 				680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */,
 				680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */,
@@ -310,7 +301,6 @@
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
 				68E736092BCD939B00D94A95 /* SideMenuSwiftUI.swift in Sources */,
 				30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */,
-				680FEBE42BBF641F002B3642 /* Onboarding1.swift in Sources */,
 				684DBD402BCF49BB009EE8DD /* Task.swift in Sources */,
 				68E7360B2BCDDB5000D94A95 /* NavManager.swift in Sources */,
 				C775E0562B8BFC26009F644B /* EventStore.swift in Sources */,

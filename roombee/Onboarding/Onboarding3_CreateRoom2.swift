@@ -123,5 +123,5 @@ struct Onboarding3_CreateRoom2: View {
     
 } //Onboarding2
 #Preview {
-    Onboarding3_CreateRoom2()
+    Onboarding3_CreateRoom2().environmentObject(AuthenticationViewModel())
 }

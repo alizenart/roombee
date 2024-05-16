@@ -115,6 +115,6 @@ struct Onboarding3_joinExisting: View {
 
 struct Onboarding3_joinExisting_Previews: PreviewProvider {
     static var previews: some View {
-        Onboarding3_joinExisting()
+        Onboarding3_joinExisting().environmentObject(AuthenticationViewModel())
     }
 }

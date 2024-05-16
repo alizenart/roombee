@@ -5,7 +5,8 @@ struct ContinueSignUp: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     @State private var showingAlert = false
-
+    @State private var shouldNavigate = false
+    
     var body: some View {
         ZStack {
             BackgroundView()
@@ -18,6 +19,7 @@ struct ContinueSignUp: View {
             headerText
             form
             signUpButton
+            NavigationLink(destination: Onboarding2(), isActive: $shouldNavigate) { EmptyView() }
         }
         .padding()
         .backgroundForm()
@@ -52,7 +54,12 @@ struct ContinueSignUp: View {
     }
 
     private var signUpButton: some View {
-        Button(action: signUpWithEmailPassword) {
+        Button(action: {
+            if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
+                && !viewModel.gender.isEmpty) {
+                shouldNavigate = true
+            }
+        }) {
             buttonContent
         }
         .disabled(!viewModel.isValid)
