@@ -27,21 +27,21 @@ struct NewEventView: View {
                 DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
             }
             .navigationTitle("New Event")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
-                        onSave(newEvent)
-                        dismiss()
-                    }
-                }
-            }
-        }
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarLeading) {
+//                    Button("Cancel") {
+//                        dismiss()
+//                    }
+//                }
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button("Save") {
+//                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+//                        onSave(newEvent)
+//                        dismiss()
+//                    }
+//                }
+//            }
+        }.onAppear()
     }
 }
 
@@ -107,7 +107,11 @@ struct CalendarView: View {
             .padding()
         } //ZStack
         .cornerRadius(30)
-    }//body
+        .onAppear{
+          eventStore.getEvents()
+        }
+    }
+  //body
     
     func addNewEvent() {
         
