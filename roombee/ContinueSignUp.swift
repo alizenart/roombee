@@ -48,8 +48,10 @@ struct ContinueSignUp: View {
             GenderPickerView()
             FormLabelStyle(text: "First Name")
             TextField("", text: $viewModel.firstName).modifier(TextFieldStyle())
+                .disableAutocorrection(true)
             FormLabelStyle(text: "Last Name")
             TextField("", text: $viewModel.lastName).modifier(TextFieldStyle())
+                .disableAutocorrection(true)
         }
     }
 
