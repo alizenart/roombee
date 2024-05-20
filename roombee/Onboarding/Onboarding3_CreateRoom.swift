@@ -59,6 +59,7 @@ struct Onboarding3_CreateRoom: View {
                             )
                             .cornerRadius(10)
                             .padding(.bottom, 10)
+                            .disableAutocorrection(true)
                         
                         
                         

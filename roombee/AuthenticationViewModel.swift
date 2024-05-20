@@ -33,7 +33,7 @@ class AuthenticationViewModel: ObservableObject {
   @Published var firstName = ""
   @Published var lastName = ""
   @Published var birthDate = Date()
-  @Published var gender = ""
+  @Published var gender: String = "Female"
   @Published var showSignUp = false
   @Published var showLogIn = false
   @Published var isUserSignedIn = true
@@ -100,12 +100,18 @@ class AuthenticationViewModel: ObservableObject {
     }
   }
 
-  func reset() {
-    flow = .login
-    email = ""
-    password = ""
-    confirmPassword = ""
-  }
+    func reset() {
+        flow = .login
+        isUserSignedIn = false
+        authenticationState = .unauthenticated
+        email = ""
+        password = ""
+        confirmPassword = ""
+        firstName = ""
+        lastName = ""
+        birthDate = Date()
+        gender = ""
+    }
 }
 
 // MARK: - Email and Password Authentication
@@ -143,16 +149,7 @@ extension AuthenticationViewModel {
   func signOut() {
     do {
       try Auth.auth().signOut()
-      isUserSignedIn = false
-      authenticationState = .unauthenticated
-      email = ""
-      password = ""
-      confirmPassword = ""
-      firstName = ""
-      lastName = ""
-      birthDate = Date()
-      gender = ""
-      switchFlow()
+      reset()
     }
     catch {
       print(error)
@@ -181,9 +178,10 @@ extension AuthenticationViewModel {
       // Format the birthDate to an ISO 8601 string
       let dateString = dateFormatter.string(from: birthDate)
       user_id = UUID().uuidString
+      hive_code = UUID().uuidString
       
       let jsonObject = [
-        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
+        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "hive_name": hive_name, "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
       ] as [String : Any]
       
       lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
