@@ -68,7 +68,7 @@ struct Onboarding3_CreateRoom2: View {
                         
                         
                         
-                        Button(action: signInWithEmailPassword) {
+                        Button(action: signUpWithEmailPassword) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -113,9 +113,9 @@ struct Onboarding3_CreateRoom2: View {
         //join room logic
     }
     
-    private func signInWithEmailPassword() {
+    private func signUpWithEmailPassword() {
         Task {
-            if await authViewModel.signInWithEmailPassword() == true {
+            if await authViewModel.signUpWithEmailPassword() == true {
                 dismiss()
             }
         }

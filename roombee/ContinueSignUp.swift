@@ -26,13 +26,7 @@ struct ContinueSignUp: View {
         .padding()
     }
 
-    private func signUpWithEmailPassword() {
-        Task {
-            if await viewModel.signUpWithEmailPassword() == true {
-                dismiss()
-            }
-        }
-    }
+    
 
     private var headerText: some View {
         Text("Create Profile")
@@ -73,7 +67,7 @@ struct ContinueSignUp: View {
     private var buttonContent: some View {
         Group {
             if viewModel.authenticationState != .authenticating {
-                Text("Sign up")
+                Text("Continue")
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
             } else {

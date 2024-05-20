@@ -37,6 +37,8 @@ class AuthenticationViewModel: ObservableObject {
   @Published var showSignUp = false
   @Published var showLogIn = false
   @Published var isUserSignedIn = true
+  @Published var addUserError = false
+  @Published var addUserErrorMessage = ""
 
 
   @Published var flow: AuthenticationFlow = .login
@@ -47,7 +49,8 @@ class AuthenticationViewModel: ObservableObject {
   @Published var user: User?
   @Published var displayName = ""
   @Published var user_id: String?
-  @Published var hive_code: String? = "nil"
+  @Published var hive_code = ""
+  @Published var hive_name = ""
     
   @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
   @Published var toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
@@ -186,6 +189,8 @@ extension AuthenticationViewModel {
       lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
           if let error = task.error {
               print("Error occurred: \(error)")
+              self.addUserErrorMessage = error.localizedDescription
+              self.addUserError = true
               return nil
           }
           if let result = task.result {
