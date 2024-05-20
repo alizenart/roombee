@@ -33,13 +33,12 @@ class AuthenticationViewModel: ObservableObject {
   @Published var firstName = ""
   @Published var lastName = ""
   @Published var birthDate = Date()
-  @Published var gender: String = "Female"
+  @Published var gender = ""
   @Published var showSignUp = false
   @Published var showLogIn = false
   @Published var isUserSignedIn = true
   @Published var addUserError = false
   @Published var addUserErrorMessage = ""
-
 
   @Published var flow: AuthenticationFlow = .login
 
@@ -55,7 +54,7 @@ class AuthenticationViewModel: ObservableObject {
   @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
   @Published var toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
-  @Published var genderOptions = ["Female", "Male", "Other"]
+  @Published var genderOptions = ["Please select", "Female", "Male", "Other"]
     
   init() {
     registerAuthStateHandler()
@@ -181,7 +180,7 @@ extension AuthenticationViewModel {
       hive_code = UUID().uuidString
       
       let jsonObject = [
-        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "hive_name": hive_name, "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
+        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
       ] as [String : Any]
       
       lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
