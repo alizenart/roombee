@@ -40,14 +40,14 @@ struct Tasks: Identifiable, Hashable, Equatable {
 
 extension Tasks {
     static let samples: [Tasks] = [
-        Tasks(title: "Groceries", priority: .chillin, category: .shopping),
+        Tasks(title: "Groceries", priority: .low, category: .shopping),
   ]
 }
 
 enum TaskPriority:String {
-    case chillin = "low"
-    case medium = "medium"
-    case urgent = "urgent"
+    case low = "low"
+    case medium = "med"
+    case high = "high"
 }
 
 enum TaskCategory {
