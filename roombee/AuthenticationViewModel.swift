@@ -37,7 +37,8 @@ class AuthenticationViewModel: ObservableObject {
   @Published var showSignUp = false
   @Published var showLogIn = false
   @Published var isUserSignedIn = true
-
+  @Published var addUserError = false
+  @Published var addUserErrorMessage = ""
 
   @Published var flow: AuthenticationFlow = .login
 
@@ -47,12 +48,13 @@ class AuthenticationViewModel: ObservableObject {
   @Published var user: User?
   @Published var displayName = ""
   @Published var user_id: String?
-  @Published var hive_code: String? = "nil"
+  @Published var hive_code = ""
+  @Published var hive_name = ""
     
   @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
   @Published var toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
-  @Published var genderOptions = ["Female", "Male", "Other"]
+  @Published var genderOptions = ["Please select", "Female", "Male", "Other"]
     
   init() {
     registerAuthStateHandler()
@@ -97,12 +99,18 @@ class AuthenticationViewModel: ObservableObject {
     }
   }
 
-  func reset() {
-    flow = .login
-    email = ""
-    password = ""
-    confirmPassword = ""
-  }
+    func reset() {
+        flow = .login
+        isUserSignedIn = false
+        authenticationState = .unauthenticated
+        email = ""
+        password = ""
+        confirmPassword = ""
+        firstName = ""
+        lastName = ""
+        birthDate = Date()
+        gender = ""
+    }
 }
 
 // MARK: - Email and Password Authentication
@@ -140,16 +148,7 @@ extension AuthenticationViewModel {
   func signOut() {
     do {
       try Auth.auth().signOut()
-      isUserSignedIn = false
-      authenticationState = .unauthenticated
-      email = ""
-      password = ""
-      confirmPassword = ""
-      firstName = ""
-      lastName = ""
-      birthDate = Date()
-      gender = ""
-      switchFlow()
+      reset()
     }
     catch {
       print(error)
@@ -178,14 +177,17 @@ extension AuthenticationViewModel {
       // Format the birthDate to an ISO 8601 string
       let dateString = dateFormatter.string(from: birthDate)
       user_id = UUID().uuidString
+      hive_code = UUID().uuidString
       
       let jsonObject = [
-        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code ?? "", "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
+        "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]
       ] as [String : Any]
       
       lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
           if let error = task.error {
               print("Error occurred: \(error)")
+              self.addUserErrorMessage = error.localizedDescription
+              self.addUserError = true
               return nil
           }
           if let result = task.result {

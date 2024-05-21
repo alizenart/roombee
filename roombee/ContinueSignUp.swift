@@ -5,7 +5,8 @@ struct ContinueSignUp: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     @State private var showingAlert = false
-
+    @State private var shouldNavigate = false
+    
     var body: some View {
         ZStack {
             BackgroundView()
@@ -18,19 +19,14 @@ struct ContinueSignUp: View {
             headerText
             form
             signUpButton
+            NavigationLink(destination: Onboarding2(), isActive: $shouldNavigate) { EmptyView() }
         }
         .padding()
         .backgroundForm()
         .padding()
     }
 
-    private func signUpWithEmailPassword() {
-        Task {
-            if await viewModel.signUpWithEmailPassword() == true {
-                dismiss()
-            }
-        }
-    }
+    
 
     private var headerText: some View {
         Text("Create Profile")
@@ -46,13 +42,20 @@ struct ContinueSignUp: View {
             GenderPickerView()
             FormLabelStyle(text: "First Name")
             TextField("", text: $viewModel.firstName).modifier(TextFieldStyle())
+                .disableAutocorrection(true)
             FormLabelStyle(text: "Last Name")
             TextField("", text: $viewModel.lastName).modifier(TextFieldStyle())
+                .disableAutocorrection(true)
         }
     }
 
     private var signUpButton: some View {
-        Button(action: signUpWithEmailPassword) {
+        Button(action: {
+            if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
+                && !viewModel.gender.isEmpty) {
+                shouldNavigate = true
+            }
+        }) {
             buttonContent
         }
         .disabled(!viewModel.isValid)
@@ -64,7 +67,7 @@ struct ContinueSignUp: View {
     private var buttonContent: some View {
         Group {
             if viewModel.authenticationState != .authenticating {
-                Text("Sign up")
+                Text("Continue")
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
             } else {
