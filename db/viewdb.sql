@@ -11,6 +11,6 @@ use roombee;
 -- ADD COLUMN date DATE NOT NULL DEFAULT (CURRENT_DATE);
 
 -- DELETE FROM events;
-DELETE FROM events WHERE event_id = 12345;
+-- DELETE FROM events WHERE event_id = 12345;
 
-SELECT * FROM events;
+SELECT * FROM users;

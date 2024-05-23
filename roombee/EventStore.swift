@@ -25,6 +25,12 @@ struct CalendarEvent: Identifiable, Codable {
        case approved
    }
   
+  init(eventTitle: String, startTime: Date, endTime: Date) {
+        self.eventTitle = eventTitle
+        self.startTime = startTime
+        self.endTime = endTime
+    }
+  
   init?(from dictionary: [String: Any]) {
       guard let idString = dictionary["event_id"] as? String,
             let id = UUID(uuidString: idString),

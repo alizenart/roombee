@@ -55,6 +55,7 @@ struct TaskViewNav: View {
     }
 }
 
+// Not used in current version, will implement later
 struct SettingsViewNav: View {
     @Binding var presentSideMenu: Bool
     

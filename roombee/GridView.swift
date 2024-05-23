@@ -8,23 +8,28 @@
 import SwiftUI
 
 struct GridView: View {
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
+
     var cal: CalendarView
     
     var body: some View {
-        let date = Date()
+//        let date = Date()
         VStack{
             HStack {
-                Text(date.formatted(.dateTime.day().month()))
+                Text(selectedDateManager.SelectedDate.formatted(.dateTime.day().month()))
                     .bold()
-                Text(date.formatted(.dateTime.year()))
+                Text(selectedDateManager.SelectedDate.formatted(.dateTime.year()))
             }
-            .foregroundColor(toggleColor)
+            .foregroundColor(.white)
             .font(.title)
-            Text(date.formatted(.dateTime.weekday(.wide)))
+            Text(selectedDateManager.SelectedDate.formatted(.dateTime.weekday(.wide)))
+                .foregroundColor(.white)
             
             Grid() {
                 GridRow {
                     cal
+                        .frame(height: 650)
+                        .clipped()
                 }
             }
         }

@@ -1,22 +1,57 @@
+////
+////  File.swift
+////  roombee
+////
+////  Created by Nicole Liu on 4/16/24.
+////
 //
-//  File.swift
-//  roombee
+//import Foundation
 //
-//  Created by Nicole Liu on 4/16/24.
+//struct Task: Identifiable {
+//    let id = UUID()
+//    var title: String
+//    var status = false
+//}
+//
+//
+//extension Task {
+//    static let samples = [
+//    Task(title: "groceries"),
+//    Task(title: "laundry"),
+//    Task(title: "dishes")]
+//}\
+
+//
+//  Tasks.swift
+//
+//
+//  Created by Nicole Liu on 4/15/24.
 //
 
 import Foundation
 
-struct Task: Identifiable {
+struct Tasks: Identifiable, Hashable, Equatable {
     let id = UUID()
     var title: String
     var status = false
+    var priority: TaskPriority
+    var category: TaskCategory
 }
 
+extension Tasks {
+    static let samples: [Tasks] = [
+        Tasks(title: "Groceries", priority: .chillin, category: .shopping),
+  ]
+}
 
-extension Task {
-    static let samples = [
-    Task(title: "groceries"),
-    Task(title: "laundry"),
-    Task(title: "dishes")]
+enum TaskPriority:String {
+    case chillin = "low"
+    case medium = "medium"
+    case urgent = "urgent"
+}
+
+enum TaskCategory {
+    case shopping
+    case chores
+    case none
 }

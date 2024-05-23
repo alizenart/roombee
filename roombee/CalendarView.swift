@@ -6,63 +6,123 @@
 //
 
 import SwiftUI
+
 var ourPurple = hexStringToUIColor(hex: "#381e38")
 
 class NewEventViewModel: ObservableObject {
     @Published var title: String = ""
+    @Published var dateEvent: Date = Date()
     @Published var startTime: Date = Date()
     @Published var endTime: Date = Date()
-}
-
-struct NewEventView: View {
-    @ObservedObject var viewModel: NewEventViewModel
-    var onSave: (CalendarEvent) -> Void
-    @Environment(\.dismiss) var dismiss
     
-    var body: some View {
-        NavigationView {
-            Form {
-                TextField("Title", text: $viewModel.title)
-                DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-                DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-            }
-            .navigationTitle("New Event")
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarLeading) {
-//                    Button("Cancel") {
-//                        dismiss()
-//                    }
-//                }
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button("Save") {
-//                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
-//                        onSave(newEvent)
-//                        dismiss()
-//                    }
-//                }
-//            }
-        }.onAppear()
+    init(selectedDate: Date) {
+        let calendar = Calendar.current
+        self.dateEvent = calendar.startOfDay(for: selectedDate)
+        self.startTime = calendar.startOfDay(for: selectedDate)
+        self.endTime = calendar.date(byAdding: .hour, value: 1, to: startTime) ?? startTime
     }
 }
 
+
+
+//the popup when you press the plus button
+struct NewEventView: View {
+    @ObservedObject var viewModel: NewEventViewModel
+    @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
+    var onSave: (CalendarEvent) -> Void
+    @Environment(\.dismiss) var dismiss
+    
+
+    
+    var body: some View {
+//<<<<<<< HEAD
+//        NavigationView {
+//            Form {
+//                TextField("Title", text: $viewModel.title)
+//                DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+//                DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+//            }
+//            .navigationTitle("New Event")
+////            .toolbar {
+////                ToolbarItem(placement: .navigationBarLeading) {
+////                    Button("Cancel") {
+////                        dismiss()
+////                    }
+////                }
+////                ToolbarItem(placement: .navigationBarTrailing) {
+////                    Button("Save") {
+////                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+////                        onSave(newEvent)
+////                        dismiss()
+////                    }
+////                }
+////            }
+//        }.onAppear()
+//=======
+        ZStack {
+            creamColor
+            NavigationView {
+                Form {
+                    TextField("Name of Event", text: $viewModel.title)
+                        .frame(width: 300, height: 40)
+                        .font(.system(size: 20))
+                    
+                    Section(header: Text("Date").font(.system(size: 20))) {
+                        DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
+                            .datePickerStyle(GraphicalDatePickerStyle())
+                    }
+                    Section(header: Text("Start & End Time").font(.system(size: 20))){
+                        DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(WheelDatePickerStyle())
+                        DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(WheelDatePickerStyle())
+                    }
+                }
+                .scrollContentBackground(.hidden)
+                .foregroundColor(backgroundColor)
+                .background(creamColor)
+                .navigationTitle("New Event")
+                
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .foregroundColor(backgroundColor)
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Save") {
+                          let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+//                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
+                            eventStore.addEvent(newEvent)
+                            onSave(newEvent)
+                            dismiss()
+                        }
+                        .foregroundColor(backgroundColor)
+                    } // ToolbarItem
+                } // toolbar
+
+            }
+        }
+    }
+}
+
+
 struct CalendarView: View {
     @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var selectedDateManager: SelectedDateManager
+    
     var title: String
     @State private var showingAddEventSheet = false
-    
-    let date: Date = dateFrom(9, 5, 2023)
-    
-    //    @State var events: [Event] = [
-    //        Event(startDate: dateFrom(9,5,2023,7,0), endDate: dateFrom(9,5,2023,8,0), title: "Interview"),
-    //        Event(startDate: dateFrom(9,5,2023,9,0), endDate: dateFrom(9,5,2023,10,0), title: "Friend's Coming Over"),
-    //        Event(startDate: dateFrom(9,5,2023,11,0), endDate: dateFrom(9,5,2023,12,00), title: "Project Meeting")
-    //    ]
+    @State private var initialScrollOffset: CGFloat?
+
     
     let hourHeight = 50.0
     
     var body: some View {
         ZStack{
-            toggleColor
+            creamColor
             VStack(alignment: .leading) {
                 
                 // Date headline
@@ -70,39 +130,28 @@ struct CalendarView: View {
                     .foregroundColor(toggleColor)
                 
                 ScrollView {
-                    ZStack(alignment: .topLeading) {
+                    ScrollViewReader {value in
                         
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(7..<18) { hour in
-                                HStack {
-                                    Text("\(hour)")
-                                        .font(.caption)
-                                        .frame(width: 20, alignment: .trailing)
-                                    Color.gray
-                                        .frame(height: 1)
+                        ZStack(alignment: .topLeading) {
+                            
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(0..<24, id: \.self) { hour in
+                                    hourView(hour)
                                 }
-                                .frame(height: hourHeight)
+                            }
+                            
+                            ForEach(eventStore.events) { event in
+                                eventCell(event)
                             }
                         }
-                        
-                        ForEach(eventStore.events) { event in
-                            eventCell(event)
+                        .onAppear {
+                            // Scroll to 7 AM initially
+                            value.scrollTo(7, anchor: .top)
                         }
                     }
+                    
                 }
-                Button("Add Event") {
-                    showingAddEventSheet = true
-                }
-                .sheet(isPresented: $showingAddEventSheet) {
-                    NewEventView(viewModel: NewEventViewModel()) { newEvent in
-                        eventStore.addEvent(newEvent)
-                    }
-                }
-                .padding()
-                .background(Color(ourPurple))
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .bold()
+                addButton()
             }
             .padding()
         } //ZStack
@@ -115,10 +164,52 @@ struct CalendarView: View {
     
     func addNewEvent() {
         
+
+    }//body
+  
+    func hourView(_ hour: Int) -> some View {
+        let hourLabel = hour == 0 ? "12 AM" : (hour <= 12 ? "\(hour) AM" : "\(hour - 12) PM")
+        return HStack {
+            Text(hourLabel)
+                .font(.caption)
+                .frame(width: 40, alignment: .trailing)
+            Color.gray.frame(height: 1)
+        }
+        .frame(height: hourHeight)
+        .id(hour)
     }
     
+    func addButton() -> some View {
+        Button(action: {
+            showingAddEventSheet = true
+        }) {
+            ZStack {
+                hexagonShape()
+                    .frame(width: 50, height: 60)
+                    .foregroundColor(backgroundColor)
+                
+                Text("+")
+                    .padding(.bottom, 5)
+                    .font(.system(size: 45))
+                    .foregroundColor(.white)
+                    .bold()
+            }
+        }
+        .sheet(isPresented: $showingAddEventSheet) {
+            NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
+                eventStore.addEvent(newEvent)
+            }
+        }
+        .padding()
+    }
+//
+//    private func filteredEvents(for date: Date) -> [CalendarEvent] {
+//        eventStore.events.filter { event in
+//            Calendar.current.isDate(event.startDate, inSameDayAs: date)
+//        }
+//    }
+    
     func eventCell(_ event: CalendarEvent) -> some View {
-        
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
@@ -140,13 +231,13 @@ struct CalendarView: View {
         .frame(height: height, alignment: .top)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(.purple).opacity(0.5)
+                .fill(LighterPurple)
         )
         .padding(.trailing, 30)
+        .padding(.leading, 50)
+
         .offset(x: 30, y: offset + 24)
-        
     }
-    
 }
 
 
@@ -154,6 +245,29 @@ func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: 
     let calendar = Calendar.current
     let dateComponents = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
     return calendar.date(from: dateComponents) ?? .now
+}
+
+
+func hexStringToUIColor (hex:String) -> UIColor {
+    var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+    
+    if (cString.hasPrefix("#")) {
+        cString.remove(at: cString.startIndex)
+    }
+    
+    if ((cString.count) != 6) {
+        return UIColor.gray
+    }
+    
+    var rgbValue:UInt64 = 0
+    Scanner(string: cString).scanHexInt64(&rgbValue)
+    
+    return UIColor(
+        red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+        green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+        blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+        alpha: CGFloat(1.0)
+    )
 }
 
 struct CalendarView_Previews: PreviewProvider {
