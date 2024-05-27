@@ -40,6 +40,7 @@ struct SignupView: View {
                 .textContentType(.username)
                 .padding()
                 .autocapitalization(.none)
+                .disableAutocorrection(true)
             FormLabelStyle(text: "Password")
             SecureField("", text: $viewModel.password)
                 .modifier(TextFieldStyle())
