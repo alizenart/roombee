@@ -110,6 +110,11 @@ struct HomepageView: View {
                         .transition(.move(edge: .leading))
                         .animation(.easeInOut, value: navManager.presentSideMenu)
                 }
+                if showInviteLinkPopup {
+                    InviteLinkPopupView(inviteLink: inviteLink, isPresented: $showInviteLinkPopup)
+                        .transition(.opacity)
+                        .animation(.easeInOut, value: showInviteLinkPopup)
+                }
             }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
                 if newValue == 3 {
