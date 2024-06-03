@@ -32,12 +32,32 @@ struct roombeeApp: App {
     @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
     
+    @State private var inviteLink: String = ""
+    @State private var showInviteLinkPopup: Bool = false
+    
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(authViewModel)
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
+                .onOpenURL { url in
+                    handleCustomURL(url)
+                }
+        }
+    }
+    
+    private func handleCustomURL(_ url: URL) {
+        if url.scheme == "roombee" {
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let queryItems = components.queryItems {
+                for item in queryItems {
+                    if item.name == "hive_code", let value = item.value {
+                        authViewModel.skipCreateOrJoin = true
+                        authViewModel.hive_code = value
+                    }
+                }
+            }
         }
     }
 }

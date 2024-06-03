@@ -11,8 +11,9 @@ import SwiftUI
 enum SideMenuRowType: Int, CaseIterable {
     case home = 0
     case task = 1
-//    case setting = 2
-    case signout = 2
+    case addRoommate = 2
+    case signout = 3
+    
     
     var title: String {
         switch self {
@@ -20,10 +21,10 @@ enum SideMenuRowType: Int, CaseIterable {
             return "Home"
         case .task:
             return "Task"
-//        case .setting:
-//            return "Settings"
+        case .addRoommate:
+            return "Add Roommate"
         case .signout:
-            return "SignOut"
+            return "Sign Out"
         }
     }
     
@@ -33,8 +34,8 @@ enum SideMenuRowType: Int, CaseIterable {
             return "HomeIcon"
         case .task:
             return "TaskIcon"
-//        case .setting:
-//            return "SettingIcon"
+        case .addRoommate:
+            return "AddRoomateIcon"
         case .signout:
             return "SignOutIcon"
         }
@@ -43,7 +44,8 @@ enum SideMenuRowType: Int, CaseIterable {
 
 struct SideMenuView: View {
     @ObservedObject var navManager: NavManager
-
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    
     var body: some View {
         GeometryReader { geometry in
             HStack {
@@ -93,8 +95,8 @@ struct SideMenuView: View {
                     .cornerRadius(50)
                 Spacer()
             }
-            Text("Ziye Wang").font(.system(size: 18, weight: .bold)).foregroundColor(.black)
-            Text("iOS Developer").font(.system(size: 14, weight: .semibold)).foregroundColor(.black.opacity(0.5))
+            Text(authViewModel.firstName).font(.system(size: 18, weight: .bold)).foregroundColor(.black)
+            Text(authViewModel.lastName).font(.system(size: 14, weight: .semibold)).foregroundColor(.black.opacity(0.5))
         }
     }
 

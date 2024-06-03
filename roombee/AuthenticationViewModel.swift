@@ -39,6 +39,7 @@ class AuthenticationViewModel: ObservableObject {
   @Published var isUserSignedIn = true
   @Published var addUserError = false
   @Published var addUserErrorMessage = ""
+  @Published var skipCreateOrJoin = false
 
   @Published var flow: AuthenticationFlow = .login
 
@@ -102,6 +103,7 @@ class AuthenticationViewModel: ObservableObject {
     func reset() {
         flow = .login
         isUserSignedIn = false
+        skipCreateOrJoin = false
         authenticationState = .unauthenticated
         email = ""
         password = ""
@@ -177,7 +179,9 @@ extension AuthenticationViewModel {
       // Format the birthDate to an ISO 8601 string
       let dateString = dateFormatter.string(from: birthDate)
       user_id = UUID().uuidString
-      hive_code = UUID().uuidString
+      if hive_code == "" {
+          hive_code = UUID().uuidString
+      }
       
       let jsonObject = [
         "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "password_hash": password, "in_room": in_room, "is_sleeping": is_sleeping]

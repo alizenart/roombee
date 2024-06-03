@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		306820802AD1DEE100025437 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068207F2AD1DEE100025437 /* CalendarView.swift */; };
 		306820822AD1E26900025437 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306820812AD1E26900025437 /* GridView.swift */; };
+		308936682C0D6DEA003EBDF1 /* InviteLinkPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */; };
 		308DFDD52BE869F600640B62 /* ContinueSignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD42BE869F600640B62 /* ContinueSignUp.swift */; };
 		308DFDD72BE9D2E400640B62 /* TextFieldModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD62BE9D2E300640B62 /* TextFieldModifier.swift */; };
 		308DFDD92BE9D30700640B62 /* LabelStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD82BE9D30700640B62 /* LabelStyleModifier.swift */; };
@@ -55,6 +56,8 @@
 /* Begin PBXFileReference section */
 		3068207F2AD1DEE100025437 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		306820812AD1E26900025437 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
+		308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteLinkPopupView.swift; sourceTree = "<group>"; };
+		308936692C0D73AC003EBDF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		308DFDD42BE869F600640B62 /* ContinueSignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueSignUp.swift; sourceTree = "<group>"; };
 		308DFDD62BE9D2E300640B62 /* TextFieldModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldModifier.swift; sourceTree = "<group>"; };
 		308DFDD82BE9D30700640B62 /* LabelStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelStyleModifier.swift; sourceTree = "<group>"; };
@@ -150,6 +153,7 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+				308936692C0D73AC003EBDF1 /* Info.plist */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */,
@@ -182,6 +186,7 @@
 				309D677C2BD0E3D700C343FF /* GenderPickerView.swift */,
 				308DFDD42BE869F600640B62 /* ContinueSignUp.swift */,
 				308DFDDA2BE9D73C00640B62 /* LoginViewModifiers */,
+				308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */,
 			);
 			path = roombee;
 			sourceTree = "<group>";
@@ -327,6 +332,7 @@
 				680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */,
 				309D677D2BD0E3D700C343FF /* GenderPickerView.swift in Sources */,
 				308DFDD72BE9D2E400640B62 /* TextFieldModifier.swift in Sources */,
+				308936682C0D6DEA003EBDF1 /* InviteLinkPopupView.swift in Sources */,
 				309D67732BCE4C6C00C343FF /* AuthenticationView.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
 				68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */,
@@ -464,6 +470,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = roombee/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -503,6 +510,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = roombee/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
