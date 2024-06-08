@@ -176,12 +176,6 @@ struct CalendarView: View {
         }
         .padding()
     }
-//
-//    private func filteredEvents(for date: Date) -> [CalendarEvent] {
-//        eventStore.events.filter { event in
-//            Calendar.current.isDate(event.startDate, inSameDayAs: date)
-//        }
-//    }
     
     func eventCell(_ event: CalendarEvent) -> some View {
         

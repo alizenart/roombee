@@ -6,7 +6,6 @@
 //
 
 import Foundation
-// FormLabel.swift
 import SwiftUI
 
 struct FormLabelStyle: View {

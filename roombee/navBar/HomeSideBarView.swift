@@ -126,7 +126,3 @@ struct SignOutViewNav: View {
     }
 }
 
-
-//#Preview {
-//    HomeSideBarView(presentSideMenu: Binding<true>)
-//}

@@ -46,7 +46,7 @@ struct HomepageView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                backgroundColor // Use the custom color here
+                backgroundColor
                     .ignoresSafeArea()
                 Group {
                     switch navManager.selectedSideMenuTab {
@@ -59,7 +59,7 @@ struct HomepageView: View {
                     case 1:
                         ToDoView()
                     case 2:
-                        EmptyView()  // Use EmptyView or another placeholder.
+                        EmptyView()
                     default:
                         Text("Unknown Selection")
                     }

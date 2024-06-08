@@ -162,7 +162,6 @@ struct DateToggle: View {
                 statusShape
                     .fill()
                     .foregroundColor(selectedDateManager.isDateSelected(date) ? highlightYellow : LighterPurple)  
-                //                .aspectRatio(1.0, contentMode: .fit)
                     .frame(width: 45, height: 60)
                 
                 VStack {

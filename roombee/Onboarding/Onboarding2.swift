@@ -59,42 +59,14 @@ struct Onboarding2: View {
                     
                     
                     Spacer()
-                    
-                    // Nav Buttons
-                    //                        NavigationLink(destination: Onboarding1()) {
-                    //                            Text("Go Back")
-                    //                                .font(.system(size : 20, weight: .bold))
-                    //                                .frame(width: 125, height: 40, alignment: .center)
-                    //                                .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-                    //                                .foregroundColor(.white)
-                    //                                .cornerRadius(10)
-                    //                        }//button
-                    //                        .padding(.top, 10)
-                    
                 }//vstack (big)
             }//zstack
             
             
             
         } //geometry reader
-        //            .navigationBarHidden(true)
-        //            .navigationBarBackButtonHidden(true)
-        //        }// navigationview
         
     } //body
-    
-    
-    func GoBack() {
-        //going back to signup/login page
-    }
-    
-    func CreateRoom() {
-        //create room logic
-    }
-    
-    func JoinRoom() {
-        //join room logic
-    }
     
 } //Onboarding2
 

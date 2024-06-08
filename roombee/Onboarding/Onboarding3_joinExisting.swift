@@ -99,17 +99,6 @@ struct Onboarding3_joinExisting: View {
         }
     }
     
-    func GoBack() {
-        //going back to signup/login page
-    }
-    
-    func GoToHome() {
-        //create go to home logic
-    }
-    
-    func JoinRoom() {
-        //join room logic
-    }
 } //Onboarding2
 
 
