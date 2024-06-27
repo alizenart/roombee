@@ -10,6 +10,9 @@ struct ContentView: View {
         switch viewModel.authenticationState {
         case .authenticated:
             HomepageView()
+                .onAppear(perform: {
+                    NotificationService.shared.requestPerm()
+                })
             .environmentObject(EventStore())
             .environmentObject(viewModel)
             .environmentObject(navManager)
