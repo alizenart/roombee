@@ -78,7 +78,7 @@ import SwiftUI
 
 struct AddToDoView: View {
     @State
-    var newToDo = Tasks(title:"", priority:.chillin, category: .none)
+    var newToDo = Tasks(title:"", priority:.low, category: .none)
     var onCommit: (_ newToDo: Tasks) -> Void
     let options = ["low", "medium", "urgent"]
     @State
@@ -120,11 +120,11 @@ struct AddToDoView: View {
                     .onChange(of: selectedOption) { newValue in
                         switch newValue {
                         case 0:
-                            newToDo.priority = .chillin
+                            newToDo.priority = .low
                         case 1:
                             newToDo.priority = .medium
                         case 2:
-                            newToDo.priority = .urgent
+                            newToDo.priority = .high
                         default:
                             break
                         }

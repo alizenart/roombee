@@ -105,7 +105,7 @@ func priorityColor(for priority: String) -> Color {
     switch priority {
     case "low":
         return Color.green
-    case "medium":
+    case "med":
         return Color.yellow
     case "high":
         return Color.red
@@ -116,11 +116,11 @@ func priorityColor(for priority: String) -> Color {
 
 func priorityValue(for priority: TaskPriority) -> Int {
     switch priority {
-    case .urgent:
+    case .high:
         return 0
     case .medium:
         return 1
-    case .chillin:
+    case .low:
         return 2
     }
 }

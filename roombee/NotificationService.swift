@@ -1,0 +1,62 @@
+//
+//  Notifs.swift
+//  roombee
+//
+//  Created by Nicole Liu on 5/27/24.
+//
+
+//ignore for now, this is for push notifs
+import Foundation
+import UIKit
+import UserNotifications
+
+class NotificationService: NSObject, UNUserNotificationCenterDelegate, ObservableObject {
+    static let shared = NotificationService()
+    
+    func requestPerm() {
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+            if let error = error {
+                print(error)
+            } else if granted {
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        }
+    }
+    
+    func scheduleNotification(for event: CalendarEvent) {
+        let content = UNMutableNotificationContent()
+        content.title = "Upcoming Event"
+        content.body = "Your event \"\(event.title)\" is starting in 30 minutes."
+        content.sound = UNNotificationSound.default
+        
+        let triggerDate = Calendar.current.date(byAdding: .minute, value: -30, to: event.startTimeCal)!
+        let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+        let request = UNNotificationRequest(identifier: event.id.uuidString, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error)")
+            }
+            
+        }
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification:
+                                UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        logContents(of: notification)
+        completionHandler([.banner, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        logContents(of: response.notification)
+        completionHandler()
+    }
+    
+    func logContents(of notifications: UNNotification) {
+        print(notifications.request.content.userInfo)
+    }
+    
+}
