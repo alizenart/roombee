@@ -12,8 +12,10 @@ import UserNotifications
 
 class NotificationService: NSObject, UNUserNotificationCenterDelegate, ObservableObject {
     static let shared = NotificationService()
+    private var askPerm = false
     
     func requestPerm() {
+        guard !askPerm else {return}
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
             if let error = error {
@@ -22,6 +24,7 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
+                self.askPerm = true
             }
         }
     }
@@ -41,6 +44,25 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
                 print("Error scheduling notification: \(error)")
             }
             
+        }
+    }
+    
+    func todoNotif() {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder"
+        content.body = "You have tasks remaining!"
+        content.sound = UNNotificationSound.default
+        
+        var date = DateComponents()
+        date.hour = 23
+        date.minute = 35
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
+        let request = UNNotificationRequest(identifier: "dailytodo", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error)")
+            }
         }
     }
     

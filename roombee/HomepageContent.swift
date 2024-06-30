@@ -55,6 +55,10 @@ struct HomepageContent: View {
                         
             }
         }
+        .onAppear(perform: {
+            NotificationService.shared.requestPerm()
+            NotificationService.shared.todoNotif()
+        })
     }
 }
 
