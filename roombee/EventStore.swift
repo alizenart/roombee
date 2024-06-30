@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 struct ToggleInfo: Decodable {
-    var userId: Int
+    var userId: String
     var inRoom: Int
     var isSleeping: Int
 

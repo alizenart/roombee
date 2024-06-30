@@ -34,19 +34,38 @@ struct HomepageView: View {
 
     @State private var isActive: Bool = true  // State to control navigation or visibility.
     
-    @State var demoIsSleeping = false
-    @State var demoInRoom = false
+    @Binding var demoIsSleeping: Bool
+    @Binding var demoInRoom: Bool
+    @State private var isInitialLoad = true
+    
+    @State var myStatusToggleSleeping = false
+    @State var myStatusToggleInRoom = false
+    @State var roomieStatusToggleSleeping = false
+    @State var roomieStatusToggleInRoom = false
+    
+    
+    let myUserId = "80003"
+    let roomieUserId = "80002"
     
     var body: some View {
         ZStack {
             Group {
                 switch navManager.selectedSideMenuTab {
                 case 0:
-                    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $demoIsSleeping, inRoom: $demoInRoom), roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $demoIsSleeping, inRoom: $demoInRoom))
-                        .environmentObject(EventStore())
-                        .environmentObject(authManager)
-                        .environmentObject(navManager)
-                        .environmentObject(apiManager)
+                    HomepageContent(
+                        myStatusToggleSleeping: $myStatusToggleSleeping,
+                        myStatusToggleInRoom: $myStatusToggleInRoom,
+                        roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
+                        roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
+                        isInitialLoad: $isInitialLoad,
+                        calGrid: GridView(cal: CalendarView(title: "Me")),
+                        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad),
+                        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
+                    )
+                    .environmentObject(EventStore())
+                    .environmentObject(authManager)
+                    .environmentObject(navManager)
+                    .environmentObject(apiManager)
                 case 1:
                     ToDoView()
                 case 2:
@@ -134,6 +153,43 @@ struct HomepageView: View {
                     signOut()
                     navManager.selectedSideMenuTab = 0
                 }
+            }
+        }
+        .onAppear {
+            fetchMyInitialToggleState(userId: myUserId)
+            fetchRoomieInitialToggleState(userId: roomieUserId)
+        }
+    }
+
+    private func fetchMyInitialToggleState(userId: String) {
+        apiManager.fetchToggles(userId: userId) { toggles, error in
+            if let toggles = toggles, let firstToggle = toggles.first {
+                DispatchQueue.main.async {
+                    myStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    myStatusToggleInRoom = (firstToggle.inRoom != 0)
+                    print("Fetched toggle states for user \(userId):")
+                    print("isSleeping: \(myStatusToggleSleeping)")
+                    print("inRoom: \(myStatusToggleInRoom)")
+                }
+            } else if let error = error {
+                print("error fetching toggles: \(error)")
+            }
+            isInitialLoad = false // Set to false after initial load
+        }
+    }
+
+    private func fetchRoomieInitialToggleState(userId: String) {
+        apiManager.fetchToggles(userId: userId) { toggles, error in
+            if let toggles = toggles, let firstToggle = toggles.first {
+                DispatchQueue.main.async {
+                    roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
+                    print("Fetched toggle states for user \(userId):")
+                    print("isSleeping: \(roomieStatusToggleSleeping)")
+                    print("inRoom: \(roomieStatusToggleInRoom)")
+                }
+            } else if let error = error {
+                print("error fetching toggles: \(error)")
             }
         }
     }

@@ -13,7 +13,7 @@ class APIManager: ObservableObject {
     static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
     static let getTogglesEndpoint = "/toggle/?user_id="
     
-    func fetchToggles(userId: Int, completion: @escaping ([ToggleInfo]?, Error?) -> Void) {
+    func fetchToggles(userId: String, completion: @escaping ([ToggleInfo]?, Error?) -> Void) {
             let endpoint = APIManager.getTogglesEndpoint + "\(userId)"
             guard let url = URL(string: APIManager.baseURL + endpoint) else {
                 completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
@@ -40,53 +40,51 @@ class APIManager: ObservableObject {
         }
     
     
-    func changeToggleState(userId: Int, state: String) {
-        // Use the function parameters to build the userData dictionary
+    func changeToggleState(userId: String, state: String) {
+        // Construct the URL with query string parameters
+        guard var urlComponents = URLComponents(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/toggle") else {
+            print("Invalid URL")
+            return
+        }
         
-       
-        
-        let userData: [String: Any] = [
-            "user_id": userId,
-            "state": state
+        // Add query string parameters
+        urlComponents.queryItems = [
+            URLQueryItem(name: "user_id", value: userId),
+            URLQueryItem(name: "state", value: state)
         ]
-
-        // Serialize your data into JSON
-        if let jsonData = try? JSONSerialization.data(withJSONObject: userData, options: []) {
-            // Create the URL object
-            guard let url = URL(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/toggle") else {
-                print("Invalid URL")
+        
+        // Create the URL object
+        guard let url = urlComponents.url else {
+            print("Failed to create URL")
+            return
+        }
+        
+        // Create the URLRequest object
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        // Create a URLSession task
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error occurred: \(error)")
                 return
             }
             
-            // Create the URLRequest object
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.httpBody = jsonData
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            // Create a URLSession task
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    print("Error occurred: \(error)")
-                    return
-                }
-                
-                if let response = response as? HTTPURLResponse, response.statusCode != 200 {
-                    print("Server responded with status code: \(response.statusCode)")
-                    return
-                }
-                
-                if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    print("Response data: \(dataString)")
-                }
+            if let response = response as? HTTPURLResponse, response.statusCode != 200 {
+                print("Server responded with status code: \(response.statusCode)")
+                return
             }
             
-            // Start the task
-            task.resume()
-        } else {
-            print("Failed to serialize userData into JSON")
+            if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                print("Response data: \(dataString)")
+            }
         }
-    }//changeToggleState
+        
+        // Start the task
+        task.resume()
+    }
+
+            
     
     /*"event_id": 0,
       "user_id": 0,
@@ -95,7 +93,7 @@ class APIManager: ObservableObject {
       "end_time": "2024-05-02 12:30:00",
       "approved": false
     */
-    func getToggleState(userId: Int) {
+    func getToggleState(userId: String) {
         // Create the URL object with query parameters
         guard var urlComponents = URLComponents(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/toggle") else {
             print("Invalid URL")
@@ -134,7 +132,7 @@ class APIManager: ObservableObject {
     }
 
     
-    func addEvent(eventId: Int, userId: Int, eventTitle: String, startTime: String, endTime: String, approved: Bool) {
+    func addEvent(eventId: Int, userId: String, eventTitle: String, startTime: String, endTime: String, approved: Bool) {
         // Construct the URL with query string parameters
         guard var urlComponents = URLComponents(string: "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod/event") else {
             print("Invalid URL")
