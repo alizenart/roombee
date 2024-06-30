@@ -38,49 +38,56 @@ struct HomepageContent: View {
 
     var body: some View {
         VStack {
-            ZStack {
-                backgroundColor // Use the custom color here
-                    .ignoresSafeArea()
-                ScrollView {
-                    VStack {
-                        Text("Roombee")
-                            .font(.largeTitle)
-                            .foregroundColor(ourOrange)
-                            .fontWeight(.bold)
+            if isInitialLoad {
+                ProgressView("Loading...")
+                    .onAppear {
+                        print("initialLoad onAppear: \(isInitialLoad)")
+                        fetchMyInitialToggleState(userId: myUserId)
+                        startRoomieStatusPolling(userId: roomieUserId)
+                        print("initialLoad afterFetchMy initial toggle: \(isInitialLoad)")
+                    }
+            } else {
+                ZStack {
+                    backgroundColor // Use the custom color here
+                        .ignoresSafeArea()
+                    ScrollView {
+                        VStack {
+                            Text("Roombee")
+                                .font(.largeTitle)
+                                .foregroundColor(ourOrange)
+                                .fontWeight(.bold)
+                                .padding(.top, 20)
+
+                            HStack(spacing: 20) {
+                                StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad)
+                                StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
+                            }.padding(.horizontal, 40)
+
+                            Button("Add Event") {
+                                apiManager.addEvent(eventId: 3, userId: myUserId, eventTitle: "Alison Test", startTime: "2024-05-05 10:30:00", endTime: "2024-05-05 12:30:00", approved: true)
+                            }
                             .padding(.top, 20)
 
-                        HStack(spacing: 20){
-                            StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad)
-                            StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
-                        }.padding(.horizontal, 40)
+                            Button("Toggle User 8003 room") {
+                                apiManager.changeToggleState(userId: myUserId, state: "in_room")
+                            }
 
-                        Button("Add Event") {
-                            apiManager.addEvent(eventId: 3, userId: myUserId, eventTitle: "Alison Test", startTime: "2024-05-05 10:30:00", endTime: "2024-05-05 12:30:00", approved: true)
+                            Button("Toggle User 8003 sleep") {
+                                apiManager.changeToggleState(userId: myUserId, state: "is_sleeping")
+                            }
+
+                            Button("Get User 8003 data") {
+                                apiManager.getToggleState(userId: myUserId)
+                            }
+                            .padding(.top, 20)
+
+                            schedCara
+                                .padding()
+                            calGrid.padding([.leading, .trailing], 20)
                         }
-                        .padding(.top, 20)
-
-                        Button("Toggle User 8003 room") {
-                            apiManager.changeToggleState(userId: myUserId, state: "in_room")
-                        }
-
-                        Button("Toggle User 8003 sleep") {
-                            apiManager.changeToggleState(userId: myUserId, state: "is_sleeping")
-                        }
-
-                        Button("Get User 8003 data") {
-                            apiManager.getToggleState(userId: myUserId)
-                        }
-                        .padding(.top, 20)
-
-                        schedCara
-                            .padding()
-                        calGrid.padding([.leading, .trailing], 20)
                     }
                 }
             }
-        }.onAppear {
-            fetchMyInitialToggleState(userId: myUserId)
-            startRoomieStatusPolling(userId: roomieUserId)
         }
         .onDisappear {
             stopRoomieStatusPolling()
@@ -97,8 +104,8 @@ struct HomepageContent: View {
             } else if let error = error {
                 print("error fetching toggles: \(error)")
             }
-            isInitialLoad = false // Set to false after initial load
         }
+        isInitialLoad = false
     }
 
     private func startRoomieStatusPolling(userId: String) {
@@ -138,9 +145,10 @@ struct StatusView: View {
     @State var canToggle: Bool
     @Binding var isSleeping: Bool
     @Binding var inRoom: Bool
+    @State private var hasLoaded = false // Flag to check if initial data has loaded
     @EnvironmentObject var apiManager: APIManager
     var userId: String
-    @Binding var isInitialLoad: Bool // New binding
+    @Binding var isInitialLoad: Bool
 
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -160,7 +168,7 @@ struct StatusView: View {
                     Toggle(isOn: $isSleeping, label: { bedIcon })
                         .disabled(!canToggle)
                         .onChange(of: isSleeping) { isOn in
-                            if !isInitialLoad { // Only update if not the initial load
+                            if hasLoaded { // Only trigger API call if the initial load is done
                                 print("isSleeping toggled to \(isOn)")
                                 apiManager.changeToggleState(userId: userId, state: "is_sleeping")
                                 if isOn && canToggle {
@@ -175,12 +183,18 @@ struct StatusView: View {
                     Toggle(isOn: $inRoom, label: { roomIcon })
                         .disabled(!canToggle)
                         .onChange(of: inRoom) { isOn in
-                            if !isInitialLoad { // Only update if not the initial load
+                            if hasLoaded { // Only trigger API call if the initial load is done
                                 print("inRoom toggled to \(isOn)")
                                 apiManager.changeToggleState(userId: userId, state: "in_room")
                             }
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
+            }
+        }
+        .onAppear {
+            // Set hasLoaded to true only after initial render
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                hasLoaded = true
             }
         }
     }

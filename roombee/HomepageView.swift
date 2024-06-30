@@ -36,7 +36,7 @@ struct HomepageView: View {
     
     @Binding var demoIsSleeping: Bool
     @Binding var demoInRoom: Bool
-    @State private var isInitialLoad = true
+    @State var isInitialLoad = true
     
     @State var myStatusToggleSleeping = false
     @State var myStatusToggleInRoom = false
@@ -49,47 +49,40 @@ struct HomepageView: View {
     
     var body: some View {
         ZStack {
-            Group {
-                switch navManager.selectedSideMenuTab {
-                case 0:
-                    HomepageContent(
-                        myStatusToggleSleeping: $myStatusToggleSleeping,
-                        myStatusToggleInRoom: $myStatusToggleInRoom,
-                        roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
-                        roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
-                        isInitialLoad: $isInitialLoad,
-                        calGrid: GridView(cal: CalendarView(title: "Me")),
-                        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad),
-                        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
-                    )
-                    .environmentObject(EventStore())
-                    .environmentObject(authManager)
-                    .environmentObject(navManager)
-                    .environmentObject(apiManager)
-                case 1:
-                    ToDoView()
-                case 2:
-                    SettingsView()
+            if isInitialLoad {
+                ProgressView("Loading...")
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .foregroundColor(ourOrange)
+                    .background(backgroundColor.ignoresSafeArea())
+            } else {
+                Group {
+                    switch navManager.selectedSideMenuTab {
+                    case 0:
+                        HomepageContent(
+                            myStatusToggleSleeping: $myStatusToggleSleeping,
+                            myStatusToggleInRoom: $myStatusToggleInRoom,
+                            roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
+                            roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
+                            isInitialLoad: $isInitialLoad,
+                            calGrid: GridView(cal: CalendarView(title: "Me")),
+                            yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad),
+                            roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
+                        )
                         .environmentObject(EventStore())
                         .environmentObject(authManager)
                         .environmentObject(navManager)
-                case 3:
-                    EmptyView()  // Use EmptyView or another placeholder.
-                default:
-                    Text("Unknown Selection")
-                }
-            }
-
-            VStack {
-                HStack {
-                    Button(action: {
-                        navManager.openSideMenu()
-                    }) {
-                        VStack (spacing: 3){
-                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                            Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                        }
+                        .environmentObject(apiManager)
+                    case 1:
+                        ToDoView()
+                    case 2:
+                        SettingsView()
+                            .environmentObject(EventStore())
+                            .environmentObject(authManager)
+                            .environmentObject(navManager)
+                    case 3:
+                        EmptyView()  // Use EmptyView or another placeholder.
+                    default:
+                        Text("Unknown Selection")
                     }
                 }
                 //                ScrollView {
@@ -160,6 +153,7 @@ struct HomepageView: View {
             fetchRoomieInitialToggleState(userId: roomieUserId)
         }
     }
+
 
     private func fetchMyInitialToggleState(userId: String) {
         apiManager.fetchToggles(userId: userId) { toggles, error in
