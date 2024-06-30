@@ -2,10 +2,9 @@ use roombee;
 
 -- SELECT * from users;
 
-SELECT * from toggles;
+-- SELECT * from toggles;
 
-'''
+
 UPDATE toggles
-SET in_room = 1
-WHERE user_id = '80003';
-'''
+SET in_room = 0
+WHERE user_id = '80002';

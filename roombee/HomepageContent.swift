@@ -62,25 +62,6 @@ struct HomepageContent: View {
                                 StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad)
                                 StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
                             }.padding(.horizontal, 40)
-
-                            Button("Add Event") {
-                                apiManager.addEvent(eventId: 3, userId: myUserId, eventTitle: "Alison Test", startTime: "2024-05-05 10:30:00", endTime: "2024-05-05 12:30:00", approved: true)
-                            }
-                            .padding(.top, 20)
-
-                            Button("Toggle User 8003 room") {
-                                apiManager.changeToggleState(userId: myUserId, state: "in_room")
-                            }
-
-                            Button("Toggle User 8003 sleep") {
-                                apiManager.changeToggleState(userId: myUserId, state: "is_sleeping")
-                            }
-
-                            Button("Get User 8003 data") {
-                                apiManager.getToggleState(userId: myUserId)
-                            }
-                            .padding(.top, 20)
-
                             schedCara
                                 .padding()
                             calGrid.padding([.leading, .trailing], 20)
@@ -88,6 +69,9 @@ struct HomepageContent: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            startRoomieStatusPolling(userId: roomieUserId)
         }
         .onDisappear {
             stopRoomieStatusPolling()
@@ -168,14 +152,9 @@ struct StatusView: View {
                     Toggle(isOn: $isSleeping, label: { bedIcon })
                         .disabled(!canToggle)
                         .onChange(of: isSleeping) { isOn in
-                            if hasLoaded { // Only trigger API call if the initial load is done
-                                print("isSleeping toggled to \(isOn)")
+                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                print("isSleeping toggled to \(isOn) by \(title)")
                                 apiManager.changeToggleState(userId: userId, state: "is_sleeping")
-                                if isOn && canToggle {
-                                    backgroundColor = .black
-                                } else {
-                                    backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
-                                }
                             }
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
@@ -183,8 +162,8 @@ struct StatusView: View {
                     Toggle(isOn: $inRoom, label: { roomIcon })
                         .disabled(!canToggle)
                         .onChange(of: inRoom) { isOn in
-                            if hasLoaded { // Only trigger API call if the initial load is done
-                                print("inRoom toggled to \(isOn)")
+                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                print("inRoom toggled to \(isOn) by \(title)")
                                 apiManager.changeToggleState(userId: userId, state: "in_room")
                             }
                         }
