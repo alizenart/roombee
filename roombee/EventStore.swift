@@ -8,19 +8,6 @@
 import Foundation
 import Combine
 
-struct ToggleInfo: Decodable {
-    var userId: String
-    var inRoom: Int
-    var isSleeping: Int
-
-    private enum CodingKeys: String, CodingKey {
-        case userId = "user_id"
-        case inRoom = "in_room"
-        case isSleeping = "is_sleeping"
-    }
-}
-
-
 class EventStore: ObservableObject {
   @Published var events: [CalendarEvent] = []
   
