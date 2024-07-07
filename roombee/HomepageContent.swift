@@ -12,105 +12,47 @@ struct HomepageContent: View {
     @EnvironmentObject var authManager: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
-    @EnvironmentObject var apiManager: APIManager
 
-    @Binding var myStatusToggleSleeping: Bool
-    @Binding var myStatusToggleInRoom: Bool
-    @Binding var roomieStatusToggleSleeping: Bool
-    @Binding var roomieStatusToggleInRoom: Bool
-
-    @Binding var isInitialLoad: Bool
 
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
-
-    let myUserId = "80003"
-    let roomieUserId = "80002"
-    @State private var pollingTimer: Timer?
-
+    
     var schedCara: DatesCarousel {
         let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7)
         return DatesCarousel(dates: dates, onDateSelected: { date in
             selectedDateManager.SelectedDate = date
         })
     }
-
+    
+    
     var body: some View {
         VStack {
-            if isInitialLoad {
-                ProgressView("Loading...")
-                    .onAppear {
-                        print("initialLoad onAppear: \(isInitialLoad)")
-                        fetchMyInitialToggleState(userId: myUserId)
-                        startRoomieStatusPolling(userId: roomieUserId)
-                        print("initialLoad afterFetchMy initial toggle: \(isInitialLoad)")
-                    }
-            } else {
-                ZStack {
-                    backgroundColor // Use the custom color here
-                        .ignoresSafeArea()
-                    ScrollView {
-                        VStack {
-                            Text("Roombee")
-                                .font(.largeTitle)
-                                .foregroundColor(ourOrange)
-                                .fontWeight(.bold)
-                                .padding(.top, 20)
-
-                            HStack(spacing: 20) {
-                                StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad)
-                                StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
-                            }.padding(.horizontal, 40)
-                            schedCara
-                                .padding()
-                            calGrid.padding([.leading, .trailing], 20)
-                        }
+            ZStack {
+                backgroundColor // Use the custom color here
+                    .ignoresSafeArea()
+                ScrollView {
+                    VStack {
+                        
+                        Text("Roombee")
+                            .font(.largeTitle)
+                            .foregroundColor(ourOrange)
+                            .fontWeight(.bold)
+                            .padding(.top, 20)
+                        
+                        HStack(spacing: 20){
+                            yourStatus
+                            roomStatus
+                        }.padding(.horizontal, 40)
+                        //                        .padding(.bottom, 20)
+                            .padding(.top, 20)
+                        
+                        schedCara.environmentObject(selectedDateManager)
+                            .padding()
+                        calGrid.padding([.leading, .trailing], 20)
                     }
                 }
-            }
-        }
-        .onAppear {
-            startRoomieStatusPolling(userId: roomieUserId)
-        }
-        .onDisappear {
-            stopRoomieStatusPolling()
-        }
-    }
-
-    private func fetchMyInitialToggleState(userId: String) {
-        apiManager.fetchToggles(userId: userId) { toggles, error in
-            if let toggles = toggles, let firstToggle = toggles.first {
-                DispatchQueue.main.async {
-                    myStatusToggleSleeping = (firstToggle.isSleeping != 0)
-                    myStatusToggleInRoom = (firstToggle.inRoom != 0)
-                }
-            } else if let error = error {
-                print("error fetching toggles: \(error)")
-            }
-        }
-        isInitialLoad = false
-    }
-
-    private func startRoomieStatusPolling(userId: String) {
-        // Invalidate existing timer to ensure we don't create multiple instances
-        pollingTimer?.invalidate()
-
-        // Create a new Timer that calls `fetchRoomieInitialToggleState` every 5 seconds
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
-            self.fetchRoomieInitialToggleState(userId: userId)
-        }
-    }
-
-    private func fetchRoomieInitialToggleState(userId: String) {
-        apiManager.fetchToggles(userId: userId) { toggles, error in
-            if let toggles = toggles, let firstToggle = toggles.first {
-                DispatchQueue.main.async {
-                    roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
-                    roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
-                }
-            } else if let error = error {
-                print("error fetching toggles: \(error)")
+                        
             }
         }
         .onAppear(perform: {
@@ -118,22 +60,15 @@ struct HomepageContent: View {
             NotificationService.shared.todoNotif()
         })
     }
-
-    private func stopRoomieStatusPolling() {
-        pollingTimer?.invalidate()
-    }
 }
 
+
 struct StatusView: View {
+    @State private var isAsleep = false
+    @State private var inRoom = false
     @State var title: String
     @State var canToggle: Bool
-    @Binding var isSleeping: Bool
-    @Binding var inRoom: Bool
-    @State private var hasLoaded = false // Flag to check if initial data has loaded
-    @EnvironmentObject var apiManager: APIManager
-    var userId: String
-    @Binding var isInitialLoad: Bool
-
+    
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
         let bedIcon = Image(systemName: "bed.double.fill").foregroundColor(backgroundColor)
@@ -143,37 +78,28 @@ struct StatusView: View {
                 .fill()
                 .foregroundColor(toggleColor)
                 .aspectRatio(1.0, contentMode: .fit)
-
+            
             VStack {
                 Text(title)
                     .foregroundColor(.black)
                     .bold()
-                HStack {
-                    Toggle(isOn: $isSleeping, label: { bedIcon })
+                HStack{
+                    Toggle(isOn: $isAsleep, label: {bedIcon})
                         .disabled(!canToggle)
-                        .onChange(of: isSleeping) { isOn in
-                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                print("isSleeping toggled to \(isOn) by \(title)")
-                                apiManager.changeToggleState(userId: userId, state: "is_sleeping")
+
+                        .onChange(of: isAsleep) { isOn in
+                            if isOn && canToggle{
+                                //backgroundColor = .black
+                            }
+                            else {
+                                //backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
                             }
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
-                    Toggle(isOn: $inRoom, label: { roomIcon })
+                    Toggle(isOn: $inRoom, label: {roomIcon})
                         .disabled(!canToggle)
-                        .onChange(of: inRoom) { isOn in
-                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                print("inRoom toggled to \(isOn) by \(title)")
-                                apiManager.changeToggleState(userId: userId, state: "in_room")
-                            }
-                        }
                 }.padding(.leading, 20).padding(.trailing, 20)
-            }
-        }
-        .onAppear {
-            // Set hasLoaded to true only after initial render
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                hasLoaded = true
             }
         }
     }
@@ -226,6 +152,7 @@ func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
     return dates
 }
 
+
 struct DateToggle: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     var date : Date
@@ -246,11 +173,11 @@ struct DateToggle: View {
                     Text(monthName(from: date))
                         .foregroundColor(.white)
                         .bold()
-                        .font(.system(size: 15))
+                        .font(.system(size:15))
                     Text(MonthDay(from: date))
                         .foregroundColor(.white)
                         .bold()
-                        .font(.system(size: 20))
+                        .font(.system(size:20))
                 }
             }
         }
@@ -265,25 +192,13 @@ struct DateToggle: View {
     
     func MonthDay(from date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "d" // Format for day of the month
+        formatter.dateFormat = "d" // Format for abbreviated month name
         return formatter.string(from: date)
     }
 }
 
-#Preview {
-    HomepageContent(
-        myStatusToggleSleeping: .constant(true),
-        myStatusToggleInRoom: .constant(true),
-        roomieStatusToggleSleeping: .constant(true),
-        roomieStatusToggleInRoom: .constant(true),
-        isInitialLoad: .constant(true),
-        calGrid: GridView(cal: CalendarView(title: "Me")),
-        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false), userId: "80003", isInitialLoad: .constant(true)),
-        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false), userId: "80002", isInitialLoad: .constant(true))
-    )
-    .environmentObject(EventStore())
-    .environmentObject(AuthManager())
-    .environmentObject(NavManager())
-    .environmentObject(APIManager())
-}
 
+
+#Preview {
+    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
+}
