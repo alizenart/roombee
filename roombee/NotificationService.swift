@@ -54,8 +54,8 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
         content.sound = UNNotificationSound.default
         
         var date = DateComponents()
-        date.hour = 23
-        date.minute = 35
+        date.hour = 18
+        date.minute = 10
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
         let request = UNNotificationRequest(identifier: "dailytodo", content: content, trigger: trigger)
@@ -65,6 +65,39 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
             }
         }
     }
+    
+    func toggleSleep(isAsleep: Bool) {
+        let content = UNMutableNotificationContent()
+        content.title = isAsleep ? "😴" : "🌞"
+        content.body = isAsleep ? "Your roommate is heading to bed!" : "Rise and Shine!"
+        content.sound = UNNotificationSound.default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "toggleSleep", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error with sleep toggle: \(error)")
+            }
+        }
+    }
+    
+    func toggleRoom(inRoom: Bool) {
+        let content = UNMutableNotificationContent()
+        content.title = inRoom ? "🏡" : "🧍"
+        content.body = inRoom ? "Your roommate is back!" : "Room's all yours!"
+        content.sound = UNNotificationSound.default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "toggleRoom", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error with sleep toggle: \(error)")
+            }
+        }
+    }
+    
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification:
                                 UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
