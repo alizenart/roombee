@@ -88,17 +88,19 @@ struct StatusView: View {
                         .disabled(!canToggle)
 
                         .onChange(of: isAsleep) { isOn in
-                            if isOn && canToggle{
-                                //backgroundColor = .black
-                            }
-                            else {
-                                //backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+                            if !canToggle{
+                                NotificationService.shared.toggleSleep(isAsleep: isOn)
                             }
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
                 HStack {
                     Toggle(isOn: $inRoom, label: {roomIcon})
                         .disabled(!canToggle)
+                        .onChange(of: inRoom) { isOn in
+                            if !canToggle {
+                                NotificationService.shared.toggleRoom(inRoom: isOn)
+                            }
+                        }
                 }.padding(.leading, 20).padding(.trailing, 20)
             }
         }
