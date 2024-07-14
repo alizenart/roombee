@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     @State private var isTimerDone = false
+    
 
     var body: some View {
         switch viewModel.authenticationState {

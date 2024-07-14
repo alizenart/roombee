@@ -31,6 +31,7 @@ struct roombeeApp: App {
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
+    @StateObject var toggleManager = ToggleViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -38,6 +39,7 @@ struct roombeeApp: App {
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
+                .environmentObject(toggleManager)
         }
     }
 }

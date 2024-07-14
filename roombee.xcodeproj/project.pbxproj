@@ -53,6 +53,7 @@
 		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
+		FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5554592C4460B50002E18F /* ToggleViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +101,7 @@
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		FA5554592C4460B50002E18F /* ToggleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,7 @@
 				309D67702BCE478900C343FF /* AuthenticationViewModel.swift */,
 				309D67722BCE4C6C00C343FF /* AuthenticationView.swift */,
 				309D67762BCE4FFB00C343FF /* SignupView.swift */,
+				FA5554592C4460B50002E18F /* ToggleViewModel.swift */,
 				309D677A2BD0D29C00C343FF /* DatePickerView.swift */,
 				309D677C2BD0E3D700C343FF /* GenderPickerView.swift */,
 				308DFDD42BE869F600640B62 /* ContinueSignUp.swift */,
@@ -306,6 +309,7 @@
 			files = (
 				308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */,
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
+				FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */,
 				4C2365B72C05366700D6FE49 /* NotificationService.swift in Sources */,
 				4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */,
 				68E736092BCD939B00D94A95 /* SideMenuSwiftUI.swift in Sources */,
