@@ -12,6 +12,18 @@ struct HomepageContent: View {
     @EnvironmentObject var authManager: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var toggleManager: ToggleViewModel
+    
+    @Binding var myStatusToggleSleeping: Bool
+    @Binding var myStatusToggleInRoom: Bool
+    @Binding var roomieStatusToggleSleeping: Bool
+    @Binding var roomieStatusToggleInRoom: Bool
+    
+    @Binding var isInitialLoad: Bool
+    
+    let myUserId = "80003"
+    let roomieUserId = "80002"
+    @State private var pollingTimer: Timer?
 
 
     var calGrid: GridView
@@ -56,18 +68,69 @@ struct HomepageContent: View {
             }
         }
         .onAppear(perform: {
+            //loading Roommate information
+            print("initialLoad onAppear: \(isInitialLoad)")
+            fetchMyInitialToggleState(userId: myUserId)
+            startRoomieStatusPolling(userId: roomieUserId)
+            print("initialLoad afterFetchMy initial toggle: \(isInitialLoad)")
+            
             NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
         })
+    }
+    
+    private func fetchMyInitialToggleState(userId: String) {
+        toggleManager.fetchToggles(userId: userId) { toggles, error in
+            if let toggles = toggles, let firstToggle = toggles.first {
+                DispatchQueue.main.async {
+                    myStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    myStatusToggleInRoom = (firstToggle.inRoom != 0)
+                }
+            } else if let error = error {
+                print("error fetching toggles: \(error)")
+            }
+        }
+        isInitialLoad = false
+    }
+
+    private func startRoomieStatusPolling(userId: String) {
+        // Invalidate existing timer to ensure we don't create multiple instances
+        pollingTimer?.invalidate()
+        
+        // Create a new Timer that calls `fetchRoomieInitialToggleState` every 5 seconds
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            self.fetchRoomieInitialToggleState(userId: userId)
+        }
+    }
+
+    private func fetchRoomieInitialToggleState(userId: String) {
+        toggleManager.fetchToggles(userId: userId) { toggles, error in
+            if let toggles = toggles, let firstToggle = toggles.first {
+                DispatchQueue.main.async {
+                    roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
+                }
+            } else if let error = error {
+                print("error fetching toggles: \(error)")
+            }
+        }
+    }
+
+    private func stopRoomieStatusPolling() {
+        pollingTimer?.invalidate()
     }
 }
 
 
 struct StatusView: View {
-    @State private var isAsleep = false
-    @State private var inRoom = false
     @State var title: String
     @State var canToggle: Bool
+    @Binding var isSleeping: Bool
+    @Binding var inRoom: Bool
+    @State private var hasLoaded = false // Flag to check if initial data has loaded
+    @EnvironmentObject var toggleManager: ToggleViewModel
+    var userId: String
+    @Binding var isInitialLoad: Bool
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -84,10 +147,15 @@ struct StatusView: View {
                     .foregroundColor(.black)
                     .bold()
                 HStack{
-                    Toggle(isOn: $isAsleep, label: {bedIcon})
+                    Toggle(isOn: $isSleeping, label: {bedIcon})
                         .disabled(!canToggle)
 
-                        .onChange(of: isAsleep) { isOn in
+                        .onChange(of: isSleeping) { isOn in
+                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                print("isSleeping toggled to \(isOn) by \(title)")
+                                toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
+                            }
+                            
                             if !canToggle{
                                 NotificationService.shared.toggleSleep(isAsleep: isOn)
                             }
@@ -97,11 +165,22 @@ struct StatusView: View {
                     Toggle(isOn: $inRoom, label: {roomIcon})
                         .disabled(!canToggle)
                         .onChange(of: inRoom) { isOn in
+                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                print("inRoom toggled to \(isOn) by \(title)")
+                                toggleManager.changeToggleState(userId: userId, state: "in_room")
+                            }
+                            
                             if !canToggle {
                                 NotificationService.shared.toggleRoom(inRoom: isOn)
                             }
                         }
                 }.padding(.leading, 20).padding(.trailing, 20)
+            }
+        }
+        .onAppear {
+            // Set hasLoaded to true only after initial render
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                hasLoaded = true
             }
         }
     }
@@ -202,5 +281,18 @@ struct DateToggle: View {
 
 
 #Preview {
-    HomepageContent(calGrid: GridView(cal: CalendarView(title: "Me")), yourStatus: StatusView(title: "Me:", canToggle: true), roomStatus: StatusView(title: "Roommate:", canToggle: false)).environmentObject(EventStore())
+    HomepageContent(
+        myStatusToggleSleeping: .constant(true),
+        myStatusToggleInRoom: .constant(true),
+        roomieStatusToggleSleeping: .constant(true),
+        roomieStatusToggleInRoom: .constant(true),
+        isInitialLoad: .constant(true),
+        calGrid: GridView(cal: CalendarView(title: "Me")),
+        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false), userId: "80003", isInitialLoad: .constant(true)),
+        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false), userId: "80002", isInitialLoad: .constant(true))
+    )
+    .environmentObject(EventStore())
+    .environmentObject(AuthenticationViewModel())
+    .environmentObject(NavManager())
+    .environmentObject(ToggleViewModel())
 }
