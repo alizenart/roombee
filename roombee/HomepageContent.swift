@@ -13,7 +13,6 @@ struct HomepageContent: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
 
-
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
@@ -44,7 +43,6 @@ struct HomepageContent: View {
                             yourStatus
                             roomStatus
                         }.padding(.horizontal, 40)
-                        //                        .padding(.bottom, 20)
                             .padding(.top, 20)
                         
                         schedCara.environmentObject(selectedDateManager)
