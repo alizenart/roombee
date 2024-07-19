@@ -22,6 +22,29 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         AWSServiceManager.default().defaultServiceConfiguration = configuration
         return true
     }
+    
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if let incomingURL = userActivity.webpageURL {
+            print("Incoming URL: \(incomingURL)")
+            handleIncomingURL(incomingURL)
+            return true
+        }
+        return false
+    }
+    
+    private func handleIncomingURL(_ url: URL) {
+        if url.scheme == "roombee" {
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let queryItems = components.queryItems {
+                for item in queryItems {
+                    if item.name == "hive_code", let value = item.value {
+                        NotificationCenter.default.post(name: .receivedHiveCode, object: nil, userInfo: ["hive_code": value])
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 @main
@@ -31,7 +54,6 @@ struct roombeeApp: App {
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
-    @StateObject var toggleManager = ToggleViewModel()
     
     @State private var inviteLink: String = ""
     @State private var showInviteLinkPopup: Bool = false
@@ -42,25 +64,19 @@ struct roombeeApp: App {
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
-                .environmentObject(toggleManager)
-                .onOpenURL { url in
-                    handleCustomURL(url)
-                }
-        }
-    }
-    
-    private func handleCustomURL(_ url: URL) {
-        if url.scheme == "roombee" {
-            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-               let queryItems = components.queryItems {
-                for item in queryItems {
-                    if item.name == "hive_code", let value = item.value {
+                .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
+                    if let userInfo = notification.userInfo,
+                       let hiveCode = userInfo["hive_code"] as? String {
                         authViewModel.skipCreateOrJoin = true
-                        authViewModel.hive_code = value
+                        authViewModel.hive_code = hiveCode
                     }
                 }
-            }
         }
     }
 }
+
+extension Notification.Name {
+    static let receivedHiveCode = Notification.Name("receivedHiveCode")
+}
+
 

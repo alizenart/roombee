@@ -83,7 +83,7 @@ struct AddRoommateViewNav: View {
     @Binding var presentSideMenu: Bool
     
     var body: some View {
-        VStack{
+        VStack {
             HStack {
                 Button {
                     presentSideMenu.toggle()}

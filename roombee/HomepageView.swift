@@ -50,7 +50,7 @@ struct HomepageView: View {
     }
     
     private func addRoommate() {
-        inviteLink = "roombeeapp://invite?hive_code=\(authViewModel.hive_code)"
+        inviteLink = "https://roombee.com/invite?hive_code=\(authViewModel.hive_code)"
         self.inviteLink = inviteLink
         showInviteLinkPopup = true
     }
