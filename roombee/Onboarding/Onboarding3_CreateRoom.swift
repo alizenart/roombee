@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct Onboarding3_CreateRoom: View {
-    @State private var RoomName = ""
-    
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @Environment(\.dismiss) var dismiss
+
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
@@ -46,7 +47,7 @@ struct Onboarding3_CreateRoom: View {
                             .padding(.bottom, -5)
                             .padding(.top, -10)
                         
-                        TextField("", text: $RoomName)
+                        TextField("", text: $authViewModel.hive_name)
                             .multilineTextAlignment(.center)
                             .padding()
                             .frame(width: 250, height: 50)
@@ -58,6 +59,7 @@ struct Onboarding3_CreateRoom: View {
                             )
                             .cornerRadius(10)
                             .padding(.bottom, 10)
+                            .disableAutocorrection(true)
                         
                         
                         
@@ -68,14 +70,31 @@ struct Onboarding3_CreateRoom: View {
                         
                         
                         
+                        Button(action: signUpWithEmailPassword) {
+                            Group {
+                                if authViewModel.authenticationState != .authenticating {
+                                    Text("Finish")
+                                        .padding(.vertical, 8)
+                                        .frame(maxWidth: .infinity)
+                                } else {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        .padding(.vertical, 8)
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                        }
+                        .disabled(!authViewModel.isValid)
+                        .frame(width: 250, height: 50)
+                        .buttonStyle(.borderedProminent)
+                        .padding()
                         
-                        NavigationLink(destination: Onboarding3_CreateRoom2()){
-                            Text("Next")
-                                .font(.system(size : 25, weight: .bold))
-                                .frame(width: 175, height: 60, alignment: .center)
-                                .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
+                        NavigationLink(destination: HomepageView()
+                            .environmentObject(EventStore())
+                            .environmentObject(authViewModel)
+                            .environmentObject(NavManager())
+                            .environmentObject(SelectedDateManager())){
+                            EmptyView()
                         }
                         
                         //                            NavigationLink(destination: Onboarding2()) {
@@ -119,12 +138,18 @@ struct Onboarding3_CreateRoom: View {
     func JoinRoom() {
         //join room logic
     }
-    
+    private func signUpWithEmailPassword() {
+        Task {
+            if await authViewModel.signUpWithEmailPassword() == true {
+                dismiss()
+            }
+        }
+    }
 } //Onboarding2
 
 
 struct Onboarding3_CreateRoom_Previews: PreviewProvider {
     static var previews: some View {
-        Onboarding3_CreateRoom()
+        Onboarding3_CreateRoom().environmentObject(AuthenticationViewModel())
     }
 }

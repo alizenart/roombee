@@ -97,6 +97,7 @@ struct NewEventView: View {
 //                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
                             eventStore.addEvent(newEvent)
                             onSave(newEvent)
+                            NotificationService.shared.scheduleNotification(for: newEvent)
                             dismiss()
                         }
                         .foregroundColor(backgroundColor)

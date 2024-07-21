@@ -8,13 +8,10 @@
 import SwiftUI
 
 struct Onboarding2: View {
-    
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
-    
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
-    
     let textColor = Color(red: 73/255, green: 73/255, blue: 73/255)
-    
     
     var body: some View {
         //        NavigationView{
@@ -105,6 +102,6 @@ struct Onboarding2: View {
 
 struct Onboarding2_Previews: PreviewProvider {
     static var previews: some View {
-        Onboarding2()
+        Onboarding2().environmentObject(AuthenticationViewModel())
     }
 }

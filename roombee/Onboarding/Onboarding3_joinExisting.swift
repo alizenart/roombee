@@ -10,10 +10,6 @@ import SwiftUI
 
 struct Onboarding3_joinExisting: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    
-    @State private var HiveCode = ""
-    @State private var email = ""
-    @State private var password = ""
     @Environment(\.dismiss) var dismiss
     
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
@@ -44,7 +40,7 @@ struct Onboarding3_joinExisting: View {
                             .font(.system(size: 20, weight : .bold))
                             .foregroundColor(.init(textColor))
                         
-                        TextField("", text: $HiveCode)
+                        TextField("", text: $authViewModel.hive_code)
                             .multilineTextAlignment(.center)
                             .padding()
                             .frame(width: 225, height: 50)
@@ -57,7 +53,7 @@ struct Onboarding3_joinExisting: View {
                             .cornerRadius(10)
                             .padding(.bottom, 10)
                         
-                        Button(action: signInWithEmailPassword) {
+                        Button(action: signUpWithEmailPassword) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -65,8 +61,13 @@ struct Onboarding3_joinExisting: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
-                        
-
+                        .alert(isPresented: $authViewModel.addUserError) {
+                            Alert(
+                                title: Text("Error"),
+                                message: Text(authViewModel.addUserErrorMessage),
+                                dismissButton: .default(Text("OK"))
+                            )
+                        }
                         
                     } //vstack (mini)
                     .padding()
@@ -90,9 +91,9 @@ struct Onboarding3_joinExisting: View {
         
     } //body
     
-    private func signInWithEmailPassword() {
+    private func signUpWithEmailPassword() {
         Task {
-            if await authViewModel.signInWithEmailPassword() == true {
+            if await authViewModel.signUpWithEmailPassword() == true {
                 dismiss()
             }
         }
@@ -115,6 +116,6 @@ struct Onboarding3_joinExisting: View {
 
 struct Onboarding3_joinExisting_Previews: PreviewProvider {
     static var previews: some View {
-        Onboarding3_joinExisting()
+        Onboarding3_joinExisting().environmentObject(AuthenticationViewModel())
     }
 }
