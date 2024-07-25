@@ -13,4 +13,4 @@ use roombee;
 -- DELETE FROM events;
 -- DELETE FROM events WHERE event_id = 12345;
 
-SELECT * FROM users;
+SELECT * FROM events;
