@@ -53,6 +53,8 @@
 		C739AD012BBE5398001378D3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD002BBE5398001378D3 /* EventViewModel.swift */; };
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
+		C7E9245D2BFC2D4200965547 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7E9245C2BFC2D4200965547 /* GoogleService-Info.plist */; };
+		C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FE5F632BE06F9E00161711 /* APIService.swift */; };
 		FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5554592C4460B50002E18F /* ToggleViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +103,8 @@
 		C739AD002BBE5398001378D3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventViewModel.swift; sourceTree = "<group>"; };
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		C7E9245C2BFC2D4200965547 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C7FE5F632BE06F9E00161711 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		FA5554592C4460B50002E18F /* ToggleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,6 +162,8 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+				C7FE5F632BE06F9E00161711 /* APIService.swift */,
+				3070E3762BF1BF4400C9CAAB /* Onboarding */,
 				4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
@@ -173,6 +179,7 @@
 				30AA0BC12AD1BC0800344002 /* roombee.entitlements */,
 				30AA0BC22AD1BC0800344002 /* Preview Content */,
 				30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */,
+				C7E9245C2BFC2D4200965547 /* GoogleService-Info.plist */,
 				68E7360E2BCDE08B00D94A95 /* HomepageContent.swift */,
 				4C2365B62C05366700D6FE49 /* NotificationService.swift */,
 				68E7360C2BCDDF0B00D94A95 /* SettingsView.swift */,
@@ -296,6 +303,7 @@
 			files = (
 				30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */,
 				30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */,
+				C7E9245D2BFC2D4200965547 /* GoogleService-Info.plist in Resources */,
 				4C2365B52BF6B37B00D6FE49 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,6 +317,7 @@
 			files = (
 				308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */,
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
+				C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */,
 				FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */,
 				4C2365B72C05366700D6FE49 /* NotificationService.swift in Sources */,
 				4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */,

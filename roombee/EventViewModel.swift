@@ -7,3 +7,6 @@
 //  Manages the state and logic w/ events in the calendar (fetch events from backend, interactions, edits, etc)
 
 import Foundation
+
+class EventViewModel: ObservableObject {
+}

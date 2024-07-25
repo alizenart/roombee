@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-struct CalendarEvent: Identifiable {
-    let id = UUID()
-    var dateEvent: Date
-    var startTimeCal: Date
-    var endTimeCal: Date
-    var title: String
-}
-
 var ourPurple = hexStringToUIColor(hex: "#381e38")
 
 class NewEventViewModel: ObservableObject {
@@ -44,6 +36,30 @@ struct NewEventView: View {
 
     
     var body: some View {
+//<<<<<<< HEAD
+//        NavigationView {
+//            Form {
+//                TextField("Title", text: $viewModel.title)
+//                DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+//                DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
+//            }
+//            .navigationTitle("New Event")
+////            .toolbar {
+////                ToolbarItem(placement: .navigationBarLeading) {
+////                    Button("Cancel") {
+////                        dismiss()
+////                    }
+////                }
+////                ToolbarItem(placement: .navigationBarTrailing) {
+////                    Button("Save") {
+////                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+////                        onSave(newEvent)
+////                        dismiss()
+////                    }
+////                }
+////            }
+//        }.onAppear()
+//=======
         ZStack {
             creamColor
             NavigationView {
@@ -77,7 +93,8 @@ struct NewEventView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Save") {
-                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
+                          let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+//                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
                             eventStore.addEvent(newEvent)
                             onSave(newEvent)
                             NotificationService.shared.scheduleNotification(for: newEvent)
@@ -113,7 +130,6 @@ struct CalendarView: View {
                 Text(title).bold()
                     .foregroundColor(toggleColor)
                 
-                
                 ScrollView {
                     ScrollViewReader {value in
                         
@@ -141,7 +157,17 @@ struct CalendarView: View {
             .padding()
         } //ZStack
         .cornerRadius(30)
+        .onAppear{
+          eventStore.getEvents()
+        }
+    }
+  //body
+    
+    func addNewEvent() {
+        
+
     }//body
+  
     func hourView(_ hour: Int) -> some View {
         let hourLabel = hour == 0 ? "12 AM" : (hour <= 12 ? "\(hour) AM" : "\(hour - 12) PM")
         return HStack {
@@ -185,21 +211,20 @@ struct CalendarView: View {
 //    }
     
     func eventCell(_ event: CalendarEvent) -> some View {
-        
-        let duration = event.endTimeCal.timeIntervalSince(event.startTimeCal)
+        let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startTimeCal)
-        let minute = calendar.component(.minute, from: event.startTimeCal)
+        let hour = calendar.component(.hour, from: event.startTime)
+        let minute = calendar.component(.minute, from: event.startTime)
         let offset = Double(hour-7) * (hourHeight)
         //                      + Double(minute)/60 ) * hourHeight
         
         print(hour, minute, Double(hour-7) + Double(minute)/60 )
         
         return VStack(alignment: .leading) {
-            Text(event.startTimeCal.formatted(.dateTime.hour().minute()))
-            Text(event.title).bold()
+            Text(event.startTime.formatted(.dateTime.hour().minute()))
+            Text(event.eventTitle).bold()
         }
         .font(.caption)
         .frame(maxWidth: .infinity, alignment: .leading)
