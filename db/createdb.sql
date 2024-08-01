@@ -16,6 +16,15 @@ CREATE TABLE users
 
 ALTER TABLE users AUTO_INCREMENT = 80001; -- starting value 
 
+CREATE TABLE todos
+(
+  user_id int not NULL,
+  todo_title varchar(64) not null,
+  todo_content varchar(128) not null,
+  todo_priority varchar(64) not null,
+  todo_category varchar(64) not null
+
+)
 
 CREATE TABLE events
 (
