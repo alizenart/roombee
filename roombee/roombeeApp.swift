@@ -54,6 +54,7 @@ struct roombeeApp: App {
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
+    @StateObject var toggleManager = ToggleViewModel()
     
     @State private var inviteLink: String = ""
     @State private var showInviteLinkPopup: Bool = false
