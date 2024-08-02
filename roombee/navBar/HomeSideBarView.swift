@@ -79,6 +79,30 @@ struct SettingsViewNav: View {
     }
 }
 
+struct AddRoommateViewNav: View {
+    @Binding var presentSideMenu: Bool
+    
+    var body: some View {
+        VStack{
+            HStack {
+                Button {
+                    presentSideMenu.toggle()}
+            label: {
+                Image("AddRoomateIcon")
+                    .resizable()
+                    .frame( width: 32, height: 32)
+                }
+                Spacer()
+            }
+            Spacer()
+            Text("Add Roommate")
+            Spacer()
+        }
+        .padding(.horizontal, 24)
+    }
+}
+
+
 struct SignOutViewNav: View {
     @Binding var presentSideMenu: Bool
     
@@ -95,7 +119,7 @@ struct SignOutViewNav: View {
                 Spacer()
             }
             Spacer()
-            Text("Sign OutBeta")
+            Text("Sign Out")
             Spacer()
         }
         .padding(.horizontal, 24)

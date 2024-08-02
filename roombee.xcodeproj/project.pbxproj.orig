@@ -165,9 +165,13 @@
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
 				C7FE5F632BE06F9E00161711 /* APIService.swift */,
 				3070E3762BF1BF4400C9CAAB /* Onboarding */,
 				4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */,
+=======
+				308936692C0D73AC003EBDF1 /* Info.plist */,
+>>>>>>> 8af22c1 (navBar edits, progress on join hive)
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */,
@@ -203,7 +207,11 @@
 				309D677C2BD0E3D700C343FF /* GenderPickerView.swift */,
 				308DFDD42BE869F600640B62 /* ContinueSignUp.swift */,
 				308DFDDA2BE9D73C00640B62 /* LoginViewModifiers */,
+<<<<<<< HEAD
 				4C2365B82C05624B00D6FE49 /* LocalNotification.swift */,
+=======
+				308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */,
+>>>>>>> 8af22c1 (navBar edits, progress on join hive)
 			);
 			path = roombee;
 			sourceTree = "<group>";

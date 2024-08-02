@@ -32,6 +32,8 @@ struct HomepageView: View {
     @EnvironmentObject var toggleManager: ToggleViewModel
     
     @State private var isActive: Bool = true
+    @State private var showInviteLinkPopup: Bool = false
+    @State private var inviteLink: String = ""
     
     @State var isInitialLoad = true
     
@@ -45,6 +47,12 @@ struct HomepageView: View {
     
     private func signOut() {
         authViewModel.signOut()
+    }
+    
+    private func addRoommate() {
+        inviteLink = "roombeeapp://invite?hive_code=\(authViewModel.hive_code)"
+        self.inviteLink = inviteLink
+        showInviteLinkPopup = true
     }
     
     var body: some View {
@@ -72,48 +80,12 @@ struct HomepageView: View {
                             .environmentObject(toggleManager)
                     case 1:
                         ToDoView()
-                        //                case 2:
-                        //                    SettingsView()
-                        //                        .environmentObject(EventStore())
-                        //                        .environmentObject(authManager)
-                        //                        .environmentObject(navManager)
                     case 2:
                         EmptyView()  // Use EmptyView or another placeholder.
                     default:
                         Text("Unknown Selection")
                     }
                 }
-                //                ScrollView {
-                //                    VStack {
-                //                        // Button("Sign Out", role: .cancel, action: signOut)
-                //                        Text("Roombee")
-                //                            .font(.largeTitle)
-                //                            .foregroundColor(ourOrange)
-                //                            .fontWeight(.bold)
-                //                            .padding(.top, 20)
-                //
-                //                        HStack(spacing: 20){
-                //                            yourStatus
-                //                            roomStatus
-                //                        }.padding(.horizontal, 40)
-                //                        //                        .padding(.bottom, 20)
-                //                            .padding(.top, 20)
-                //
-                //                        schedCara
-                //                            .padding()
-                //                        calGrid.padding([.leading, .trailing], 20)
-                //                    }
-                //                }
-                //            }.navigationBarItems(leading: Button(action: signOut) {
-                //                Text("Sign Out")
-                //                    .bold()
-                //                    .padding(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
-                //                    .foregroundColor(.black) // Set the text color to black
-                //                    .frame(maxWidth: .infinity, maxHeight: .infinity) // Maximize size within the button frame
-                //                    .background(toggleColor) // Set the background color to white
-                //                    .cornerRadius(5) // Optional: if you want rounded corners
-                //            })
-                //            .navigationBarTitleDisplayMode(.inline)
                 VStack {
                     HStack {
                         Button(action: {
@@ -140,8 +112,14 @@ struct HomepageView: View {
                 }
             }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
-                if newValue == 2 {
+                if newValue == 3 {
                     signOut()
+                    navManager.selectedSideMenuTab = 0
+                }
+            }
+            .onChange(of: navManager.selectedSideMenuTab) { newValue in
+                if newValue == 2 {
+                    addRoommate()
                     navManager.selectedSideMenuTab = 0
                 }
             }

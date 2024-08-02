@@ -42,7 +42,9 @@ struct roombeeApp: App {
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
+<<<<<<< HEAD
                 .environmentObject(toggleManager)
+=======
                 .onOpenURL { url in
                     handleCustomURL(url)
                 }
@@ -60,6 +62,7 @@ struct roombeeApp: App {
                     }
                 }
             }
+>>>>>>> 8af22c1 (navBar edits, progress on join hive)
         }
     }
 }
