@@ -68,8 +68,6 @@ struct SideMenuView: View {
                 .background(toggleColor) // Your custom toggle color
                 .offset(x: navManager.presentSideMenu ? 0 : -270)
                 .animation(.easeInOut(duration: 0.7), value: navManager.presentSideMenu)
-//                .shadow(radius: 10)
-
                 Spacer()
             }
             .frame(width: geometry.size.width, height: geometry.size.height+200)
