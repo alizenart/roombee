@@ -96,18 +96,7 @@ struct Onboarding3_CreateRoom: View {
                             .environmentObject(SelectedDateManager())){
                             EmptyView()
                         }
-                        
-                        //                            NavigationLink(destination: Onboarding2()) {
-                        //                                Text("Go Back")
-                        //                                    .font(.system(size : 20, weight: .bold))
-                        //                                    .frame(width: 125, height: 40, alignment: .center)
-                        //                                    .background(Color(red: 162 / 255, green: 154 / 255, blue: 165 / 255))
-                        //                                    .foregroundColor(.white)
-                        //                                    .cornerRadius(10)
-                        //                            }//button
-                        //                            .padding(.top, 10)
-                        
-                    } //vstack (mini)
+                    }
                     .padding()
                     .background(Rectangle()
                         .foregroundColor(.init(toggleColor))
@@ -126,18 +115,6 @@ struct Onboarding3_CreateRoom: View {
         
     } //body
     
-    
-    func GoBack() {
-        //going back to signup/login page
-    }
-    
-    func GoToGenerateCode() {
-        //create go to home logic
-    }
-    
-    func JoinRoom() {
-        //join room logic
-    }
     private func signUpWithEmailPassword() {
         Task {
             if await authViewModel.signUpWithEmailPassword() == true {

@@ -25,7 +25,6 @@ struct HomepageContent: View {
     let roomieUserId = "80002"
     @State private var pollingTimer: Timer?
 
-
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
@@ -56,7 +55,6 @@ struct HomepageContent: View {
                             yourStatus
                             roomStatus
                         }.padding(.horizontal, 40)
-                        //                        .padding(.bottom, 20)
                             .padding(.top, 20)
                         
                         schedCara.environmentObject(selectedDateManager)
@@ -247,7 +245,6 @@ struct DateToggle: View {
                 statusShape
                     .fill()
                     .foregroundColor(selectedDateManager.isDateSelected(date) ? highlightYellow : LighterPurple)  
-                //                .aspectRatio(1.0, contentMode: .fit)
                     .frame(width: 45, height: 60)
                 
                 VStack {

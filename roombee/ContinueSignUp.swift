@@ -19,14 +19,25 @@ struct ContinueSignUp: View {
             headerText
             form
             signUpButton
-            NavigationLink(destination: Onboarding2(), isActive: $shouldNavigate) { EmptyView() }
+            NavigationLink(destination: destinationView, isActive: $shouldNavigate) { EmptyView() }
         }
         .padding()
         .backgroundForm()
         .padding()
     }
 
-    
+    @ViewBuilder
+    private var destinationView: some View {
+        if viewModel.skipCreateOrJoin {
+            HomepageView()
+            .environmentObject(EventStore())
+            .environmentObject(viewModel)
+            .environmentObject(NavManager())
+            .environmentObject(SelectedDateManager())
+        } else {
+            Onboarding2()
+        }
+    }
 
     private var headerText: some View {
         Text("Create Profile")
