@@ -28,11 +28,12 @@ CREATE TABLE todos
 
 CREATE TABLE events
 (
+  -- event_id int not null, 
+  event_id VARCHAR(255) not null,
   user_id int not null, 
   event_title VARCHAR(255),
-  event_date DATE not null, 
-  start_time TIME not null, 
-  end_time TIME not null, 
+  start_time DATETIME not null, 
+  end_time DATETIME not null, 
   approved BOOL
 );
 

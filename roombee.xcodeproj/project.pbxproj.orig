@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		306820802AD1DEE100025437 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068207F2AD1DEE100025437 /* CalendarView.swift */; };
 		306820822AD1E26900025437 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306820812AD1E26900025437 /* GridView.swift */; };
+		308936682C0D6DEA003EBDF1 /* InviteLinkPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */; };
 		308DFDD52BE869F600640B62 /* ContinueSignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD42BE869F600640B62 /* ContinueSignUp.swift */; };
 		308DFDD72BE9D2E400640B62 /* TextFieldModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD62BE9D2E300640B62 /* TextFieldModifier.swift */; };
 		308DFDD92BE9D30700640B62 /* LabelStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDD82BE9D30700640B62 /* LabelStyleModifier.swift */; };
@@ -16,7 +17,6 @@
 		308DFDDF2BE9D8A700640B62 /* LabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDDE2BE9D8A700640B62 /* LabelStyle.swift */; };
 		308DFDE12BE9D95900640B62 /* FormLabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDE02BE9D95900640B62 /* FormLabelStyle.swift */; };
 		308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DFDE22BE9DB9F00640B62 /* BackgroundFormModifier.swift */; };
-		3095ED992C5C8B77005A2192 /* InviteLinkPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3095ED982C5C8B77005A2192 /* InviteLinkPopupView.swift */; };
 		3099890C2BFC7343005519F1 /* AWSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3099890B2BFC7343005519F1 /* AWSCore */; };
 		3099890E2BFC7343005519F1 /* AWSLambda in Frameworks */ = {isa = PBXBuildFile; productRef = 3099890D2BFC7343005519F1 /* AWSLambda */; };
 		309989112BFC7386005519F1 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 309989102BFC7386005519F1 /* FirebaseAnalytics */; };
@@ -32,10 +32,10 @@
 		30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BBF2AD1BC0800344002 /* Assets.xcassets */; };
 		30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */; };
 		30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */; };
+		4C2365B52BF6B37B00D6FE49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */; };
 		4C2365B72C05366700D6FE49 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B62C05366700D6FE49 /* NotificationService.swift */; };
 		4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B82C05624B00D6FE49 /* LocalNotification.swift */; };
 		4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */; };
-		4CE4E4242C5C47DA0070C378 /* TodoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */; };
 		680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE52BBF6463002B3642 /* Onboarding2.swift */; };
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
 		680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */; };
@@ -62,6 +62,8 @@
 /* Begin PBXFileReference section */
 		3068207F2AD1DEE100025437 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		306820812AD1E26900025437 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
+		308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteLinkPopupView.swift; sourceTree = "<group>"; };
+		308936692C0D73AC003EBDF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		308DFDD42BE869F600640B62 /* ContinueSignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueSignUp.swift; sourceTree = "<group>"; };
 		308DFDD62BE9D2E300640B62 /* TextFieldModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldModifier.swift; sourceTree = "<group>"; };
 		308DFDD82BE9D30700640B62 /* LabelStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelStyleModifier.swift; sourceTree = "<group>"; };
@@ -69,14 +71,13 @@
 		308DFDDE2BE9D8A700640B62 /* LabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelStyle.swift; sourceTree = "<group>"; };
 		308DFDE02BE9D95900640B62 /* FormLabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLabelStyle.swift; sourceTree = "<group>"; };
 		308DFDE22BE9DB9F00640B62 /* BackgroundFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFormModifier.swift; sourceTree = "<group>"; };
-		3095ED982C5C8B77005A2192 /* InviteLinkPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteLinkPopupView.swift; sourceTree = "<group>"; };
 		309D67702BCE478900C343FF /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		309D67722BCE4C6C00C343FF /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		309D67742BCE4E1600C343FF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		309D67762BCE4FFB00C343FF /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		309D677A2BD0D29C00C343FF /* DatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		309D677C2BD0E3D700C343FF /* GenderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderPickerView.swift; sourceTree = "<group>"; };
-		30AA0BB82AD1BC0400344002 /* roombee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = roombee.app; path = /Users/Adu/Documents/Roombee/roombee/build/Debug/roombee.app; sourceTree = "<absolute>"; };
+		30AA0BB82AD1BC0400344002 /* roombee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roombee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roombeeApp.swift; sourceTree = "<group>"; };
 		30AA0BBD2AD1BC0400344002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		30AA0BBF2AD1BC0800344002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -87,7 +88,6 @@
 		4C2365B62C05366700D6FE49 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		4C2365B82C05624B00D6FE49 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
-		4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoViewModel.swift; sourceTree = "<group>"; };
 		680FEBE52BBF6463002B3642 /* Onboarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2.swift; sourceTree = "<group>"; };
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
 		680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_joinExisting.swift; sourceTree = "<group>"; };
@@ -150,15 +150,28 @@
 			isa = PBXGroup;
 			children = (
 				30AA0BBA2AD1BC0400344002 /* roombee */,
+				30AA0BB92AD1BC0400344002 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		30AA0BB92AD1BC0400344002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30AA0BB82AD1BC0400344002 /* roombee.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		30AA0BBA2AD1BC0400344002 /* roombee */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
 				C7FE5F632BE06F9E00161711 /* APIService.swift */,
-				3095ED982C5C8B77005A2192 /* InviteLinkPopupView.swift */,
+				3070E3762BF1BF4400C9CAAB /* Onboarding */,
 				4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */,
+=======
+				308936692C0D73AC003EBDF1 /* Info.plist */,
+>>>>>>> 8af22c1 (navBar edits, progress on join hive)
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
 				4C2365B42BF6B37B00D6FE49 /* GoogleService-Info.plist */,
@@ -184,7 +197,6 @@
 				C739AD002BBE5398001378D3 /* EventViewModel.swift */,
 				306820812AD1E26900025437 /* GridView.swift */,
 				684DBD3F2BCF49BB009EE8DD /* Task.swift */,
-				4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */,
 				684DBD412BCF49C4009EE8DD /* ToDoView.swift */,
 				684DBD432BCF49C9009EE8DD /* AddToDoView.swift */,
 				309D67702BCE478900C343FF /* AuthenticationViewModel.swift */,
@@ -195,7 +207,11 @@
 				309D677C2BD0E3D700C343FF /* GenderPickerView.swift */,
 				308DFDD42BE869F600640B62 /* ContinueSignUp.swift */,
 				308DFDDA2BE9D73C00640B62 /* LoginViewModifiers */,
+<<<<<<< HEAD
 				4C2365B82C05624B00D6FE49 /* LocalNotification.swift */,
+=======
+				308936672C0D6DEA003EBDF1 /* InviteLinkPopupView.swift */,
+>>>>>>> 8af22c1 (navBar edits, progress on join hive)
 			);
 			path = roombee;
 			sourceTree = "<group>";
@@ -282,7 +298,7 @@
 				3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */,
 				3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
-			productRefGroup = 30AA0BAF2AD1BC0400344002;
+			productRefGroup = 30AA0BB92AD1BC0400344002 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -299,6 +315,7 @@
 				30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */,
 				30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */,
 				C7E9245D2BFC2D4200965547 /* GoogleService-Info.plist in Resources */,
+				4C2365B52BF6B37B00D6FE49 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,7 +349,6 @@
 				308DFDDD2BE9D88A00640B62 /* TextFieldStyle.swift in Sources */,
 				309D67712BCE478900C343FF /* AuthenticationViewModel.swift in Sources */,
 				4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */,
-				4CE4E4242C5C47DA0070C378 /* TodoViewModel.swift in Sources */,
 				680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */,
 				30AA0BBE2AD1BC0400344002 /* ContentView.swift in Sources */,
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
@@ -347,8 +363,8 @@
 				680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */,
 				309D677D2BD0E3D700C343FF /* GenderPickerView.swift in Sources */,
 				308DFDD72BE9D2E400640B62 /* TextFieldModifier.swift in Sources */,
+				308936682C0D6DEA003EBDF1 /* InviteLinkPopupView.swift in Sources */,
 				309D67732BCE4C6C00C343FF /* AuthenticationView.swift in Sources */,
-				3095ED992C5C8B77005A2192 /* InviteLinkPopupView.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
 				68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */,
 				68E7360D2BCDDF0B00D94A95 /* SettingsView.swift in Sources */,

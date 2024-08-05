@@ -32,10 +32,10 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
     func scheduleNotification(for event: CalendarEvent) {
         let content = UNMutableNotificationContent()
         content.title = "Upcoming Event"
-        content.body = "Your event \"\(event.title)\" is starting in 30 minutes."
+        content.body = "Your event \"\(event.eventTitle)\" is starting in 30 minutes."
         content.sound = UNNotificationSound.default
         
-        let triggerDate = Calendar.current.date(byAdding: .minute, value: -30, to: event.startTimeCal)!
+        let triggerDate = Calendar.current.date(byAdding: .minute, value: -30, to: event.startTime)!
         let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
         let request = UNNotificationRequest(identifier: event.id.uuidString, content: content, trigger: trigger)
