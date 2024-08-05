@@ -3,9 +3,12 @@
 import SwiftUI
 
 struct ToDoView: View {
+    @EnvironmentObject var todoManager: TodoViewModel
     @State private var tasks = Tasks.samples
     @State
     private var addpresent = false
+    let myUserId = "80003"
+    let roomieUserId = "80002"
     
     private func addview() {
         addpresent.toggle()
@@ -51,7 +54,10 @@ struct ToDoView: View {
                                             .fill(priorityColor(for: task.priority.rawValue))
                                             .frame(width: 50, height: 30)
                                             .overlay(Text(task.priority.rawValue))
-                                        
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(categoryColor(for: task.category.rawValue))
+                                            .frame(width: 50, height: 30)
+                                            .overlay(Text(task.category.rawValue))
                                         
                                     }
                                         .padding()
@@ -81,9 +87,7 @@ struct ToDoView: View {
                                         .font(.system(size: 45
                                                      ))
                                         .padding(.bottom, 5)
-                                    
                                 }
-                                
                             }
                             Spacer()
                         }
@@ -96,7 +100,10 @@ struct ToDoView: View {
                     }// sheet
                 }//vstack
             }//zstack
-        } // nav view
+        }
+        .onAppear(perform: {
+            print("")
+        })// nav view
     } // body
 
 }
@@ -124,6 +131,32 @@ func priorityValue(for priority: TaskPriority) -> Int {
         return 2
     }
 }
+
+func categoryColor(for category: TaskCategory) -> Int {
+    switch category {
+    case .none:
+        return 0
+    case .shopping:
+        return 1
+    case .chores:
+        return 2
+    }
+}
+
+func categoryColor(for category: String) -> Color {
+    switch category {
+    case "none":
+        return Color.blue
+    case "shopping":
+        return Color.orange
+    case "chores":
+        return Color.mint
+    default:
+        return Color.indigo
+    }
+}
+
+
 
 
 struct TodoView_Previews: PreviewProvider {

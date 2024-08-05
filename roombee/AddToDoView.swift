@@ -81,8 +81,10 @@ struct AddToDoView: View {
     var newToDo = Tasks(title:"", priority:.low, category: .none)
     var onCommit: (_ newToDo: Tasks) -> Void
     let options = ["low", "medium", "urgent"]
+    let categoryOptions = ["none", "shopping", "chores"]
     @State
     private var selectedOption = 0
+    @State var selectedCategory = 0
     
     @Environment(\.dismiss)
     private var dismiss
@@ -115,6 +117,24 @@ struct AddToDoView: View {
                                 Text(self.options[index]).tag(index)
                                     .frame(minHeight: 50, alignment: .center)
                             }
+                        }
+                        Picker(selection: $selectedCategory, label:Text("")) {
+                                                        ForEach(0..<categoryOptions.count) { index in
+                                                            Text(self.categoryOptions[index]).tag(index)
+                                                                .frame(minHeight: 50, alignment: .center)
+                                                        }
+                                                    }
+                    }
+                    .onChange(of: selectedCategory) {newValue in
+                        switch newValue {
+                        case 0:
+                            newToDo.category = .none
+                        case 1:
+                            newToDo.category = .shopping
+                        case 2:
+                            newToDo.category = .chores
+                        default:
+                            break
                         }
                     }
                     .onChange(of: selectedOption) { newValue in

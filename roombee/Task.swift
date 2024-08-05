@@ -40,7 +40,7 @@ struct Tasks: Identifiable, Hashable, Equatable {
 
 extension Tasks {
     static let samples: [Tasks] = [
-        Tasks(title: "Groceries", priority: .low, category: .shopping),
+        Tasks(title: "Groceries", priority: .low, category: .none),
   ]
 }
 
@@ -50,8 +50,8 @@ enum TaskPriority:String {
     case high = "high"
 }
 
-enum TaskCategory {
-    case shopping
-    case chores
-    case none
+enum TaskCategory: String {
+    case none = "none"
+    case shopping = "buy"
+    case chores = "chore"
 }
