@@ -169,7 +169,17 @@ struct CalendarView: View {
     }//body
   
     func hourView(_ hour: Int) -> some View {
-        let hourLabel = hour == 0 ? "12 AM" : (hour <= 12 ? "\(hour) AM" : "\(hour - 12) PM")
+        let hourLabel: String
+        if hour == 0 {
+            hourLabel = "12 AM"
+        } else if hour == 12 {
+            hourLabel = "12 PM"
+        } else if hour < 12 {
+            hourLabel = "\(hour) AM"
+        } else {
+            hourLabel = "\(hour - 12) PM"
+        }
+        
         return HStack {
             Text(hourLabel)
                 .font(.caption)
@@ -209,12 +219,9 @@ struct CalendarView: View {
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startTime)
-        let minute = calendar.component(.minute, from: event.startTime)
-        let offset = Double(hour-7) * (hourHeight)
-        //                      + Double(minute)/60 ) * hourHeight
-        
-        print(hour, minute, Double(hour-7) + Double(minute)/60 )
+        let startHour = calendar.component(.hour, from: event.startTime)
+        let startMinute = calendar.component(.minute, from: event.startTime)
+        let offset = (Double(startHour) + Double(startMinute) / 60.0) * hourHeight
         
         return VStack(alignment: .leading) {
             Text(event.startTime.formatted(.dateTime.hour().minute()))
