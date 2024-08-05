@@ -16,6 +16,8 @@ class APIService {
 //  !! its not under this path right now
   static let addEventEndpoint = "/event"
   
+    
+    
 //  completion(handler) allows func to run async, we can load the rest of the page
   func fetchEvents(completion: @escaping ([CalendarEvent]?, Error?) -> Void) {
 //    var events: [CalendarEvent]
@@ -30,29 +32,22 @@ class APIService {
         completion(nil, error)
         return
       }
+    
+        if let rawString = String(data: data, encoding: .utf8) {
+            print("Raw data from server: \(rawString)")
+        }
       
-      do {
-        print("json string data: \(String(data: data, encoding: .utf8))")
-        // Parse JSON data
-        if let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
-            var events: [CalendarEvent] = []
-            for jsonObject in jsonArray {
-              if let event = CalendarEvent(from: jsonObject) {
-                print("successfully parsed event: \(event)")
-                events.append(event)
-              }
-            }
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .formatted(DateFormatter.custom)
+            let events = try decoder.decode([CalendarEvent].self, from: data)
             DispatchQueue.main.async {
                 completion(events, nil)
             }
-        } else {
-          print("error in parsing")
-            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data format error"])
+        } catch {
+            print("Error decoding JSON: \(error)")
+            completion(nil, error)
         }
-      } catch {
-        print("error caught")
-        completion(nil, error)
-      }
     }.resume()
   }
   
@@ -105,3 +100,12 @@ class APIService {
   }
 }
 
+extension DateFormatter {
+    static var custom: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }
+}

@@ -73,7 +73,7 @@ struct HomepageView: View {
                                 yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad),
                                 roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
                             )
-                            .environmentObject(EventStore())
+                            .environmentObject(eventStore)
                             .environmentObject(authViewModel)
                             .environmentObject(navManager)
                             .environmentObject(selectedDateManager)

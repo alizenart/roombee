@@ -159,14 +159,11 @@ struct CalendarView: View {
         .cornerRadius(30)
         .onAppear{
           eventStore.getEvents()
+          print("event get events called")
         }
     }
   //body
     
-    func addNewEvent() {
-        
-
-    }//body
   
     func hourView(_ hour: Int) -> some View {
         let hourLabel: String
@@ -215,6 +212,8 @@ struct CalendarView: View {
     }
     
     func eventCell(_ event: CalendarEvent) -> some View {
+        print("Displaying event: \(event.eventTitle)")
+        
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
