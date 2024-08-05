@@ -141,7 +141,7 @@ struct CalendarView: View {
                                 }
                             }
                             
-                            ForEach(eventStore.events) { event in
+                            ForEach(filteredEvents) { event in
                                 eventCell(event)
                             }
                         }
@@ -164,7 +164,16 @@ struct CalendarView: View {
     }
   //body
     
-  
+    var filteredEvents: [CalendarEvent] {
+        let selectedDate = selectedDateManager.SelectedDate
+        let calendar = Calendar.current
+        return eventStore.events.filter { event in
+            let eventDate = calendar.startOfDay(for: event.startTime)
+            let selectedDay = calendar.startOfDay(for: selectedDate)
+            return eventDate == selectedDay
+        }
+    }
+    
     func hourView(_ hour: Int) -> some View {
         let hourLabel: String
         if hour == 0 {
