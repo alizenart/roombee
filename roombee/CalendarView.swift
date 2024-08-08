@@ -144,6 +144,7 @@ struct CalendarView: View {
                             ForEach(filteredEvents) { event in
                                 eventCell(event)
                             }
+                            
                         }
                         .onAppear {
                             // Scroll to 7 AM initially
@@ -232,21 +233,31 @@ struct CalendarView: View {
         let offset = (Double(startHour) + Double(startMinute) / 60.0) * hourHeight
         
         return VStack(alignment: .leading) {
-            Text(event.startTime.formatted(.dateTime.hour().minute()))
-            Text(event.eventTitle).bold()
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(event.startTime.formatted(.dateTime.hour().minute()))
+                    Text(event.eventTitle).bold()
+                }
+                Spacer()
+                Button(action: {
+                    eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
+                }) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.white)
+                }
+            }
+            .font(.caption)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(4)
+            .frame(height: height, alignment: .top)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LighterPurple)
+            )
+            .padding(.trailing, 30)
+            .padding(.leading, 50)
+            .offset(x: 30, y: offset + 24)
         }
-        .font(.caption)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(4)
-        .frame(height: height, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(LighterPurple)
-        )
-        .padding(.trailing, 30)
-        .padding(.leading, 50)
-
-        .offset(x: 30, y: offset + 24)
     }
 }
 

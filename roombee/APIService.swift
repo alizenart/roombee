@@ -15,8 +15,45 @@ class APIService {
   static let getEventsEndpoint = "/event/?user_id=0"
 //  !! its not under this path right now
   static let addEventEndpoint = "/event"
-  
+  static let deleteEventEndpoint = "/event"
     
+    // Delete an event from the server
+    func deleteEvent(eventId: String, completion: @escaping (Bool, Error?) -> Void) {
+        var urlComponents = URLComponents(string: APIService.baseURL + APIService.deleteEventEndpoint)
+        urlComponents?.queryItems = [URLQueryItem(name: "event_id", value: eventId)]
+        
+        guard let url = urlComponents?.url else {
+            completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil else {
+                completion(false, error)
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to delete event"]))
+                if let responseData = data, let responseString = String(data: responseData, encoding: .utf8) {
+                    print("Response body: \(responseString)")
+                }
+                return
+            }
+            
+            print("Successfully deleted event with id: \(eventId)")
+            DispatchQueue.main.async {
+                completion(true, nil)
+            }
+        }.resume()
+    }
+    
+    
+  
+
     
 //  completion(handler) allows func to run async, we can load the rest of the page
   func fetchEvents(completion: @escaping ([CalendarEvent]?, Error?) -> Void) {

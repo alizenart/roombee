@@ -112,4 +112,17 @@ class EventStore: ObservableObject {
     
     print("events array! \(events)")
   }
+    
+    func deleteEvent(eventId: String) {
+            APIService.shared.deleteEvent(eventId: eventId) { [weak self] success, error in
+                if success {
+                    DispatchQueue.main.async {
+                        self?.events.removeAll { $0.id.uuidString == eventId }
+                        print("Event deleted successfully.")
+                    }
+                } else if let error = error {
+                    print("Failed to delete event: ", error.localizedDescription)
+                }
+            }
+        }
 }
