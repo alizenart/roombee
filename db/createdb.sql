@@ -22,7 +22,8 @@ CREATE TABLE todos
   todo_title varchar(64) not null,
   todo_content varchar(128) not null,
   todo_priority varchar(64) not null,
-  todo_category varchar(64) not null
+  todo_category varchar(64) not null,
+  todo_status varchar(64) not null
 
 )
 
