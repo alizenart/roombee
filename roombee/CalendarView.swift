@@ -147,7 +147,7 @@ struct CalendarView: View {
                                     let eventWidth = maxEventWidth - CGFloat(group.firstIndex(of: event)! * 10)
                                     eventCell(event, width: eventWidth)
                                         .frame(alignment: .trailing)
-                                        .padding(1)
+//                                        .padding(1)
                                 }
                             }
                             
@@ -239,7 +239,10 @@ struct CalendarView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(event.startTime.formatted(.dateTime.hour().minute()))
+                        .foregroundColor(.black)
                     Text(event.eventTitle).bold()
+                        .foregroundColor(.black)
+                    
                 }
                 Spacer()
                 Button(action: {
@@ -249,30 +252,32 @@ struct CalendarView: View {
                         .foregroundColor(.white)
                 }
             }
+            //            .font(.caption)
+            //            .frame(maxWidth: .infinity, alignment: .leading)
+            //            .padding(4)
+            //            .frame(height: height, alignment: .top)
+            //            .background(
+            //                RoundedRectangle(cornerRadius: 8)
+            //                    .fill(LighterPurple)
+            //            )
+            //            .padding(.leading, 60) // Add padding on the right
+            //            .offset(y: offsetY + 24)
+            //            .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
+            //        } //returning vstack
+            //    }//eventCell
             .font(.caption)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(width: width, alignment: .topLeading) // Align to the right
             .padding(4)
             .frame(height: height, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(LighterPurple)
             )
-            .padding(.trailing, 30)
-            .padding(.leading, 50)
-            .offset(x: 30, y: offset + 24)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
+            .padding(.leading, 60) // Add padding on the right
+            .offset(y: offsetY + 24)
+            .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
         }
-        .font(.caption)
-        .frame(width: width, alignment: .topLeading) // Align to the right
-        .padding(4)
-        .frame(height: height, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(LighterPurple)
-        )
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
-        .padding(.leading, 60) // Add padding on the right
-        .offset(y: offsetY + 24)
-        .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
     }
     
     
@@ -282,19 +287,13 @@ struct CalendarView: View {
         
         for event in sortedEvents {
             var addedToGroup = false
-            for groupIndex in groups.indices {
-                // Check if the event overlaps with any event in the group
-                let overlapsWithGroup = groups[groupIndex].contains { $0.startTime < event.endTime && $0.endTime > event.startTime }
-                
-                // If it overlaps, add it to the group
-                if overlapsWithGroup {
-                    groups[groupIndex].append(event)
+            for group in groups.indices {
+                if groups[group].contains(where: { $0.startTime < event.endTime && $0.endTime > event.startTime }) {
+                    groups[group].append(event)
                     addedToGroup = true
                     break
                 }
             }
-            
-            // If the event wasn't added to any group, create a new group
             if !addedToGroup {
                 groups.append([event])
             }
@@ -308,13 +307,6 @@ struct CalendarView: View {
         return groups
     }
 }
-
-//struct EventGroup: Identifiable {
-//    var id = UUID()
-//    var events: [CalendarEvent]
-//    var index: Int
-//    var maxOverlap: Int
-//}
 
 
 func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: Int = 0) -> Date {
