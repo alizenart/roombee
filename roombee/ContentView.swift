@@ -6,6 +6,7 @@ struct ContentView: View {
     @StateObject var selectedDate = SelectedDateManager()
     @StateObject var toggleManager = ToggleViewModel()
     @StateObject var eventStore = EventStore()
+    @StateObject var todoManager = TodoViewModel()
     @State private var isTimerDone = false
     
 
@@ -23,6 +24,7 @@ struct ContentView: View {
             .environmentObject(navManager)
             .environmentObject(selectedDate)
             .environmentObject(toggleManager)
+            .environmentObject(todoManager)
 
         case .authenticating, .unauthenticated:
             if isTimerDone {

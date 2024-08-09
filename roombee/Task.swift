@@ -7,28 +7,47 @@
 
 import Foundation
 
-struct Tasks: Identifiable, Hashable, Equatable {
-    let id = UUID()
-    var title: String
-    var status = false
-    var priority: TaskPriority
-    var category: TaskCategory
+struct Tasks: Identifiable, Hashable, Codable {
+    var id = UUID()
+    var todoTitle = ""
+    var todoContent = ""
+    var todoPriority: String
+    var todoCategory: String
+    var status: Int
+    var userId: String
+
+    init(from toDoInfo: ToDoInfo) {
+        
+        self.todoTitle = toDoInfo.todoTitle
+        self.todoContent = toDoInfo.todoContent
+        self.todoPriority = toDoInfo.todoPriority
+        self.todoCategory = toDoInfo.todoCategory
+        self.status = toDoInfo.todoStatus
+        self.userId = toDoInfo.userId
+    }
+    
+    init(todoTitle:String, todoContent:String, todoPriority: String, todoCategory: String) {
+        self.todoTitle = todoTitle
+        self.todoContent = todoContent
+        self.todoPriority = todoPriority
+        self.todoCategory = todoCategory
+        self.status = 0
+        self.userId = "80003"
+    }
 }
 
 extension Tasks {
-    static let samples: [Tasks] = [
-        Tasks(title: "Groceries", priority: .low, category: .shopping),
-  ]
+    static let samples: [Tasks] = []
 }
 
-enum TaskPriority:String {
+enum todoPriority:String {
     case low = "low"
     case medium = "med"
     case high = "high"
 }
 
-enum TaskCategory {
-    case shopping
-    case chores
-    case none
+enum todoCategory: String {
+    case none = "none"
+    case shopping = "buy"
+    case chores = "chore"
 }
