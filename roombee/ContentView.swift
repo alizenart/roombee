@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     @StateObject var toggleManager = ToggleViewModel()
+    @StateObject var eventStore = EventStore()
     @StateObject var todoManager = TodoViewModel()
     @State private var isTimerDone = false
     
@@ -18,7 +19,7 @@ struct ContentView: View {
                     NotificationService.shared.requestPerm()
                 })
              */
-            .environmentObject(EventStore())
+            .environmentObject(eventStore)
             .environmentObject(viewModel)
             .environmentObject(navManager)
             .environmentObject(selectedDate)

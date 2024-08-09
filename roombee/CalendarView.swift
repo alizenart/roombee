@@ -117,9 +117,10 @@ struct CalendarView: View {
     var title: String
     @State private var showingAddEventSheet = false
     @State private var initialScrollOffset: CGFloat?
-
+    
     
     let hourHeight = 50.0
+    let maxEventWidth: CGFloat = 250.0
     
     var body: some View {
         ZStack{
@@ -141,9 +142,15 @@ struct CalendarView: View {
                                 }
                             }
                             
-                            ForEach(eventStore.events) { event in
-                                eventCell(event)
+                            ForEach(groupedEvents(), id: \.self) { group in
+                                ForEach(group, id: \.id) { event in
+                                    let eventWidth = maxEventWidth - CGFloat(group.firstIndex(of: event)! * 10)
+                                    eventCell(event, width: eventWidth)
+                                        .frame(alignment: .trailing)
+//                                        .padding(1)
+                                }
                             }
+                            
                         }
                         .onAppear {
                             // Scroll to 7 AM initially
@@ -157,19 +164,34 @@ struct CalendarView: View {
             .padding()
         } //ZStack
         .cornerRadius(30)
-        .onAppear{
-          eventStore.getEvents()
+        .onAppear {
+            eventStore.getEvents()
+            print("event get events called")
         }
     }
-  //body
     
-    func addNewEvent() {
-        
-
-    }//body
-  
+    var filteredEvents: [CalendarEvent] {
+        let selectedDate = selectedDateManager.SelectedDate
+        let calendar = Calendar.current
+        return eventStore.events.filter { event in
+            let eventDate = calendar.startOfDay(for: event.startTime)
+            let selectedDay = calendar.startOfDay(for: selectedDate)
+            return eventDate == selectedDay
+        }
+    }
+    
     func hourView(_ hour: Int) -> some View {
-        let hourLabel = hour == 0 ? "12 AM" : (hour <= 12 ? "\(hour) AM" : "\(hour - 12) PM")
+        let hourLabel: String
+        if hour == 0 {
+            hourLabel = "12 AM"
+        } else if hour == 12 {
+            hourLabel = "12 PM"
+        } else if hour < 12 {
+            hourLabel = "\(hour) AM"
+        } else {
+            hourLabel = "\(hour - 12) PM"
+        }
+        
         return HStack {
             Text(hourLabel)
                 .font(.caption)
@@ -204,34 +226,85 @@ struct CalendarView: View {
         .padding()
     }
     
-    func eventCell(_ event: CalendarEvent) -> some View {
+    func eventCell(_ event: CalendarEvent, width: CGFloat) -> some View {
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: event.startTime)
-        let minute = calendar.component(.minute, from: event.startTime)
-        let offset = Double(hour-7) * (hourHeight)
-        //                      + Double(minute)/60 ) * hourHeight
-        
-        print(hour, minute, Double(hour-7) + Double(minute)/60 )
+        let startHour = calendar.component(.hour, from: event.startTime)
+        let startMinute = calendar.component(.minute, from: event.startTime)
+        let offsetY = (Double(startHour) + Double(startMinute) / 60.0) * hourHeight
         
         return VStack(alignment: .leading) {
-            Text(event.startTime.formatted(.dateTime.hour().minute()))
-            Text(event.eventTitle).bold()
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(event.startTime.formatted(.dateTime.hour().minute()))
+                        .foregroundColor(.black)
+                    Text(event.eventTitle).bold()
+                        .foregroundColor(.black)
+                    
+                }
+                Spacer()
+                Button(action: {
+                    eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
+                }) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.white)
+                }
+            }
+            //            .font(.caption)
+            //            .frame(maxWidth: .infinity, alignment: .leading)
+            //            .padding(4)
+            //            .frame(height: height, alignment: .top)
+            //            .background(
+            //                RoundedRectangle(cornerRadius: 8)
+            //                    .fill(LighterPurple)
+            //            )
+            //            .padding(.leading, 60) // Add padding on the right
+            //            .offset(y: offsetY + 24)
+            //            .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
+            //        } //returning vstack
+            //    }//eventCell
+            .font(.caption)
+            .frame(width: width, alignment: .topLeading) // Align to the right
+            .padding(4)
+            .frame(height: height, alignment: .top)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LighterPurple)
+            )
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
+            .padding(.leading, 60) // Add padding on the right
+            .offset(y: offsetY + 24)
+            .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
         }
-        .font(.caption)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(4)
-        .frame(height: height, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(LighterPurple)
-        )
-        .padding(.trailing, 30)
-        .padding(.leading, 50)
-
-        .offset(x: 30, y: offset + 24)
+    }
+    
+    
+    func groupedEvents() -> [[CalendarEvent]] {
+        var groups: [[CalendarEvent]] = []
+        let sortedEvents = eventStore.events.sorted { $0.startTime < $1.startTime }
+        
+        for event in sortedEvents {
+            var addedToGroup = false
+            for group in groups.indices {
+                if groups[group].contains(where: { $0.startTime < event.endTime && $0.endTime > event.startTime }) {
+                    groups[group].append(event)
+                    addedToGroup = true
+                    break
+                }
+            }
+            if !addedToGroup {
+                groups.append([event])
+            }
+        }
+        
+        // Sort each group by duration (longest first)
+        for i in groups.indices {
+            groups[i].sort { ($0.endTime.timeIntervalSince($0.startTime)) > ($1.endTime.timeIntervalSince($1.startTime)) }
+        }
+        
+        return groups
     }
 }
 
