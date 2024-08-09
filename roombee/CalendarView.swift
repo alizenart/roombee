@@ -117,9 +117,10 @@ struct CalendarView: View {
     var title: String
     @State private var showingAddEventSheet = false
     @State private var initialScrollOffset: CGFloat?
-
+    
     
     let hourHeight = 50.0
+    let maxEventWidth: CGFloat = 250.0
     
     var body: some View {
         ZStack{
@@ -141,8 +142,13 @@ struct CalendarView: View {
                                 }
                             }
                             
-                            ForEach(filteredEvents) { event in
-                                eventCell(event)
+                            ForEach(groupedEvents(), id: \.self) { group in
+                                ForEach(group, id: \.id) { event in
+                                    let eventWidth = maxEventWidth - CGFloat(group.firstIndex(of: event)! * 10)
+                                    eventCell(event, width: eventWidth)
+                                        .frame(alignment: .trailing)
+                                        .padding(1)
+                                }
                             }
                             
                         }
@@ -158,12 +164,11 @@ struct CalendarView: View {
             .padding()
         } //ZStack
         .cornerRadius(30)
-        .onAppear{
-          eventStore.getEvents()
-          print("event get events called")
+        .onAppear {
+            eventStore.getEvents()
+            print("event get events called")
         }
     }
-  //body
     
     var filteredEvents: [CalendarEvent] {
         let selectedDate = selectedDateManager.SelectedDate
@@ -221,16 +226,14 @@ struct CalendarView: View {
         .padding()
     }
     
-    func eventCell(_ event: CalendarEvent) -> some View {
-        print("Displaying event: \(event.eventTitle)")
-        
+    func eventCell(_ event: CalendarEvent, width: CGFloat) -> some View {
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
         let calendar = Calendar.current
         let startHour = calendar.component(.hour, from: event.startTime)
         let startMinute = calendar.component(.minute, from: event.startTime)
-        let offset = (Double(startHour) + Double(startMinute) / 60.0) * hourHeight
+        let offsetY = (Double(startHour) + Double(startMinute) / 60.0) * hourHeight
         
         return VStack(alignment: .leading) {
             HStack {
@@ -258,8 +261,60 @@ struct CalendarView: View {
             .padding(.leading, 50)
             .offset(x: 30, y: offset + 24)
         }
+        .font(.caption)
+        .frame(width: width, alignment: .topLeading) // Align to the right
+        .padding(4)
+        .frame(height: height, alignment: .top)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(LighterPurple)
+        )
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
+        .padding(.leading, 60) // Add padding on the right
+        .offset(y: offsetY + 24)
+        .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
+    }
+    
+    
+    func groupedEvents() -> [[CalendarEvent]] {
+        var groups: [[CalendarEvent]] = []
+        let sortedEvents = eventStore.events.sorted { $0.startTime < $1.startTime }
+        
+        for event in sortedEvents {
+            var addedToGroup = false
+            for groupIndex in groups.indices {
+                // Check if the event overlaps with any event in the group
+                let overlapsWithGroup = groups[groupIndex].contains { $0.startTime < event.endTime && $0.endTime > event.startTime }
+                
+                // If it overlaps, add it to the group
+                if overlapsWithGroup {
+                    groups[groupIndex].append(event)
+                    addedToGroup = true
+                    break
+                }
+            }
+            
+            // If the event wasn't added to any group, create a new group
+            if !addedToGroup {
+                groups.append([event])
+            }
+        }
+        
+        // Sort each group by duration (longest first)
+        for i in groups.indices {
+            groups[i].sort { ($0.endTime.timeIntervalSince($0.startTime)) > ($1.endTime.timeIntervalSince($1.startTime)) }
+        }
+        
+        return groups
     }
 }
+
+//struct EventGroup: Identifiable {
+//    var id = UUID()
+//    var events: [CalendarEvent]
+//    var index: Int
+//    var maxOverlap: Int
+//}
 
 
 func dateFrom(_ day: Int, _ month: Int, _ year: Int, _ hour: Int = 0, _ minute: Int = 0) -> Date {
