@@ -283,7 +283,7 @@ struct CalendarView: View {
     
     func groupedEvents() -> [[CalendarEvent]] {
         var groups: [[CalendarEvent]] = []
-        let sortedEvents = eventStore.events.sorted { $0.startTime < $1.startTime }
+        let sortedEvents = filteredEvents.sorted { $0.startTime < $1.startTime }
         
         for event in sortedEvents {
             var addedToGroup = false
