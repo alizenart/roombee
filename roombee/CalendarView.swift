@@ -95,7 +95,6 @@ struct NewEventView: View {
                         Button("Save") {
                           let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
 //                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
-                            eventStore.addEvent(newEvent)
                             onSave(newEvent)
                             NotificationService.shared.scheduleNotification(for: newEvent)
                             dismiss()
