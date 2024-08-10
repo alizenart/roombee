@@ -134,21 +134,40 @@ extension AuthenticationViewModel {
             return false
         }
     }
+    func validatePassword(_ password: String) -> Bool {
+        let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$")
+        return passwordRegex.evaluate(with: password)
+    }
     
     func signUpWithEmailPassword() async -> Bool {
+        
+        guard validatePassword(password) else {
+            errorMessage = "Does not meet password requirements"
+            authenticationState = .unauthenticated
+            return false
+        }
+        
         authenticationState = .authenticating
-        do  {
+        do {
             try await Auth.auth().createUser(withEmail: email, password: password)
             addUserLambda()
             return true
-        }
-        catch {
-            print(error)
-            errorMessage = error.localizedDescription
+        } catch let error as NSError {
+            if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
+                switch authErrorCode {
+                case .emailAlreadyInUse:
+                    errorMessage = "The email address is already in use."
+                default:
+                    errorMessage = error.localizedDescription
+                }
+            } else {
+                errorMessage = error.localizedDescription
+            }
             authenticationState = .unauthenticated
             return false
         }
     }
+        
     
     func signOut() {
         do {
