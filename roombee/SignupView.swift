@@ -5,7 +5,6 @@ struct SignupView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @State private var shouldNavigate = false
     @State private var showingPasswordAlert = false
-    @State private var showingErrorAlert = false
     
     var body: some View {
         ZStack {
@@ -22,9 +21,6 @@ struct SignupView: View {
                 .cornerRadius(15)
                 .shadow(radius: 15))
             .padding()
-        }
-        .alert(isPresented: $showingErrorAlert) {
-            Alert(title: Text("Oops!"), message: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
         }
     }
     
@@ -46,28 +42,25 @@ struct SignupView: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
             FormLabelStyle(text: "Password")
-            SecureInputField(text: $viewModel.password)
-                        .padding()
-            PasswordGuidelinesView(password: $viewModel.password)
-                .padding(.bottom, 10)
+            SecureField("", text: $viewModel.password)
+                .modifier(TextFieldStyle())
+                .textContentType(.oneTimeCode)
+                .padding()
             FormLabelStyle(text: "Confirm Password")
-            SecureInputField(text: $viewModel.password)
-                        .padding()
+            SecureField("", text: $viewModel.confirmPassword)
+                .modifier(TextFieldStyle())
+                .textContentType(.oneTimeCode)
+                .padding()
         }
     }
     
     var continueButton: some View {
         Button(action: {
-            Task {
-                if (viewModel.isValid && (viewModel.password == viewModel.confirmPassword)) {
-                    if await viewModel.signUpWithEmailPassword() {
-                        shouldNavigate = true
-                    } else {
-                        showingErrorAlert = true
-                    }
-                } else {
-                    showingPasswordAlert = true
-                }
+            if (viewModel.isValid && (viewModel.password == viewModel.confirmPassword)) {
+                shouldNavigate = true
+            }
+            else {
+                showingPasswordAlert = true
             }
         }) {
             if viewModel.authenticationState != .authenticating {
@@ -86,7 +79,7 @@ struct SignupView: View {
         .buttonStyle(.borderedProminent)
         .padding()
         .alert("Passwords do not match", isPresented: $showingPasswordAlert) {
-            Button("OK", role: .cancel) { }
+                Button("OK", role: .cancel) { }
         }
     }
 }
@@ -101,82 +94,4 @@ struct SignupView_Previews: PreviewProvider {
         .environmentObject(AuthenticationViewModel())
     }
 }
-
-struct PasswordGuidelinesView: View {
-    @Binding var password: String
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Password must include:")
-                .font(.headline)
-                .padding(.bottom, 5)
-            
-            PasswordRequirementView(isMet: password.count >= 8, text: "At least 8 characters")
-            PasswordRequirementView(isMet: containsUppercase, text: "At least one uppercase letter (A-Z)")
-            PasswordRequirementView(isMet: containsLowercase, text: "At least one lowercase letter (a-z)")
-            PasswordRequirementView(isMet: containsDigit, text: "At least one digit (0-9)")
-            PasswordRequirementView(isMet: containsSpecialCharacter, text: "At least one special character (e.g., !@#$%^&*)")
-        }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
-    }
-    
-    // Password validation checks
-    private var containsUppercase: Bool {
-        password.rangeOfCharacter(from: .uppercaseLetters) != nil
-    }
-    
-    private var containsLowercase: Bool {
-        password.rangeOfCharacter(from: .lowercaseLetters) != nil
-    }
-    
-    private var containsDigit: Bool {
-        password.rangeOfCharacter(from: .decimalDigits) != nil
-    }
-    
-    private var containsSpecialCharacter: Bool {
-        let specialCharacterSet = CharacterSet(charactersIn: "!@#$%^&*")
-        return password.rangeOfCharacter(from: specialCharacterSet) != nil
-    }
-}
-struct PasswordRequirementView: View {
-    var isMet: Bool
-    var text: String
-    
-    var body: some View {
-        HStack(spacing: 3) {  // Very tight spacing between the icon and text
-            Image(systemName: isMet ? "checkmark" : "circle")
-                .foregroundColor(isMet ? Color.gray.opacity(0.5) : Color.gray.opacity(0.3))
-                .imageScale(.small)  // Smaller icon size
-            Text(text)
-                .foregroundColor(isMet ? Color.gray.opacity(0.7) : Color.primary.opacity(0.6))
-                .font(.footnote)  // Smaller text size
-        }
-        .padding(.vertical, 0.5)  // Minimal vertical padding
-    }
-}
-
-struct SecureInputField: View {
-    @Binding var text: String
-    @State private var isSecure: Bool = true
-
-    var body: some View {
-        HStack {
-            if isSecure {
-                SecureField("", text: $text)
-            } else {
-                TextField("", text: $text)
-            }
-            Button(action: {
-                isSecure.toggle()
-            }) {
-                Image(systemName: isSecure ? "eye.slash.fill" : "eye.fill")
-                    .foregroundColor(Color.gray.opacity(0.7))
-            }
-        }
-        .modifier(TextFieldStyle())
-        .padding(.trailing, 10)
-    }
-}
-
 
