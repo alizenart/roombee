@@ -159,6 +159,7 @@ struct HomepageView: View {
                 DispatchQueue.main.async {
                     roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
+                    print(toggles.first)
                     print("Fetched toggle states for user \(userId):")
                     print("isSleeping: \(roomieStatusToggleSleeping)")
                     print("inRoom: \(roomieStatusToggleInRoom)")

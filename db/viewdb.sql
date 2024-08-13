@@ -1,3 +1,4 @@
+
 use roombee;
 
 -- INSERT INTO events(event_id, user_id, event_title, start_time, end_time, approved) VALUES
@@ -13,4 +14,16 @@ use roombee;
 -- DELETE FROM events;
 -- DELETE FROM events WHERE event_id = 12345;
 
-SELECT * FROM events;
+CREATE TABLE todos
+(
+  todo_title varchar(64) not null,
+  todo_content varchar(128) not null,
+  todo_priority varchar(64) not null,
+  todo_category varchar(64) not null,
+  todo_status TINYINT(1) not null,
+  user_id int not NULL,
+  hive_code INT not NULL
+
+);
+
+SELECT * FROM todos;

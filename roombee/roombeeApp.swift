@@ -53,13 +53,13 @@ struct roombeeApp: App {
     @StateObject var authViewModel = AuthenticationViewModel()
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
+    @StateObject var todoManager = TodoViewModel()
     var eventStore = EventStore()
     @StateObject var toggleManager = ToggleViewModel()
     @StateObject var todoManager = TodoViewModel()
     
     @State private var inviteLink: String = ""
     @State private var showInviteLinkPopup: Bool = false
-    
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(authViewModel)
