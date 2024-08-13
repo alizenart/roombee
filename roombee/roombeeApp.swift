@@ -56,7 +56,6 @@ struct roombeeApp: App {
     @StateObject var todoManager = TodoViewModel()
     var eventStore = EventStore()
     @StateObject var toggleManager = ToggleViewModel()
-    @StateObject var todoManager = TodoViewModel()
     
     @State private var inviteLink: String = ""
     @State private var showInviteLinkPopup: Bool = false
