@@ -1,5 +1,3 @@
-
-
 import SwiftUI
 
 struct ToDoView: View {
@@ -36,28 +34,28 @@ struct ToDoView: View {
                                 .frame(height: 65)
                                 .overlay(
                                     HStack {
-                                        Image(systemName: task.status
+                                        Image(systemName: task.status != 0
                                               ? "largecircle.fill.circle"
                                               : "circle")
                                         .imageScale(.large)
                                         .foregroundColor(.accentColor)
                                         .onTapGesture {
-                                            task.status.toggle()
+                                            task.status = task.status == 0 ? 1 : 0
                                         }
-                                        Text(task.title)
+                                        Text(task.todoTitle)
                                             .multilineTextAlignment(.leading)
                                             .foregroundColor(backgroundColor)
                                             .fontWeight(.bold)
                                         
                                         Spacer()
                                         RoundedRectangle(cornerRadius: 10)
-                                            .fill(priorityColor(for: task.priority.rawValue))
+                                            .fill(priorityColor(for: task.todoPriority))
                                             .frame(width: 50, height: 30)
-                                            .overlay(Text(task.priority.rawValue))
+                                            .overlay(Text(task.todoPriority))
                                         RoundedRectangle(cornerRadius: 10)
-                                            .fill(categoryColor(for: task.category.rawValue))
+                                            .fill(categoryColor(for: task.todoCategory))
                                             .frame(width: 50, height: 30)
-                                            .overlay(Text(task.category.rawValue))
+                                            .overlay(Text(task.todoCategory))
                                         
                                     }
                                         .padding()
@@ -101,12 +99,19 @@ struct ToDoView: View {
                 }//vstack
             }//zstack
         }
-        .onAppear(perform: {
-            print("")
-        })// nav view
-    } // body
-
+        .onAppear {
+            todoManager.fetchToDo(userId: roomieUserId) { fetchedTasks, error in
+                if let fetchedTasks = fetchedTasks {
+                    tasks.append(contentsOf: fetchedTasks.map { Tasks(from: $0) })
+                } else if let error = error {
+                    print("Error fetching tasks: \(error)")
+                }
+            }
+        }// nav view
+    }// body
 }
+
+
 
 func priorityColor(for priority: String) -> Color {
     switch priority {
@@ -121,7 +126,7 @@ func priorityColor(for priority: String) -> Color {
     }
 }
 
-func priorityValue(for priority: TaskPriority) -> Int {
+func priorityValue(for priority: todoPriority) -> Int {
     switch priority {
     case .high:
         return 0
@@ -132,7 +137,7 @@ func priorityValue(for priority: TaskPriority) -> Int {
     }
 }
 
-func categoryColor(for category: TaskCategory) -> Int {
+func categoryColor(for category: todoCategory) -> Int {
     switch category {
     case .none:
         return 0

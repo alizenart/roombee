@@ -7,27 +7,31 @@
 
 import SwiftUI
 
-
 struct AddToDoView: View {
-    @State
-    var newToDo = Tasks(title:"", priority:.low, category: .none)
+    @EnvironmentObject var todoManager: TodoViewModel
+    @State var newToDo = Tasks(todoTitle: "", todoPriority: "low", todoCategory: "none")
     var onCommit: (_ newToDo: Tasks) -> Void
     let options = ["low", "medium", "urgent"]
     let categoryOptions = ["none", "shopping", "chores"]
-    @State
-    private var selectedOption = 0
+    @State private var selectedOption = 0
     @State var selectedCategory = 0
     
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
     
     enum FocusableField: Hashable {
-        case title}
+        case title
+    }
 
-    @FocusState
-    private var focusedField: FocusableField?
+    @FocusState private var focusedField: FocusableField?
 
     private func add() {
+        todoManager.addToDo(todoID: newToDo.id,
+                            userId: newToDo.userId,
+                            hiveCode: newToDo.hiveCode,
+                            todoTitle: newToDo.todoTitle,
+                            todoPriority: newToDo.todoPriority,
+                            todoCategory: newToDo.todoCategory,
+                            todoStatus: String(newToDo.status))
         onCommit(newToDo)
         dismiss()
     }
@@ -39,32 +43,32 @@ struct AddToDoView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                backgroundColor.ignoresSafeArea()
+                Color.white.ignoresSafeArea()
                 Form {
-                    TextField("Title", text: $newToDo.title)
+                    TextField("Title", text: $newToDo.todoTitle)
                         .focused($focusedField, equals: .title)
                     Section(header: Text("Priority")) {
                         Picker(selection: $selectedOption, label: Text("")) {
-                            ForEach(0..<3) { index in
+                            ForEach(0..<options.count, id: \.self) { index in
                                 Text(self.options[index]).tag(index)
                                     .frame(minHeight: 50, alignment: .center)
                             }
                         }
-                        Picker(selection: $selectedCategory, label:Text("")) {
-                                                        ForEach(0..<categoryOptions.count) { index in
-                                                            Text(self.categoryOptions[index]).tag(index)
-                                                                .frame(minHeight: 50, alignment: .center)
-                                                        }
-                                                    }
+                        Picker(selection: $selectedCategory, label: Text("")) {
+                            ForEach(0..<categoryOptions.count, id: \.self) { index in
+                                Text(self.categoryOptions[index]).tag(index)
+                                    .frame(minHeight: 50, alignment: .center)
+                            }
+                        }
                     }
-                    .onChange(of: selectedCategory) {newValue in
+                    .onChange(of: selectedCategory) { newValue in
                         switch newValue {
                         case 0:
-                            newToDo.category = .none
+                            newToDo.todoCategory = "none"
                         case 1:
-                            newToDo.category = .shopping
+                            newToDo.todoCategory = "shopping"
                         case 2:
-                            newToDo.category = .chores
+                            newToDo.todoCategory = "chores"
                         default:
                             break
                         }
@@ -72,11 +76,11 @@ struct AddToDoView: View {
                     .onChange(of: selectedOption) { newValue in
                         switch newValue {
                         case 0:
-                            newToDo.priority = .low
+                            newToDo.todoPriority = "low"
                         case 1:
-                            newToDo.priority = .medium
+                            newToDo.todoPriority = "medium"
                         case 2:
-                            newToDo.priority = .high
+                            newToDo.todoPriority = "urgent"
                         default:
                             break
                         }
@@ -93,8 +97,9 @@ struct AddToDoView: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: add) {
-                            Text("Add")}
-                        .disabled(newToDo.title.isEmpty)
+                            Text("Add")
+                        }
+                        .disabled(newToDo.todoTitle.isEmpty)
                     }
                 }
                 .onAppear {
@@ -105,10 +110,10 @@ struct AddToDoView: View {
     }
 }
 
-struct AddReminderView_Previews: PreviewProvider {
+struct AddToDoView_Previews: PreviewProvider {
     static var previews: some View {
         AddToDoView { todo in
-            print("You added a new reminder titled \(todo.title)")
+            print("You added a new reminder titled \(todo.todoTitle)")
         }
     }
 }

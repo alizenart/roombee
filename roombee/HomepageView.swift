@@ -30,6 +30,7 @@ struct HomepageView: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var toggleManager: ToggleViewModel
+    @EnvironmentObject var todoManager: TodoViewModel
     
     @State private var isActive: Bool = true
     @State private var showInviteLinkPopup: Bool = false
@@ -78,6 +79,7 @@ struct HomepageView: View {
                             .environmentObject(navManager)
                             .environmentObject(selectedDateManager)
                             .environmentObject(toggleManager)
+                            .environmentObject(todoManager)
                     case 1:
                         ToDoView()
                     case 2:

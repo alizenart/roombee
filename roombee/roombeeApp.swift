@@ -55,6 +55,7 @@ struct roombeeApp: App {
     @StateObject var selectedDate = SelectedDateManager()
     var eventStore = EventStore()
     @StateObject var toggleManager = ToggleViewModel()
+    @StateObject var todoManager = TodoViewModel()
     
     @State private var inviteLink: String = ""
     @State private var showInviteLinkPopup: Bool = false
@@ -65,6 +66,7 @@ struct roombeeApp: App {
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
+                .environmentObject(todoManager)
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
                     if let userInfo = notification.userInfo,
                        let hiveCode = userInfo["hive_code"] as? String {
