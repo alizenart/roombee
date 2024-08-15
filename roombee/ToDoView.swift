@@ -41,6 +41,7 @@ struct ToDoView: View {
                                         .foregroundColor(.accentColor)
                                         .onTapGesture {
                                             task.status = task.status == 0 ? 1 : 0
+                                            todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
                                         }
                                         Text(task.todoTitle)
                                             .multilineTextAlignment(.leading)
@@ -66,8 +67,12 @@ struct ToDoView: View {
                         }
                         // $ for wrapping
                         .onDelete { indexSet in
-                            $tasks.wrappedValue.remove(atOffsets: indexSet)
-                            
+                            if let index = indexSet.first {
+                                let deletedtask = $tasks.wrappedValue[index]
+                                todoManager.deleteTodo(todoID: deletedtask.id)
+                                $tasks.wrappedValue.remove(atOffsets: indexSet)
+                                
+                            }
                         }
                     } // List
                     .scrollContentBackground(.hidden)

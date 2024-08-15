@@ -11,7 +11,7 @@ struct AddToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
     @State var newToDo = Tasks(todoTitle: "", todoPriority: "low", todoCategory: "none")
     var onCommit: (_ newToDo: Tasks) -> Void
-    let options = ["low", "medium", "urgent"]
+    let options = ["low", "med", "high"]
     let categoryOptions = ["none", "shopping", "chores"]
     @State private var selectedOption = 0
     @State var selectedCategory = 0
@@ -43,7 +43,7 @@ struct AddToDoView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.white.ignoresSafeArea()
+                backgroundColor.ignoresSafeArea()
                 Form {
                     TextField("Title", text: $newToDo.todoTitle)
                         .focused($focusedField, equals: .title)

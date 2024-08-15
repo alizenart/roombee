@@ -40,9 +40,7 @@ struct Tasks: Identifiable, Hashable {
 
 
 extension Tasks {
-    static let samples: [Tasks] = [
-        Tasks(todoTitle: "Groceries", todoPriority: "low", todoCategory: "buy"),
-  ]
+    static let samples: [Tasks] = []
 }
 
 enum todoPriority:String {
