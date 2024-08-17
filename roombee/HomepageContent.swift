@@ -39,7 +39,7 @@ struct HomepageContent: View {
             selectedDateManager.SelectedDate = date
             print("Original weekOffset is: \(weekOffset)")
             
-            // Reset the weekOffset to 0 after a date is selected
+            // bug resolved
             weekOffset = 0
             print("WeekOffset reset to: \(weekOffset)")
             
