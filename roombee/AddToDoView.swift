@@ -7,36 +7,32 @@
 
 import SwiftUI
 
-
 struct AddToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
-    @State
-    var newToDo = Tasks(todoTitle:"", todoContent: "", todoPriority: "low", todoCategory: "none")
+    @State var newToDo = Tasks(todoTitle: "", todoPriority: "low", todoCategory: "none")
     var onCommit: (_ newToDo: Tasks) -> Void
-    let options = ["low", "medium", "urgent"]
+    let options = ["low", "med", "high"]
     let categoryOptions = ["none", "shopping", "chores"]
-    @State
-    private var selectedOption = 0
+    @State private var selectedOption = 0
     @State var selectedCategory = 0
     
     @Environment(\.dismiss) private var dismiss
     
     enum FocusableField: Hashable {
-        case title}
+        case title
+    }
 
-    @FocusState
-    private var focusedField: FocusableField?
+    @FocusState private var focusedField: FocusableField?
 
     private func add() {
+        todoManager.addToDo(todoID: newToDo.id,
+                            userId: newToDo.userId,
+                            hiveCode: newToDo.hiveCode,
+                            todoTitle: newToDo.todoTitle,
+                            todoPriority: newToDo.todoPriority,
+                            todoCategory: newToDo.todoCategory,
+                            todoStatus: String(newToDo.status))
         onCommit(newToDo)
-        todoManager.addToDo(
-            todoTitle: newToDo.todoTitle,
-            todoContent: newToDo.todoContent,
-            todoPriority: newToDo.todoPriority,
-            todoCategory: newToDo.todoCategory,
-            todoStatus: String(newToDo.status),
-            userId: "80003"
-        )
         dismiss()
     }
     
@@ -65,14 +61,14 @@ struct AddToDoView: View {
                             }
                         }
                     }
-                    .onChange(of: selectedCategory) {newValue in
+                    .onChange(of: selectedCategory) { newValue in
                         switch newValue {
                         case 0:
                             newToDo.todoCategory = "none"
                         case 1:
-                            newToDo.todoCategory = "buy"
+                            newToDo.todoCategory = "shopping"
                         case 2:
-                            newToDo.todoCategory = "chore"
+                            newToDo.todoCategory = "chores"
                         default:
                             break
                         }
@@ -82,9 +78,9 @@ struct AddToDoView: View {
                         case 0:
                             newToDo.todoPriority = "low"
                         case 1:
-                            newToDo.todoPriority = "med"
+                            newToDo.todoPriority = "medium"
                         case 2:
-                            newToDo.todoPriority = "high"
+                            newToDo.todoPriority = "urgent"
                         default:
                             break
                         }
@@ -101,7 +97,8 @@ struct AddToDoView: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: add) {
-                            Text("Add")}
+                            Text("Add")
+                        }
                         .disabled(newToDo.todoTitle.isEmpty)
                     }
                 }
@@ -113,11 +110,10 @@ struct AddToDoView: View {
     }
 }
 
-struct AddReminderView_Previews: PreviewProvider {
+struct AddToDoView_Previews: PreviewProvider {
     static var previews: some View {
         AddToDoView { todo in
             print("You added a new reminder titled \(todo.todoTitle)")
         }
-        .environmentObject(TodoViewModel.shared)
     }
 }

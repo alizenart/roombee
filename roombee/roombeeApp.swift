@@ -65,6 +65,7 @@ struct roombeeApp: App {
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
+                .environmentObject(todoManager)
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
                     if let userInfo = notification.userInfo,
                        let hiveCode = userInfo["hive_code"] as? String {

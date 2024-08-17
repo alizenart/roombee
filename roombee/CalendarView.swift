@@ -70,7 +70,6 @@ struct NewEventView: View {
                         Button("Save") {
                           let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
 //                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
-                            eventStore.addEvent(newEvent)
                             onSave(newEvent)
                             NotificationService.shared.scheduleNotification(for: newEvent)
                             dismiss()
@@ -245,7 +244,8 @@ struct CalendarView: View {
     
     func groupedEvents() -> [[CalendarEvent]] {
         var groups: [[CalendarEvent]] = []
-        let sortedEvents = eventStore.events.sorted { $0.startTime <= $1.startTime }
+        // let sortedEvents = eventStore.events.sorted { $0.startTime <= $1.startTime }
+        let sortedEvents = filteredEvents.sorted { $0.startTime < $1.startTime }
         
         for event in sortedEvents {
             var addedToGroup = false

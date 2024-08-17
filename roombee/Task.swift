@@ -6,35 +6,38 @@
 //
 
 import Foundation
-
-struct Tasks: Identifiable, Hashable, Codable {
-    var id = UUID()
-    var todoTitle = ""
-    var todoContent = ""
+struct Tasks: Identifiable, Hashable {
+    var hiveCode:String
+    var id:String
+    var userId: String
+    var todoTitle: String
     var todoPriority: String
     var todoCategory: String
     var status: Int
-    var userId: String
 
+    // Initializer to create Tasks from ToDoInfo
     init(from toDoInfo: ToDoInfo) {
-        
+        self.hiveCode = toDoInfo.hiveCode
+        self.id = toDoInfo.todoID
+        self.userId = toDoInfo.userId
         self.todoTitle = toDoInfo.todoTitle
-        self.todoContent = toDoInfo.todoContent
         self.todoPriority = toDoInfo.todoPriority
         self.todoCategory = toDoInfo.todoCategory
         self.status = toDoInfo.todoStatus
-        self.userId = toDoInfo.userId
     }
     
-    init(todoTitle:String, todoContent:String, todoPriority: String, todoCategory: String) {
+    // Custom initializer to create Tasks with specific values
+    init(todoTitle: String, todoPriority: String, todoCategory: String) {
+        self.hiveCode = "1"
+        self.userId = "80003"
+        self.id = UUID().uuidString
         self.todoTitle = todoTitle
-        self.todoContent = todoContent
         self.todoPriority = todoPriority
         self.todoCategory = todoCategory
         self.status = 0
-        self.userId = "80003"
     }
 }
+
 
 extension Tasks {
     static let samples: [Tasks] = []

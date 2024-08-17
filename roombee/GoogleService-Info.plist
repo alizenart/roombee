@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>FreshHacks2023.roombee</string>
+	<string>com.app.roombee</string>
 	<key>PROJECT_ID</key>
 	<string>roombee-751f7</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:640961029868:ios:256284bb2f31c205b667c9</string>
+	<string>1:640961029868:ios:04f13a39e779ed55b667c9</string>
 </dict>
 </plist>

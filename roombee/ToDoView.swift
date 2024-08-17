@@ -1,12 +1,10 @@
-
-
 import SwiftUI
 
 struct ToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
     @State private var tasks = Tasks.samples
-    @State private var addpresent = false
-    @State private var timer:Timer?
+    @State
+    private var addpresent = false
     let myUserId = "80003"
     let roomieUserId = "80002"
     
@@ -43,6 +41,7 @@ struct ToDoView: View {
                                         .foregroundColor(.accentColor)
                                         .onTapGesture {
                                             task.status = task.status == 0 ? 1 : 0
+                                            todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
                                         }
                                         Text(task.todoTitle)
                                             .multilineTextAlignment(.leading)
@@ -68,8 +67,12 @@ struct ToDoView: View {
                         }
                         // $ for wrapping
                         .onDelete { indexSet in
-                            $tasks.wrappedValue.remove(atOffsets: indexSet)
-                            
+                            if let index = indexSet.first {
+                                let deletedtask = $tasks.wrappedValue[index]
+                                todoManager.deleteTodo(todoID: deletedtask.id)
+                                $tasks.wrappedValue.remove(atOffsets: indexSet)
+                                
+                            }
                         }
                     } // List
                     .scrollContentBackground(.hidden)
@@ -102,23 +105,6 @@ struct ToDoView: View {
             }//zstack
         }
         .onAppear {
-            fetchTasks(user_id: myUserId)
-            fetchTasks(user_id: roomieUserId)
-//            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-//                polltasks(user_id: roomieUserId)
-//            }
-        }// nav view
-    }// body
-    private func fetchTasks(user_id: String) {
-            todoManager.fetchToDo(userId: roomieUserId) { fetchedTasks, error in
-                if let fetchedTasks = fetchedTasks {
-                    tasks = fetchedTasks.map { Tasks(from: $0) }
-                } else if let error = error {
-                    print("Error fetching tasks: \(error)")
-                }
-            }
-        }
-    private func polltasks(user_id: String) {
             todoManager.fetchToDo(userId: roomieUserId) { fetchedTasks, error in
                 if let fetchedTasks = fetchedTasks {
                     tasks.append(contentsOf: fetchedTasks.map { Tasks(from: $0) })
@@ -126,9 +112,10 @@ struct ToDoView: View {
                     print("Error fetching tasks: \(error)")
                 }
             }
-        }
-    
+        }// nav view
+    }// body
 }
+
 
 
 func priorityColor(for priority: String) -> Color {
