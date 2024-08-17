@@ -33,33 +33,8 @@ struct NewEventView: View {
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
     
-
-    
     var body: some View {
-//<<<<<<< HEAD
-//        NavigationView {
-//            Form {
-//                TextField("Title", text: $viewModel.title)
-//                DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-//                DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute).datePickerStyle(WheelDatePickerStyle())
-//            }
-//            .navigationTitle("New Event")
-////            .toolbar {
-////                ToolbarItem(placement: .navigationBarLeading) {
-////                    Button("Cancel") {
-////                        dismiss()
-////                    }
-////                }
-////                ToolbarItem(placement: .navigationBarTrailing) {
-////                    Button("Save") {
-////                      let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
-////                        onSave(newEvent)
-////                        dismiss()
-////                    }
-////                }
-////            }
-//        }.onAppear()
-//=======
+
         ZStack {
             creamColor
             NavigationView {
@@ -252,19 +227,6 @@ struct CalendarView: View {
                         .foregroundColor(.white)
                 }
             }
-            //            .font(.caption)
-            //            .frame(maxWidth: .infinity, alignment: .leading)
-            //            .padding(4)
-            //            .frame(height: height, alignment: .top)
-            //            .background(
-            //                RoundedRectangle(cornerRadius: 8)
-            //                    .fill(LighterPurple)
-            //            )
-            //            .padding(.leading, 60) // Add padding on the right
-            //            .offset(y: offsetY + 24)
-            //            .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
-            //        } //returning vstack
-            //    }//eventCell
             .font(.caption)
             .frame(width: width, alignment: .topLeading) // Align to the right
             .padding(4)
@@ -276,14 +238,14 @@ struct CalendarView: View {
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
             .padding(.leading, 60) // Add padding on the right
             .offset(y: offsetY + 24)
-            .offset(x: maxEventWidth - width) // Offset the cell by the difference between maxEventWidth and current width
+            .offset(x: maxEventWidth - width) //Offset the cell by the difference between maxEventWidth and current width
         }
     }
     
     
     func groupedEvents() -> [[CalendarEvent]] {
         var groups: [[CalendarEvent]] = []
-        let sortedEvents = eventStore.events.sorted { $0.startTime < $1.startTime }
+        let sortedEvents = eventStore.events.sorted { $0.startTime <= $1.startTime }
         
         for event in sortedEvents {
             var addedToGroup = false
