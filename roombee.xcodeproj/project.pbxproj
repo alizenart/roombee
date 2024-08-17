@@ -43,6 +43,7 @@
 		684DBD402BCF49BB009EE8DD /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD3F2BCF49BB009EE8DD /* Task.swift */; };
 		684DBD422BCF49C4009EE8DD /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD412BCF49C4009EE8DD /* ToDoView.swift */; };
 		684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD432BCF49C9009EE8DD /* AddToDoView.swift */; };
+		685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 685ACAF62C66BEAB0069E7BA /* Mixpanel */; };
 		68900F212BD4E30600FFC62D /* SelectedDateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68900F202BD4E30600FFC62D /* SelectedDateManager.swift */; };
 		68D2922D2BE0335E00E3741E /* Hexagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D2922C2BE0335E00E3741E /* Hexagon.swift */; };
 		68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */; };
@@ -76,7 +77,6 @@
 		309D67762BCE4FFB00C343FF /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		309D677A2BD0D29C00C343FF /* DatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		309D677C2BD0E3D700C343FF /* GenderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderPickerView.swift; sourceTree = "<group>"; };
-		30AA0BB82AD1BC0400344002 /* roombee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = roombee.app; path = /Users/Adu/Documents/Roombee/roombee/build/Debug/roombee.app; sourceTree = "<absolute>"; };
 		30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roombeeApp.swift; sourceTree = "<group>"; };
 		30AA0BBD2AD1BC0400344002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		30AA0BBF2AD1BC0800344002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -95,6 +95,7 @@
 		684DBD3F2BCF49BB009EE8DD /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		684DBD412BCF49C4009EE8DD /* ToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
 		684DBD432BCF49C9009EE8DD /* AddToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToDoView.swift; sourceTree = "<group>"; };
+		685ACAF42C66BAFA0069E7BA /* roombee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roombee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68900F202BD4E30600FFC62D /* SelectedDateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedDateManager.swift; sourceTree = "<group>"; };
 		68D2922C2BE0335E00E3741E /* Hexagon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hexagon.swift; sourceTree = "<group>"; };
 		68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardStore.swift; sourceTree = "<group>"; };
@@ -117,6 +118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
+				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
 				3099890E2BFC7343005519F1 /* AWSLambda in Frameworks */,
 				309989112BFC7386005519F1 /* FirebaseAnalytics in Frameworks */,
 				309989132BFC7386005519F1 /* FirebaseAuth in Frameworks */,
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				30AA0BBA2AD1BC0400344002 /* roombee */,
+				685ACAF42C66BAFA0069E7BA /* roombee.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -242,6 +245,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				685ACAFF2C66BF010069E7BA /* PBXTargetDependency */,
+				685ACAFD2C66BEFA0069E7BA /* PBXTargetDependency */,
+				685ACAFB2C66BEF40069E7BA /* PBXTargetDependency */,
+				685ACAF92C66BEEE0069E7BA /* PBXTargetDependency */,
 			);
 			name = roombee;
 			packageProductDependencies = (
@@ -249,9 +256,10 @@
 				3099890D2BFC7343005519F1 /* AWSLambda */,
 				309989102BFC7386005519F1 /* FirebaseAnalytics */,
 				309989122BFC7386005519F1 /* FirebaseAuth */,
+				685ACAF62C66BEAB0069E7BA /* Mixpanel */,
 			);
 			productName = roombee;
-			productReference = 30AA0BB82AD1BC0400344002 /* roombee.app */;
+			productReference = 685ACAF42C66BAFA0069E7BA /* roombee.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -281,6 +289,7 @@
 			packageReferences = (
 				3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */,
 				3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 			);
 			productRefGroup = 30AA0BAF2AD1BC0400344002;
 			projectDirPath = "";
@@ -356,6 +365,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		685ACAF92C66BEEE0069E7BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 685ACAF82C66BEEE0069E7BA /* AWSCore */;
+		};
+		685ACAFB2C66BEF40069E7BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 685ACAFA2C66BEF40069E7BA /* AWSLambda */;
+		};
+		685ACAFD2C66BEFA0069E7BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 685ACAFC2C66BEFA0069E7BA /* FirebaseAnalytics */;
+		};
+		685ACAFF2C66BF010069E7BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 685ACAFE2C66BF010069E7BA /* FirebaseAuth */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		30AA0BC52AD1BC0800344002 /* Debug */ = {
@@ -591,6 +619,14 @@
 				minimumVersion = 10.26.0;
 			};
 		};
+		685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -610,6 +646,31 @@
 			productName = FirebaseAnalytics;
 		};
 		309989122BFC7386005519F1 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		685ACAF62C66BEAB0069E7BA /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
+		};
+		685ACAF82C66BEEE0069E7BA /* AWSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSCore;
+		};
+		685ACAFA2C66BEF40069E7BA /* AWSLambda */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSLambda;
+		};
+		685ACAFC2C66BEFA0069E7BA /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		685ACAFE2C66BF010069E7BA /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
