@@ -43,7 +43,9 @@
 		684DBD402BCF49BB009EE8DD /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD3F2BCF49BB009EE8DD /* Task.swift */; };
 		684DBD422BCF49C4009EE8DD /* ToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD412BCF49C4009EE8DD /* ToDoView.swift */; };
 		684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD432BCF49C9009EE8DD /* AddToDoView.swift */; };
+		685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 685ACAF62C66BEAB0069E7BA /* Mixpanel */; };
 		68900F212BD4E30600FFC62D /* SelectedDateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68900F202BD4E30600FFC62D /* SelectedDateManager.swift */; };
+		6897FCDD2C70F8D4001B0A52 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */; };
 		68D2922D2BE0335E00E3741E /* Hexagon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D2922C2BE0335E00E3741E /* Hexagon.swift */; };
 		68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FB2BCC54FA00D94A95 /* OnboardStore.swift */; };
 		68E736002BCC688900D94A95 /* HomeSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */; };
@@ -56,8 +58,6 @@
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
 		C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FE5F632BE06F9E00161711 /* APIService.swift */; };
 		FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5554592C4460B50002E18F /* ToggleViewModel.swift */; };
-		FAE0C6D32C67F43B002FE8D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAE0C6D22C67F43B002FE8D6 /* GoogleService-Info.plist */; };
-		FAE0C6D62C67F455002FE8D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAE0C6D52C67F455002FE8D6 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,6 +120,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
+				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
 				3099890E2BFC7343005519F1 /* AWSLambda in Frameworks */,
 				309989112BFC7386005519F1 /* FirebaseAnalytics in Frameworks */,
 				309989132BFC7386005519F1 /* FirebaseAuth in Frameworks */,
@@ -248,6 +249,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				6897FCDC2C70F7BA001B0A52 /* PBXTargetDependency */,
+				6897FCDA2C70F7AB001B0A52 /* PBXTargetDependency */,
+				6897FCD82C70F7A3001B0A52 /* PBXTargetDependency */,
+				6897FCD62C70F798001B0A52 /* PBXTargetDependency */,
+				6897FCD42C70F78F001B0A52 /* PBXTargetDependency */,
 			);
 			name = roombee;
 			packageProductDependencies = (
@@ -255,6 +261,7 @@
 				3099890D2BFC7343005519F1 /* AWSLambda */,
 				309989102BFC7386005519F1 /* FirebaseAnalytics */,
 				309989122BFC7386005519F1 /* FirebaseAuth */,
+				685ACAF62C66BEAB0069E7BA /* Mixpanel */,
 			);
 			productName = roombee;
 			productReference = FAF91EAB2C6662C500B60E68 /* roombee.app */;
@@ -287,6 +294,7 @@
 			packageReferences = (
 				3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */,
 				3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 			);
 			productRefGroup = 30AA0BAF2AD1BC0400344002;
 			projectDirPath = "";
@@ -303,8 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */,
-				FAE0C6D62C67F455002FE8D6 /* GoogleService-Info.plist in Resources */,
-				FAE0C6D32C67F43B002FE8D6 /* GoogleService-Info.plist in Resources */,
+				6897FCDD2C70F8D4001B0A52 /* GoogleService-Info.plist in Resources */,
 				30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,6 +370,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6897FCD42C70F78F001B0A52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 6897FCD32C70F78F001B0A52 /* AWSLambda */;
+		};
+		6897FCD62C70F798001B0A52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 6897FCD52C70F798001B0A52 /* FirebaseAnalytics */;
+		};
+		6897FCD82C70F7A3001B0A52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 6897FCD72C70F7A3001B0A52 /* Mixpanel */;
+		};
+		6897FCDA2C70F7AB001B0A52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 6897FCD92C70F7AB001B0A52 /* FirebaseAuth */;
+		};
+		6897FCDC2C70F7BA001B0A52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 6897FCDB2C70F7BA001B0A52 /* AWSCore */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		30AA0BC52AD1BC0800344002 /* Debug */ = {
@@ -598,6 +628,14 @@
 				minimumVersion = 10.26.0;
 			};
 		};
+		685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -620,6 +658,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		685ACAF62C66BEAB0069E7BA /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
+		};
+		6897FCD32C70F78F001B0A52 /* AWSLambda */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSLambda;
+		};
+		6897FCD52C70F798001B0A52 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		6897FCD72C70F7A3001B0A52 /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
+		};
+		6897FCD92C70F7AB001B0A52 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		6897FCDB2C70F7BA001B0A52 /* AWSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
