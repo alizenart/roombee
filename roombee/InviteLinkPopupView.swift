@@ -9,26 +9,28 @@ import Foundation
 import SwiftUI
 
 struct InviteLinkPopupView: View {
+    @EnvironmentObject var auth: AuthenticationViewModel
     let inviteLink: String
     @Binding var isPresented: Bool
+    @State private var inputHiveCode: String = ""
 
     var body: some View {
         VStack {
-            Text("Invite Link")
+            Text("Your Hive Code")
                 .font(.headline)
                 .padding()
-            Text(inviteLink)
+            Text(auth.hive_code)
                 .padding()
                 .contextMenu {
                     Button(action: {
-                        UIPasteboard.general.string = inviteLink
+                        UIPasteboard.general.string = auth.hive_code
                     }) {
-                        Text("Copy Link")
+                        Text("Hive Code")
                         Image(systemName: "doc.on.doc")
                     }
                 }
             Button(action: {
-                UIPasteboard.general.string = inviteLink
+                UIPasteboard.general.string = auth.hive_code
                 isPresented = false
             }) {
                 Text("Copy and Close")
@@ -38,8 +40,34 @@ struct InviteLinkPopupView: View {
                     .cornerRadius(8)
             }
             .padding()
+            // TextField for user to input a hive_code
+            TextField("Enter Hive Code to Join", text: $inputHiveCode)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            // Button to handle the submission of the input hive_code
+            Button(action: {
+                auth.hive_code = inputHiveCode // Update the hive_code in the ViewModel
+                APIService.shared.updateHiveCode(userId: auth.user_id ?? "default_user_id", hiveCode: inputHiveCode) { success, error in
+                    if success {
+                        print("Hive code updated successfully!")
+                    } else if let error = error {
+                        print("Failed to update hive code: \(error.localizedDescription)")
+                    }
+                }
+
+                isPresented = false
+            }) {
+                Text("Submit Hive Code")
+                    .padding()
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding()
         }
-        .frame(width: 300, height: 200)
+        .frame(width: 300, height: 500)
         .background(Color.white)
         .cornerRadius(10)
         .shadow(radius: 20)

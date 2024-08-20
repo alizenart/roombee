@@ -126,6 +126,8 @@ extension AuthenticationViewModel {
         authenticationState = .authenticating
         do {
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
+            await getUserData()
+            print("hive code: \(self.hive_code)")
             return true
         }
         catch  {
@@ -226,15 +228,18 @@ extension AuthenticationViewModel {
         }
     }
     
+    
     // Gets the current user's data from the database that is NOT already in their firebase user
     func getUserData() {
         let lambdaInvoker = AWSLambdaInvoker.default()
         let jsonObject = [
-            "queryStringParameters": ["email": email, "hive_code": hive_code]
+            "queryStringParameters": ["email": email]
         ] as [String : Any]
+        print("in getUserData()")
         
         lambdaInvoker.invokeFunction("getUserData", jsonObject: jsonObject).continueWith { task -> Any? in
             if let error = task.error {
+                print("in getUserData()")
                 print("Error occurred: \(error)")
                 self.getUserErrorMessage = error.localizedDescription
                 self.getUserError = true
@@ -247,15 +252,9 @@ extension AuthenticationViewModel {
                     if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                         if let userData = jsonResponse["user_data"] as? [String: Any] {
                             DispatchQueue.main.async {
-                                self.firstName = userData["first_name"] as? String ?? ""
-                                self.lastName = userData["last_name"] as? String ?? ""
-                                if let birthDateString = userData["birth_date"] as? String,
-                                   let birthDate = DateFormatter.yyyyMMdd.date(from: birthDateString) {
-                                    self.birthDate = birthDate
-                                } else {
-                                    self.birthDate = Date()
-                                }
-                                self.gender = userData["gender"] as? String ?? ""
+                                self.hive_code = userData["hive_code"] as? String ?? ""
+                                self.user_id = userData["user_id"] as? String ?? ""
+                                print("self.hive_code", self.hive_code)
                             }
                         }
                         if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
