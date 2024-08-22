@@ -24,6 +24,7 @@ let creamColor = Color(red:231/255, green:224/255, blue:215/255)
 let date = Date()
 let formatter = DateFormatter()
 
+@MainActor
 struct HomepageView: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -152,7 +153,7 @@ struct HomepageView: View {
                 DispatchQueue.main.async {
                     self.myStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     self.myStatusToggleInRoom = (firstToggle.inRoom != 0)
-                    print("Fetched toggle states for user \(userId):")
+                    print("Fetched toggle states for me: \(userId):")
                     print("isSleeping: \(self.myStatusToggleSleeping)")
                     print("inRoom: \(self.myStatusToggleInRoom)")
                 }
@@ -171,7 +172,7 @@ struct HomepageView: View {
                 DispatchQueue.main.async {
                     self.roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     self.roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
-                    print("Fetched toggle states for user \(userId):")
+                    print("Fetched toggle states for roomie \(userId):")
                     print("isSleeping: \(self.roomieStatusToggleSleeping)")
                     print("inRoom: \(self.roomieStatusToggleInRoom)")
                 }

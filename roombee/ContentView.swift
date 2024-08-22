@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct ContentView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @StateObject var navManager = NavManager()

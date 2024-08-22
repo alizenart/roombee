@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct HomepageContent: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var auth: AuthenticationViewModel

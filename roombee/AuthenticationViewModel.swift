@@ -121,6 +121,13 @@ class AuthenticationViewModel: ObservableObject {
         lastName = ""
         birthDate = Date()
         gender = ""
+        user = nil
+        displayName = ""
+        user_id = nil
+        roommate_id = nil
+        hive_code = ""
+        hive_name = ""
+        isUserDataLoaded = false
     }
 }
 
@@ -259,42 +266,41 @@ extension AuthenticationViewModel {
         print("in getUserData()")
         
         lambdaInvoker.invokeFunction("getUserData", jsonObject: jsonObject).continueWith { task -> Any? in
-            if let error = task.error {
-                print("in getUserData()")
-                print("Error occurred: \(error)")
-                DispatchQueue.main.async {
-                    self.getUserErrorMessage = error.localizedDescription
-                    self.getUserError = true
+            Task { @MainActor in
+                if let error = task.error {
+                    print("in getUserData()")
+                    print("Error occurred: \(error)")
+                    DispatchQueue.main.async {
+                        self.getUserErrorMessage = error.localizedDescription
+                        self.getUserError = true
+                    }
+                    return nil as Any?
                 }
-                return nil
-            }
-            if let result = task.result as? [String: Any],
-               let bodyString = result["body"] as? String,
-               let data = bodyString.data(using: .utf8) {
-                do {
-                    if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        if let userData = jsonResponse["user_data"] as? [String: Any] {
-                            DispatchQueue.main.async {
+                if let result = task.result as? [String: Any],
+                   let bodyString = result["body"] as? String,
+                   let data = bodyString.data(using: .utf8) {
+                    do {
+                        if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                            if let userData = jsonResponse["user_data"] as? [String: Any] {
                                 self.hive_code = userData["hive_code"] as? String ?? ""
                                 self.user_id = userData["user_id"] as? String ?? ""
                                 print("self.hive_code", self.hive_code)
                                 self.isUserDataLoaded = true
                             }
+                            if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
+                                self.roommate_id = roommateData["user_id"] as? String ?? ""
+                            }
                         }
-                        if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
-                            self.roommate_id = roommateData["user_id"] as? String ?? ""
-                        }
-                    }
-                } catch {
-                    DispatchQueue.main.async {
+                    } catch {
                         self.getUserErrorMessage = error.localizedDescription
                         self.getUserError = true
                     }
                 }
+                return nil
             }
-            return nil
         }
     }
+
     
     
     
