@@ -61,6 +61,8 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var genderOptions = ["Please select", "Female", "Male", "Other"]
     
+    @Published var isUserDataLoaded: Bool = false
+    
     init() {
         registerAuthStateHandler()
         
@@ -71,6 +73,7 @@ class AuthenticationViewModel: ObservableObject {
                 ? !(email.isEmpty || password.isEmpty)
                 : !(email.isEmpty || password.isEmpty || confirmPassword.isEmpty)
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: &$isValid)
     }
     
@@ -79,9 +82,11 @@ class AuthenticationViewModel: ObservableObject {
     func registerAuthStateHandler() {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
-                self.user = user
-                self.authenticationState = user == nil ? .unauthenticated : .authenticated
-                self.displayName = user?.email ?? ""
+                DispatchQueue.main.async {
+                    self.user = user
+                    self.authenticationState = user == nil ? .unauthenticated : .authenticated
+                    self.displayName = user?.email ?? ""
+                }
             }
         }
     }
@@ -133,7 +138,10 @@ extension AuthenticationViewModel {
         catch  {
             print(error)
             errorMessage = "Incorrect user or password"
-            authenticationState = .unauthenticated
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+                self.authenticationState = .unauthenticated
+            }
             return false
         }
     }
@@ -159,16 +167,19 @@ extension AuthenticationViewModel {
             return true
         } catch let error as NSError {
             if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
-                switch authErrorCode {
-                case .emailAlreadyInUse:
-                    errorMessage = "The email address is already in use."
-                default:
-                    errorMessage = error.localizedDescription
+                DispatchQueue.main.async {
+                        switch authErrorCode {
+                    case .emailAlreadyInUse:
+                        errorMessage = "The email address is already in use."
+                    default:
+                        errorMessage = error.localizedDescription
+                    }
                 }
             } else {
-                errorMessage = error.localizedDescription
+                    self.errorMessage = error.localizedDescription
             }
-            authenticationState = .unauthenticated
+                self.authenticationState = .unauthenticated
+            }
             showingErrorAlert = true
             return false
         }
@@ -177,21 +188,29 @@ extension AuthenticationViewModel {
     func signOut() {
         do {
             try Auth.auth().signOut()
-            reset()
+            DispatchQueue.main.async {
+                self.reset()
+            }
         }
         catch {
             print(error)
-            errorMessage = error.localizedDescription
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+            }
         }
     }
     
     func deleteAccount() async -> Bool {
         do {
             try await user?.delete()
+            DispatchQueue.main.async {
+                self.reset()
+            }
             return true
-        }
-        catch {
-            errorMessage = error.localizedDescription
+        } catch {
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+            }
             return false
         }
     }
@@ -217,8 +236,10 @@ extension AuthenticationViewModel {
         lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
             if let error = task.error {
                 print("Error occurred: \(error)")
-                self.addUserErrorMessage = error.localizedDescription
-                self.addUserError = true
+                DispatchQueue.main.async {
+                    self.addUserErrorMessage = error.localizedDescription
+                    self.addUserError = true
+                }
                 return nil
             }
             if let result = task.result {
@@ -241,8 +262,10 @@ extension AuthenticationViewModel {
             if let error = task.error {
                 print("in getUserData()")
                 print("Error occurred: \(error)")
-                self.getUserErrorMessage = error.localizedDescription
-                self.getUserError = true
+                DispatchQueue.main.async {
+                    self.getUserErrorMessage = error.localizedDescription
+                    self.getUserError = true
+                }
                 return nil
             }
             if let result = task.result as? [String: Any],
@@ -255,6 +278,7 @@ extension AuthenticationViewModel {
                                 self.hive_code = userData["hive_code"] as? String ?? ""
                                 self.user_id = userData["user_id"] as? String ?? ""
                                 print("self.hive_code", self.hive_code)
+                                self.isUserDataLoaded = true
                             }
                         }
                         if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
@@ -262,9 +286,10 @@ extension AuthenticationViewModel {
                         }
                     }
                 } catch {
-                    print("Error parsing JSON response: \(error)")
-                    self.getUserErrorMessage = error.localizedDescription
-                    self.getUserError = true
+                    DispatchQueue.main.async {
+                        self.getUserErrorMessage = error.localizedDescription
+                        self.getUserError = true
+                    }
                 }
             }
             return nil

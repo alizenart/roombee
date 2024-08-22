@@ -93,7 +93,7 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
 class EventStore: ObservableObject {
   @Published var events: [CalendarEvent] = []
   
-  func getEvents() {
+    @MainActor func getEvents() {
     APIService.shared.fetchEvents { [weak self] newEvents, error in
       DispatchQueue.main.async {
           if let newEvents = newEvents {
@@ -106,7 +106,7 @@ class EventStore: ObservableObject {
     }
   }
   
-  func addEvent(_ newEvent: CalendarEvent) {
+    @MainActor func addEvent(_ newEvent: CalendarEvent) {
    
 //    add backend logic here 
     APIService.shared.addEvent(event: newEvent) { success, error in
@@ -123,7 +123,7 @@ class EventStore: ObservableObject {
     print("events array! \(events)")
   }
     
-    func deleteEvent(eventId: String) {
+    @MainActor func deleteEvent(eventId: String) {
             APIService.shared.deleteEvent(eventId: eventId) { [weak self] success, error in
                 if success {
                     DispatchQueue.main.async {

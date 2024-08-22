@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomepageContent: View {
     @EnvironmentObject var eventStore: EventStore
-    @EnvironmentObject var authManager: AuthenticationViewModel
+    @EnvironmentObject var auth: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var toggleManager: ToggleViewModel
@@ -85,8 +85,8 @@ struct HomepageContent: View {
         .onAppear(perform: {
             //loading Roommate information
             print("initialLoad onAppear: \(isInitialLoad)")
-            fetchMyInitialToggleState(userId: myUserId)
-            startRoomieStatusPolling(userId: roomieUserId)
+            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
+            startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
             print("initialLoad afterFetchMy initial toggle: \(isInitialLoad)")
             
             NotificationService.shared.requestPerm()

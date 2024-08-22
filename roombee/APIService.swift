@@ -9,6 +9,7 @@
 
 import Foundation
 
+@MainActor
 class APIService {
   static let shared = APIService()
   static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"

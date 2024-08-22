@@ -10,6 +10,7 @@ import SwiftUI
 import Foundation
 import Combine
 
+@MainActor
 class NavManager: ObservableObject {
     @Published var presentSideMenu = false
     @Published var selectedSideMenuTab = 0

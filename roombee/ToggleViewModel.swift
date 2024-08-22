@@ -20,6 +20,7 @@ struct ToggleInfo: Decodable {
     }
 }
 
+@MainActor
 class ToggleViewModel: ObservableObject {
     static let shared = ToggleViewModel()
     static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
