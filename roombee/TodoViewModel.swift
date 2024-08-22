@@ -39,8 +39,8 @@ class TodoViewModel: ObservableObject {
     static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
     static let getTodoEndpoint = "/todolist/?user_id="
     
-    func fetchToDo(userId: String, completion: @escaping([ToDoInfo]?, Error?) -> Void) {
-        let endpoint = TodoViewModel.getTodoEndpoint + "\(userId)"
+    func fetchToDo(hiveCode: String, completion: @escaping([ToDoInfo]?, Error?) -> Void) {
+        let endpoint = TodoViewModel.getTodoEndpoint + "\(hiveCode)"
         guard let url = URL(string: TodoViewModel.baseURL + endpoint) else {
             completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
