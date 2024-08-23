@@ -142,13 +142,11 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-            print("onAppear: HomepageView")
             fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
             fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
         }
     }
     private func fetchMyInitialToggleState(userId: String) {
-        print("HomepageView: fetchMyInitialToggleState \(userId)" )
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
@@ -165,7 +163,6 @@ struct HomepageView: View {
     }
 
     private func fetchRoomieInitialToggleState(userId: String) {
-        print("HomepageView: fetchRoomieInitialToggleState \(userId)")
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {

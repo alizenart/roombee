@@ -139,7 +139,6 @@ extension AuthenticationViewModel {
         do {
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
             await getUserData()
-            print("hive code: \(self.hive_code)")
             return true
         }
         catch  {
@@ -264,12 +263,10 @@ extension AuthenticationViewModel {
         let jsonObject = [
             "queryStringParameters": ["email": email]
         ] as [String : Any]
-        print("in getUserData()")
         
         lambdaInvoker.invokeFunction("getUserData", jsonObject: jsonObject).continueWith { task -> Any? in
             Task { @MainActor in
                 if let error = task.error {
-                    print("in getUserData()")
                     print("Error occurred: \(error)")
                     DispatchQueue.main.async {
                         self.getUserErrorMessage = error.localizedDescription
@@ -285,7 +282,6 @@ extension AuthenticationViewModel {
                             if let userData = jsonResponse["user_data"] as? [String: Any] {
                                 self.hive_code = userData["hive_code"] as? String ?? ""
                                 self.user_id = userData["user_id"] as? String ?? ""
-                                print("self.hive_code", self.hive_code)
                                 self.isUserDataLoaded = true
                             }
                             if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
