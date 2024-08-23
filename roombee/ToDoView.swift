@@ -1,10 +1,12 @@
 import SwiftUI
+import Combine
 
 struct ToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
     @State private var tasks = Tasks.samples
     @State
     private var addpresent = false
+    @State private var timer: Timer?
     let myUserId = "80003"
     let roomieUserId = "80002"
     
@@ -105,16 +107,34 @@ struct ToDoView: View {
             }//zstack
         }
         .onAppear {
-            todoManager.fetchToDo(userId: roomieUserId) { fetchedTasks, error in
-                if let fetchedTasks = fetchedTasks {
-                    tasks.append(contentsOf: fetchedTasks.map { Tasks(from: $0) })
-                } else if let error = error {
-                    print("Error fetching tasks: \(error)")
-                }
-            }
+            startfetch()
         }// nav view
+        .onDisappear {
+            timer?.invalidate()
+                    timer = nil
+        }
+        
     }// body
+    
+    private func startfetch() {
+        fetchtasks()
+        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                    fetchtasks()
+        }
+    }
+    private func fetchtasks() {
+        todoManager.fetchToDo(hiveCode: "Roombee") { fetchedTasks, error in
+            if let fetchedTasks = fetchedTasks {
+                let newitems = fetchedTasks.map { Tasks(from: $0) }
+                let newtasks = newitems.filter {!tasks.contains($0)}
+                tasks.append(contentsOf: newtasks)
+            } else if let error = error {
+                print("Error fetching tasks: \(error)")
+            }
+        }
+    }
 }
+
 
 
 
