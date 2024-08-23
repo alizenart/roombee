@@ -6,7 +6,7 @@
 //
 
 import Foundation
-struct Tasks: Identifiable, Hashable {
+struct Tasks: Identifiable, Hashable, Equatable{
     var hiveCode:String
     var id:String
     var userId: String
@@ -36,6 +36,10 @@ struct Tasks: Identifiable, Hashable {
         self.todoCategory = todoCategory
         self.status = 0
     }
+    
+    static func == (lhs: Tasks, rhs: Tasks) -> Bool {
+            return lhs.id == rhs.id
+        }
 }
 
 
