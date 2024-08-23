@@ -90,6 +90,10 @@ struct HomepageContent: View {
             fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
             startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
             
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
+                stopRoomieStatusPolling()
+            }
+            
             NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
         })
@@ -137,6 +141,7 @@ struct HomepageContent: View {
 
     private func stopRoomieStatusPolling() {
         pollingTimer?.invalidate()
+        pollingTimer = nil
     }
 }
 

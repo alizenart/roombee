@@ -196,6 +196,7 @@ extension AuthenticationViewModel {
         do {
             try Auth.auth().signOut()
             DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NSNotification.Name("UserSignedOut"), object: nil)
                 self.reset()
             }
         }
