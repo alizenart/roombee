@@ -27,7 +27,7 @@ class ToggleViewModel: ObservableObject {
     static let getTogglesEndpoint = "/toggle/?user_id="
     
     func fetchToggles(userId: String, completion: @escaping ([ToggleInfo]?, Error?) -> Void) {
-        print("in fetchToggles")
+        print("ToggleViewModel: fetchToggles \(userId)")
         let endpoint = ToggleViewModel.getTogglesEndpoint + "\(userId)"
         guard let url = URL(string: ToggleViewModel.baseURL + endpoint) else {
             Task { @MainActor in

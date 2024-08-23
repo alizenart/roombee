@@ -85,10 +85,10 @@ struct HomepageContent: View {
         }
         .onAppear(perform: {
             //loading Roommate information
-            print("initialLoad onAppear: \(isInitialLoad)")
+            print("HomepageContent: onAppear")
             fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
+            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
             startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
-            print("initialLoad afterFetchMy initial toggle: \(isInitialLoad)")
             
             NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
@@ -96,6 +96,7 @@ struct HomepageContent: View {
     }
     
     private func fetchMyInitialToggleState(userId: String) {
+        print("HomepageContent: fetchMyInitialToggleState \(userId)" )
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
@@ -112,6 +113,7 @@ struct HomepageContent: View {
     private func startRoomieStatusPolling(userId: String) {
         // Invalidate existing timer to ensure we don't create multiple instances
         pollingTimer?.invalidate()
+        print("HomepageContent: startRoomiePolling \(userId)" )
         
         // Create a new Timer that calls `fetchRoomieInitialToggleState` every 5 seconds
         pollingTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
@@ -120,6 +122,7 @@ struct HomepageContent: View {
     }
 
     private func fetchRoomieInitialToggleState(userId: String) {
+    print("HomepageContent: fetchRoomieInitialToggleState")
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {

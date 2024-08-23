@@ -142,39 +142,35 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-            print("auth.user_id: \(auth.user_id ?? "No user ID")")
+            print("onAppear: HomepageView")
             fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
             fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
         }
     }
     private func fetchMyInitialToggleState(userId: String) {
+        print("HomepageView: fetchMyInitialToggleState \(userId)" )
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
                     self.myStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     self.myStatusToggleInRoom = (firstToggle.inRoom != 0)
-                    print("Fetched toggle states for me: \(userId):")
-                    print("isSleeping: \(self.myStatusToggleSleeping)")
-                    print("inRoom: \(self.myStatusToggleInRoom)")
                 }
             } else if let error = error {
                 print("Error fetching toggles: \(error)")
             }
             DispatchQueue.main.async {
-                self.isInitialLoad = false // Set to false after initial load
+                self.isInitialLoad = false
             }
         }
     }
 
     private func fetchRoomieInitialToggleState(userId: String) {
+        print("HomepageView: fetchRoomieInitialToggleState \(userId)")
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
                     self.roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     self.roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
-                    print("Fetched toggle states for roomie \(userId):")
-                    print("isSleeping: \(self.roomieStatusToggleSleeping)")
-                    print("inRoom: \(self.roomieStatusToggleInRoom)")
                 }
             } else if let error = error {
                 print("Error fetching toggles: \(error)")

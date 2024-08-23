@@ -140,7 +140,7 @@ struct CalendarView: View {
         .cornerRadius(30)
         .onAppear {
             eventStore.getEvents()
-            print("event get events called")
+            //print("event get events called")
         }
     }
     
