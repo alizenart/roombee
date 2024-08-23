@@ -9,9 +9,12 @@ import SwiftUI
 
 struct Onboarding2: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
     let textColor = Color(red: 73/255, green: 73/255, blue: 73/255)
+    
     
     var body: some View {
         //        NavigationView{
@@ -29,7 +32,7 @@ struct Onboarding2: View {
                             .bold()
                             .padding()
                             .foregroundColor(.init(textColor))
-                        NavigationLink(destination: Onboarding3_CreateRoom()){
+                        NavigationLink(destination: Onboarding3_CreateRoom().environmentObject(onboardGuideManager)){
                             Text("Create Room")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 225, height: 75, alignment: .center)
@@ -38,7 +41,7 @@ struct Onboarding2: View {
                                 .cornerRadius(10)
                         }
                         
-                        NavigationLink(destination: Onboarding3_joinExisting()){
+                        NavigationLink(destination: Onboarding3_joinExisting().environmentObject(onboardGuideManager)){
                             Text("Join Room")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 225, height: 75, alignment: .center)

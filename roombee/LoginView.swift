@@ -4,6 +4,9 @@ struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -26,7 +29,7 @@ struct LoginView: View {
                     
                     signUpLink
                     
-                    NavigationLink(destination: SignupView(), isActive: $viewModel.showSignUp) {
+                    NavigationLink(destination: SignupView().environmentObject(onboardGuideManager), isActive: $viewModel.showSignUp) {
                         EmptyView()
                     }
                 }

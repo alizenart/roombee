@@ -6,6 +6,9 @@ struct SignupView: View {
     @State private var shouldNavigate = false
     @State private var showingPasswordAlert = false
     
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
+    
     var body: some View {
         ZStack {
             viewModel.backgroundColor.ignoresSafeArea()
@@ -13,7 +16,7 @@ struct SignupView: View {
                 headerText
                 form
                 continueButton
-                NavigationLink(destination: ContinueSignUp(), isActive: $shouldNavigate) { EmptyView() }
+                NavigationLink(destination: ContinueSignUp().environmentObject(onboardGuideManager), isActive: $shouldNavigate) { EmptyView() }
             }
             .padding()
             .background(Rectangle()

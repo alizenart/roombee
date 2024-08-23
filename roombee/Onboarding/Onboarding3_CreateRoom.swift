@@ -10,6 +10,11 @@ import SwiftUI
 struct Onboarding3_CreateRoom: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
+    
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+    @State private var showOnboardingGuide = false // State to control the transition
+
+    
 
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
@@ -70,10 +75,12 @@ struct Onboarding3_CreateRoom: View {
                         
                         
                         
-                        Button(action: signUpWithEmailPassword) {
-                            Group {
+                        Button(action: {
+                            authViewModel.skipCreateOrJoin = true
+                            showOnboardingGuide = true 
+                        }) {                                Group {
                                 if authViewModel.authenticationState != .authenticating {
-                                    Text("Finish")
+                                    Text("Let's Go!")
                                         .padding(.vertical, 8)
                                         .frame(maxWidth: .infinity)
                                 } else {
@@ -94,8 +101,8 @@ struct Onboarding3_CreateRoom: View {
                             .environmentObject(authViewModel)
                             .environmentObject(NavManager())
                             .environmentObject(SelectedDateManager())){
-                            EmptyView()
-                        }
+                                EmptyView()
+                            }
                     }
                     .padding()
                     .background(Rectangle()
@@ -103,9 +110,13 @@ struct Onboarding3_CreateRoom: View {
                         .cornerRadius(15)
                         .shadow(radius: 15))
                     .padding()
+                }//vstack (big
+                .sheet(isPresented: $showOnboardingGuide) {
+                     OnboardGuideView()
+                         .environmentObject(authViewModel)
+                         .environmentObject(onboardGuideManager)
+                 } //sheet
                     
-                    
-                }//vstack (big)
             }//zstack
             
             
@@ -115,13 +126,7 @@ struct Onboarding3_CreateRoom: View {
         
     } //body
     
-    private func signUpWithEmailPassword() {
-        Task {
-            if await authViewModel.signUpWithEmailPassword() == true {
-                dismiss()
-            }
-        }
-    }
+
 } //Onboarding2
 
 

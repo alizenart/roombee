@@ -7,29 +7,30 @@ struct ContentView: View {
     @StateObject var toggleManager = ToggleViewModel()
     @StateObject var eventStore = EventStore()
     @StateObject var todoManager = TodoViewModel()
+    
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
     @State private var isTimerDone = false
     
 
     var body: some View {
+        
         switch viewModel.authenticationState {
         case .authenticated:
             HomepageView()
-            /*
-                .onAppear(perform: {
-                    NotificationService.shared.requestPerm()
-                })
-             */
-            .environmentObject(eventStore)
-            .environmentObject(viewModel)
-            .environmentObject(navManager)
-            .environmentObject(selectedDate)
-            .environmentObject(toggleManager)
-            .environmentObject(todoManager)
+                .environmentObject(eventStore)
+                .environmentObject(viewModel)
+                .environmentObject(navManager)
+                .environmentObject(selectedDate)
+                .environmentObject(toggleManager)
+                .environmentObject(todoManager)
+//            OnboardGuideView(viewModel: onboardGuideManager)
 
         case .authenticating, .unauthenticated:
             if isTimerDone {
                 NavigationView {
-                    LoginView().environmentObject(viewModel)
+                    LoginView()
+                        .environmentObject(viewModel)
+                        .environmentObject(onboardGuideManager)
                 }
             } else {
                 splashScreen

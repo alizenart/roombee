@@ -7,6 +7,9 @@ struct ContinueSignUp: View {
     @State private var showingAlert = false
     @State private var shouldNavigate = false
     
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
+    
     var body: some View {
         ZStack {
             BackgroundView()
@@ -34,8 +37,12 @@ struct ContinueSignUp: View {
             .environmentObject(viewModel)
             .environmentObject(NavManager())
             .environmentObject(SelectedDateManager())
+            .environmentObject(ToggleViewModel())
+
+
         } else {
             Onboarding2()
+                .environmentObject(onboardGuideManager)
         }
     }
 

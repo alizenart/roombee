@@ -56,6 +56,9 @@ struct roombeeApp: App {
     @StateObject var todoManager = TodoViewModel()
     @StateObject var eventStore = EventStore()
     @StateObject var toggleManager = ToggleViewModel()
+        
+    //onboard Guide manager
+    @StateObject var onboardGuideManager = OnboardGuideViewModel()
     
     @State private var inviteLink: String = ""
     @State private var showInviteLinkPopup: Bool = false
@@ -66,6 +69,7 @@ struct roombeeApp: App {
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
                 .environmentObject(todoManager)
+                .environmentObject(onboardGuideManager)
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
                     if let userInfo = notification.userInfo,
                        let hiveCode = userInfo["hive_code"] as? String {
@@ -73,6 +77,8 @@ struct roombeeApp: App {
                         authViewModel.hive_code = hiveCode
                     }
                 }
+                
+            
         }
     }
 }
