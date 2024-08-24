@@ -30,6 +30,7 @@ struct NewEventView: View {
     @ObservedObject var viewModel: NewEventViewModel
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var auth: AuthenticationViewModel
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
     
@@ -68,7 +69,7 @@ struct NewEventView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Save") {
-                          let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+                            let newEvent = CalendarEvent(user_id: auth.user_id ?? "80003", eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
 //                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
                             onSave(newEvent)
                             NotificationService.shared.scheduleNotification(for: newEvent)
@@ -87,6 +88,7 @@ struct NewEventView: View {
 struct CalendarView: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var auth: AuthenticationViewModel
     
     var title: String
     @State private var showingAddEventSheet = false
@@ -139,7 +141,7 @@ struct CalendarView: View {
         } //ZStack
         .cornerRadius(30)
         .onAppear {
-            eventStore.getEvents()
+            eventStore.getEvents(user_id: auth.user_id ?? "80003")
             //print("event get events called")
         }
     }
@@ -194,7 +196,7 @@ struct CalendarView: View {
         }
         .sheet(isPresented: $showingAddEventSheet) {
             NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
-                eventStore.addEvent(newEvent)
+                eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
             }
         }
         .padding()

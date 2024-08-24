@@ -191,11 +191,14 @@ extension AuthenticationViewModel {
         }
     }
     
-    func signOut() {
+    func signOut(eventStore: EventStore) {
         do {
             try Auth.auth().signOut()
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: NSNotification.Name("UserSignedOut"), object: nil)
+                
+                eventStore.clearEvents()
+                
                 self.reset()
             }
         }

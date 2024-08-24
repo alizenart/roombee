@@ -50,7 +50,7 @@ struct HomepageView: View {
     let roomieUserId = "80002"
     
     private func signOut() {
-        authViewModel.signOut()
+        authViewModel.signOut(eventStore: eventStore)
     }
     
     private func addRoommate() {
@@ -146,6 +146,9 @@ struct HomepageView: View {
             fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
         }
     }
+    
+    
+    
     private func fetchMyInitialToggleState(userId: String) {
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {

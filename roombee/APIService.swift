@@ -97,9 +97,10 @@ class APIService {
 
     
 //  completion(handler) allows func to run async, we can load the rest of the page
-  func fetchEvents(completion: @escaping ([CalendarEvent]?, Error?) -> Void) {
+  func fetchEvents(user_id: String, completion: @escaping ([CalendarEvent]?, Error?) -> Void) {
 //    var events: [CalendarEvent]
-    guard let url = URL(string: APIService.baseURL + APIService.getEventsEndpoint) else {
+    let endpoint = "/event/?user_id=\(user_id)"
+    guard let url = URL(string: APIService.baseURL + endpoint) else {
       completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
       return
     }
@@ -128,8 +129,9 @@ class APIService {
         }
     }.resume()
   }
-  
-  func addEvent(event: CalendarEvent, completion: @escaping (Bool, Error?) -> Void) {
+
+    
+  func addEvent(user_id: String, event: CalendarEvent, completion: @escaping (Bool, Error?) -> Void) {
     let queryParams = [
         "event_id": "\(event.id)",
         "user_id": "\(event.user_id)",
@@ -176,6 +178,7 @@ class APIService {
       }
     }.resume()
   }
+    
 }
 
 extension DateFormatter {
