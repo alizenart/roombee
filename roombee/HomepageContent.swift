@@ -25,17 +25,33 @@ struct HomepageContent: View {
     let myUserId = "80003"
     let roomieUserId = "80002"
     @State private var pollingTimer: Timer?
+    
+    @State private var weekOffset: Int = 0
+
 
     var calGrid: GridView
     var yourStatus: StatusView
     var roomStatus: StatusView
     
     var schedCara: DatesCarousel {
-        let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7)
+        let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7, weekOffset: weekOffset)
         return DatesCarousel(dates: dates, onDateSelected: { date in
             selectedDateManager.SelectedDate = date
+            print("Original weekOffset is: \(weekOffset)")
+            
+            // bug resolved
+            weekOffset = 0
+            print("WeekOffset reset to: \(weekOffset)")
+            
+        }, onSwipeLeft: {
+            weekOffset += 1 // Move to next week
+            print("After swiping left, weekOffset is: \(weekOffset)")
+        }, onSwipeRight: {
+            weekOffset -= 1 // Move to previous week
+            print("After swiping right, weekOffset is: \(weekOffset)")
         })
     }
+
     
     
     var body: some View {
@@ -189,24 +205,59 @@ struct DatesCarousel: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     var dates: [Date]
     var onDateSelected: (Date) -> Void
-    
+
+    var onSwipeLeft: () -> Void
+    var onSwipeRight: () -> Void
+
+//    @State private var dragOffset: CGFloat = 0 // Track the current drag offset
+
+    private let swipeThreshold: CGFloat = 50 // Minimum distance for a swipe gesture to be recognized
+
     var body: some View {
         VStack {
             Text("Schedules")
-                .font(.system(size:25))
+                .font(.system(size: 25))
                 .fontWeight(.bold)
                 .foregroundColor(.white)
                 .padding(.top, 30)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 20)
-            
+
             HStack {
-                ForEach(dates, id: \.self) { date in DateToggle(date: date, today: Calendar.current.isDateInToday(date)) {
-//                    onDateSelected(date)
-                    selectedDateManager.SelectedDate = date
-                }
+                ForEach(dates, id: \.self) { date in
+                    DateToggle(date: date, today: Calendar.current.isDateInToday(date)) {
+                        onDateSelected(date)
+                    }
                 }
             }
+//            .offset(x: dragOffset) // Apply drag offset for animation
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+//                        dragOffset = value.translation.width // Update drag offset during drag
+                    }
+                    .onEnded { value in
+                        if value.translation.width < -swipeThreshold {
+                            // Swipe left
+                            withAnimation(.easeInOut) { // Animate swipe action
+//                                dragOffset = -300 // Slide left animation
+                                onSwipeLeft()
+//                                dragOffset = 0 // Reset position
+                            }
+                        } else if value.translation.width > swipeThreshold {
+                            // Swipe right
+                            withAnimation(.easeInOut) { // Animate swipe action
+//                                dragOffset = 300 // Slide right animation
+                                onSwipeRight()
+//                                dragOffset = 0 // Reset position
+                            }
+                        } else {
+                            withAnimation(.easeInOut) {
+//                                dragOffset = 0 // Reset position if swipe not recognized
+                            }
+                        }// else
+                    } //onEnded
+            ) // .gesture
         }
     }
 }
@@ -214,16 +265,23 @@ struct DatesCarousel: View {
 
 
 
-func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
+
+func generateDates(startingFrom startDate: Date, count: Int, weekOffset: Int) -> [Date] {
     var dates = [Date]()
     var current = startDate
-    
+
     let calendar = Calendar.current
     let weekday = calendar.component(.weekday, from: current)
     let daysToGoBack = weekday - calendar.firstWeekday
     if let lastSunday = calendar.date(byAdding: .day, value: -daysToGoBack, to: current) {
         current = lastSunday
     }
+
+    // Adjust the start date by the weekOffset
+    if let adjustedStart = calendar.date(byAdding: .weekOfYear, value: weekOffset, to: current) {
+        current = adjustedStart
+    }
+
     for day in 0..<count {
         if let date = calendar.date(byAdding: .day, value: day, to: current) {
             dates.append(date)
@@ -231,7 +289,6 @@ func generateDates(startingFrom startDate: Date, count: Int) -> [Date] {
     }
     return dates
 }
-
 
 struct DateToggle: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
@@ -245,7 +302,7 @@ struct DateToggle: View {
             ZStack {
                 statusShape
                     .fill()
-                    .foregroundColor(selectedDateManager.isDateSelected(date) ? highlightYellow : LighterPurple)  
+                    .foregroundColor(selectedDateManager.isDateSelected(date) ? highlightYellow : LighterPurple)
                     .frame(width: 45, height: 60)
                 
                 VStack {

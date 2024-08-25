@@ -15,7 +15,46 @@ class APIService {
   static let getEventsEndpoint = "/event/?user_id=0"
 //  !! its not under this path right now
   static let addEventEndpoint = "/event"
+  static let deleteEventEndpoint = "/event"
+    
+    // Delete an event from the server
+    func deleteEvent(eventId: String, completion: @escaping (Bool, Error?) -> Void) {
+        var urlComponents = URLComponents(string: APIService.baseURL + APIService.deleteEventEndpoint)
+        urlComponents?.queryItems = [URLQueryItem(name: "event_id", value: eventId)]
+        
+        guard let url = urlComponents?.url else {
+            completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil else {
+                completion(false, error)
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to delete event"]))
+                if let responseData = data, let responseString = String(data: responseData, encoding: .utf8) {
+                    print("Response body: \(responseString)")
+                }
+                return
+            }
+            
+            print("Successfully deleted event with id: \(eventId)")
+            DispatchQueue.main.async {
+                completion(true, nil)
+            }
+        }.resume()
+    }
+    
+    
   
+
+    
 //  completion(handler) allows func to run async, we can load the rest of the page
   func fetchEvents(completion: @escaping ([CalendarEvent]?, Error?) -> Void) {
 //    var events: [CalendarEvent]
@@ -30,29 +69,22 @@ class APIService {
         completion(nil, error)
         return
       }
+    
+        if let rawString = String(data: data, encoding: .utf8) {
+            print("Raw data from server: \(rawString)")
+        }
       
-      do {
-        print("json string data: \(String(data: data, encoding: .utf8))")
-        // Parse JSON data
-        if let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
-            var events: [CalendarEvent] = []
-            for jsonObject in jsonArray {
-              if let event = CalendarEvent(from: jsonObject) {
-                print("successfully parsed event: \(event)")
-                events.append(event)
-              }
-            }
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .formatted(DateFormatter.custom)
+            let events = try decoder.decode([CalendarEvent].self, from: data)
             DispatchQueue.main.async {
                 completion(events, nil)
             }
-        } else {
-          print("error in parsing")
-            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data format error"])
+        } catch {
+            print("Error decoding JSON: \(error)")
+            completion(nil, error)
         }
-      } catch {
-        print("error caught")
-        completion(nil, error)
-      }
     }.resume()
   }
   
@@ -105,3 +137,12 @@ class APIService {
   }
 }
 
+extension DateFormatter {
+    static var custom: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }
+}
