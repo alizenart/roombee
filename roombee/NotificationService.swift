@@ -48,21 +48,34 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
     }
     
     func todoNotif() {
-        let content = UNMutableNotificationContent()
-        content.title = "Reminder"
-        content.body = "You have tasks remaining!"
-        content.sound = UNNotificationSound.default
+        // Get the current date's day component
+        let currentDay = Calendar.current.component(.day, from: Date())
         
-        var date = DateComponents()
-        date.hour = 18
-        date.minute = 10
-        
-        let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
-        let request = UNNotificationRequest(identifier: "dailytodo", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error)")
+        // Check if the current day is odd
+        if currentDay % 2 != 0 {
+            let content = UNMutableNotificationContent()
+            content.title = "Reminder"
+            content.body = "You have tasks remaining!"
+            content.sound = UNNotificationSound.default
+            
+            // Specify 8 AM for the trigger time
+            var dateComponents = DateComponents()
+            dateComponents.hour = 8
+            
+            // Create the trigger to fire at 8 AM if the day is odd
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: "dailytodo", content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error)")
+                }
             }
+            
+            print("Notification scheduled for 8 AM today")
+        } else {
+            print("Today is an even day, notification not scheduled")
         }
     }
     
