@@ -9,6 +9,7 @@
 
 import Foundation
 
+@MainActor
 class APIService {
   static let shared = APIService()
   static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
@@ -16,6 +17,46 @@ class APIService {
 //  !! its not under this path right now
   static let addEventEndpoint = "/event"
   static let deleteEventEndpoint = "/event"
+    static let updateHiveCodeEndpoint = "/hiveCode"  // Endpoint for updating hive code
+        
+    // Function to update hive_code for a user
+    func updateHiveCode(userId: String, hiveCode: String, completion: @escaping (Bool, Error?) -> Void) {
+        var urlComponents = URLComponents(string: APIService.baseURL + APIService.updateHiveCodeEndpoint)
+        
+        // Add query string parameters
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "user_id", value: userId),
+            URLQueryItem(name: "hive_code", value: hiveCode)
+        ]
+        
+        guard let url = urlComponents?.url else {
+            completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"  // Using PUT for updating resources
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil else {
+                completion(false, error)
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to update hive_code"]))
+                if let responseData = data, let responseString = String(data: responseData, encoding: .utf8) {
+                    print("Response body: \(responseString)")
+                }
+                return
+            }
+            
+            print("Successfully updated hive_code for user with id: \(userId)")
+            DispatchQueue.main.async {
+                completion(true, nil)
+            }
+        }.resume()
+    }
     
     // Delete an event from the server
     func deleteEvent(eventId: String, completion: @escaping (Bool, Error?) -> Void) {
@@ -56,9 +97,10 @@ class APIService {
 
     
 //  completion(handler) allows func to run async, we can load the rest of the page
-  func fetchEvents(completion: @escaping ([CalendarEvent]?, Error?) -> Void) {
+  func fetchEvents(user_id: String, completion: @escaping ([CalendarEvent]?, Error?) -> Void) {
 //    var events: [CalendarEvent]
-    guard let url = URL(string: APIService.baseURL + APIService.getEventsEndpoint) else {
+    let endpoint = "/event/?user_id=\(user_id)"
+    guard let url = URL(string: APIService.baseURL + endpoint) else {
       completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
       return
     }
@@ -87,8 +129,9 @@ class APIService {
         }
     }.resume()
   }
-  
-  func addEvent(event: CalendarEvent, completion: @escaping (Bool, Error?) -> Void) {
+
+    
+  func addEvent(user_id: String, event: CalendarEvent, completion: @escaping (Bool, Error?) -> Void) {
     let queryParams = [
         "event_id": "\(event.id)",
         "user_id": "\(event.user_id)",
@@ -135,6 +178,7 @@ class APIService {
       }
     }.resume()
   }
+    
 }
 
 extension DateFormatter {

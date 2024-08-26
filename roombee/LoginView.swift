@@ -42,7 +42,7 @@ struct LoginView: View {
                 .padding()
                 .navigationBarBackButtonHidden(true)
                 .alert(isPresented: $showingErrorAlert){
-                    Alert(title: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
+                    Alert(title: Text("Incorrect Email or Password"), dismissButton: .default(Text("OK")))
                 }
             }
         }

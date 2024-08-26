@@ -30,6 +30,7 @@ struct NewEventView: View {
     @ObservedObject var viewModel: NewEventViewModel
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var auth: AuthenticationViewModel
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
     
@@ -68,7 +69,7 @@ struct NewEventView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Save") {
-                          let newEvent = CalendarEvent(eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+                            let newEvent = CalendarEvent(user_id: auth.user_id ?? "80003", eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
 //                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
                             onSave(newEvent)
                             NotificationService.shared.scheduleNotification(for: newEvent)
@@ -87,6 +88,7 @@ struct NewEventView: View {
 struct CalendarView: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var auth: AuthenticationViewModel
     
     var title: String
     @State private var showingAddEventSheet = false
@@ -121,7 +123,7 @@ struct CalendarView: View {
                                     let eventWidth = maxEventWidth - CGFloat(group.firstIndex(of: event)! * 10)
                                     eventCell(event, width: eventWidth)
                                         .frame(alignment: .trailing)
-//                                        .padding(1)
+                                    //                                        .padding(1)
                                 }
                             }
                             
@@ -139,15 +141,20 @@ struct CalendarView: View {
         } //ZStack
         .cornerRadius(30)
         .onAppear {
-            eventStore.getEvents()
-            print("event get events called")
+            eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
         }
+        //print("event get events called")
+        
     }
     
     var filteredEvents: [CalendarEvent] {
         let selectedDate = selectedDateManager.SelectedDate
         let calendar = Calendar.current
-        return eventStore.events.filter { event in
+        
+        // Combine both user events and roommate events
+        let combinedEvents = eventStore.userEvents + eventStore.roommateEvents
+        
+        return combinedEvents.filter { event in
             let eventDate = calendar.startOfDay(for: event.startTime)
             let selectedDay = calendar.startOfDay(for: selectedDate)
             return eventDate == selectedDay
@@ -194,13 +201,16 @@ struct CalendarView: View {
         }
         .sheet(isPresented: $showingAddEventSheet) {
             NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
-                eventStore.addEvent(newEvent)
+                eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
             }
         }
         .padding()
     }
     
     func eventCell(_ event: CalendarEvent, width: CGFloat) -> some View {
+        let isUserEvent = eventStore.userEvents.contains(event)
+        let backgroundColor = isUserEvent ? LighterPurple : highlightYellow // Different color for roommate's events
+
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
@@ -232,7 +242,7 @@ struct CalendarView: View {
             .frame(height: height, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(LighterPurple)
+                    .fill(backgroundColor)
             )
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
             .padding(.leading, 60) // Add padding on the right
@@ -240,6 +250,7 @@ struct CalendarView: View {
             .offset(x: maxEventWidth - width) //Offset the cell by the difference between maxEventWidth and current width
         }
     }
+
     
     
     func groupedEvents() -> [[CalendarEvent]] {

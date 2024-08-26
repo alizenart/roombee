@@ -61,6 +61,8 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var genderOptions = ["Please select", "Female", "Male", "Other"]
     
+    @Published var isUserDataLoaded: Bool = false
+    
     init() {
         registerAuthStateHandler()
         
@@ -71,6 +73,7 @@ class AuthenticationViewModel: ObservableObject {
                 ? !(email.isEmpty || password.isEmpty)
                 : !(email.isEmpty || password.isEmpty || confirmPassword.isEmpty)
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: &$isValid)
     }
     
@@ -79,9 +82,11 @@ class AuthenticationViewModel: ObservableObject {
     func registerAuthStateHandler() {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
-                self.user = user
-                self.authenticationState = user == nil ? .unauthenticated : .authenticated
-                self.displayName = user?.email ?? ""
+                DispatchQueue.main.async {
+                    self.user = user
+                    self.authenticationState = user == nil ? .unauthenticated : .authenticated
+                    self.displayName = user?.email ?? ""
+                }
             }
         }
     }
@@ -116,6 +121,13 @@ class AuthenticationViewModel: ObservableObject {
         lastName = ""
         birthDate = Date()
         gender = ""
+        user = nil
+        displayName = ""
+        user_id = nil
+        roommate_id = nil
+        hive_code = ""
+        hive_name = ""
+        isUserDataLoaded = false
     }
 }
 
@@ -126,12 +138,16 @@ extension AuthenticationViewModel {
         authenticationState = .authenticating
         do {
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
+            await getUserData()
             return true
         }
         catch  {
             print(error)
             errorMessage = "Incorrect user or password"
-            authenticationState = .unauthenticated
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+                self.authenticationState = .unauthenticated
+            }
             return false
         }
     }
@@ -157,39 +173,54 @@ extension AuthenticationViewModel {
             return true
         } catch let error as NSError {
             if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
-                switch authErrorCode {
-                case .emailAlreadyInUse:
-                    errorMessage = "The email address is already in use."
-                default:
-                    errorMessage = error.localizedDescription
+                DispatchQueue.main.async {
+                        switch authErrorCode {
+                    case .emailAlreadyInUse:
+                        self.errorMessage = "The email address is already in use."
+                    default:
+                        self.errorMessage = error.localizedDescription
+                    }
                 }
             } else {
-                errorMessage = error.localizedDescription
+                    self.errorMessage = error.localizedDescription
             }
-            authenticationState = .unauthenticated
+                self.authenticationState = .unauthenticated
+            }
             showingErrorAlert = true
             return false
         }
-    }
     
-    func signOut() {
+    
+    func signOut(eventStore: EventStore) {
         do {
             try Auth.auth().signOut()
-            reset()
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NSNotification.Name("UserSignedOut"), object: nil)
+                
+                eventStore.clearEvents()
+                
+                self.reset()
+            }
         }
         catch {
             print(error)
-            errorMessage = error.localizedDescription
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+            }
         }
     }
     
     func deleteAccount() async -> Bool {
         do {
             try await user?.delete()
+            DispatchQueue.main.async {
+                self.reset()
+            }
             return true
-        }
-        catch {
-            errorMessage = error.localizedDescription
+        } catch {
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+            }
             return false
         }
     }
@@ -215,8 +246,10 @@ extension AuthenticationViewModel {
         lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
             if let error = task.error {
                 print("Error occurred: \(error)")
-                self.addUserErrorMessage = error.localizedDescription
-                self.addUserError = true
+                DispatchQueue.main.async {
+                    self.addUserErrorMessage = error.localizedDescription
+                    self.addUserError = true
+                }
                 return nil
             }
             if let result = task.result {
@@ -226,55 +259,47 @@ extension AuthenticationViewModel {
         }
     }
     
+    
     // Gets the current user's data from the database that is NOT already in their firebase user
     func getUserData() {
         let lambdaInvoker = AWSLambdaInvoker.default()
         let jsonObject = [
-            "queryStringParameters": ["email": email, "hive_code": hive_code]
+            "queryStringParameters": ["email": email]
         ] as [String : Any]
         
         lambdaInvoker.invokeFunction("getUserData", jsonObject: jsonObject).continueWith { task -> Any? in
-            if let error = task.error {
-                print("Error occurred: \(error)")
-                self.getUserErrorMessage = error.localizedDescription
-                self.getUserError = true
-                return nil
-            }
-            if let result = task.result as? [String: Any],
-               let bodyString = result["body"] as? String,
-               let data = bodyString.data(using: .utf8) {
-                do {
-                    if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        if let userData = jsonResponse["user_data"] as? [String: Any] {
-                            DispatchQueue.main.async {
-                                self.firstName = userData["first_name"] as? String ?? ""
-                                self.lastName = userData["last_name"] as? String ?? ""
-                                if let birthDateString = userData["birth_date"] as? String,
-                                   let birthDate = DateFormatter.yyyyMMdd.date(from: birthDateString) {
-                                    self.birthDate = birthDate
-                                } else {
-                                    self.birthDate = Date()
-                                }
-                                self.gender = userData["gender"] as? String ?? ""
+            Task { @MainActor in
+                if let error = task.error {
+                    print("Error occurred: \(error)")
+                    DispatchQueue.main.async {
+                        self.getUserErrorMessage = error.localizedDescription
+                        self.getUserError = true
+                    }
+                    return nil as Any?
+                }
+                if let result = task.result as? [String: Any],
+                   let bodyString = result["body"] as? String,
+                   let data = bodyString.data(using: .utf8) {
+                    do {
+                        if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                            if let userData = jsonResponse["user_data"] as? [String: Any] {
+                                self.hive_code = userData["hive_code"] as? String ?? ""
+                                self.user_id = userData["user_id"] as? String ?? ""
+                                self.isUserDataLoaded = true
+                            }
+                            if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
+                                self.roommate_id = roommateData["user_id"] as? String ?? ""
                             }
                         }
-                        if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
-                            self.roommate_id = roommateData["user_id"] as? String ?? ""
-                        }
+                    } catch {
+                        self.getUserErrorMessage = error.localizedDescription
+                        self.getUserError = true
                     }
-                } catch {
-                    print("Error parsing JSON response: \(error)")
-                    self.getUserErrorMessage = error.localizedDescription
-                    self.getUserError = true
                 }
+                return nil
             }
-            return nil
         }
     }
-    
-    
-    
-    
 }
 
 // DateFormatter extension to parse date string

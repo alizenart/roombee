@@ -1,4 +1,4 @@
 use roombee;
 
 
-select * from events;
+select * from hives;

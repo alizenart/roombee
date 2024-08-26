@@ -7,9 +7,10 @@
 
 import SwiftUI
 
+
 struct HomepageContent: View {
     @EnvironmentObject var eventStore: EventStore
-    @EnvironmentObject var authManager: AuthenticationViewModel
+    @EnvironmentObject var auth: AuthenticationViewModel
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var toggleManager: ToggleViewModel
@@ -84,10 +85,13 @@ struct HomepageContent: View {
         }
         .onAppear(perform: {
             //loading Roommate information
-            print("initialLoad onAppear: \(isInitialLoad)")
-            fetchMyInitialToggleState(userId: myUserId)
-            startRoomieStatusPolling(userId: roomieUserId)
-            print("initialLoad afterFetchMy initial toggle: \(isInitialLoad)")
+            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
+            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
+            startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
+            
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
+                stopRoomieStatusPolling()
+            }
             
             NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
@@ -133,6 +137,7 @@ struct HomepageContent: View {
 
     private func stopRoomieStatusPolling() {
         pollingTimer?.invalidate()
+        pollingTimer = nil
     }
 }
 

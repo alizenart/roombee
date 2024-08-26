@@ -10,7 +10,7 @@ import Combine
 
 struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
     var id = UUID()
-    var user_id: Int = 0
+    var user_id: String
     var eventTitle: String = "(No title)"
     var startTime: Date
     var endTime: Date
@@ -25,9 +25,9 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
         case approved
     }
     
-    init(eventTitle: String, startTime: Date, endTime: Date) {
+    init(user_id: String, eventTitle: String, startTime: Date, endTime: Date) {
         self.id = UUID()
-        self.user_id = 0
+        self.user_id = user_id
         self.eventTitle = eventTitle
         self.startTime = startTime
         self.endTime = endTime
@@ -37,7 +37,7 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
       init?(from dictionary: [String: Any]) {
           guard let idString = dictionary["event_id"] as? String,
                 let id = UUID(uuidString: idString),
-                let user_id = dictionary["user_id"] as? Int,
+                let user_id = dictionary["user_id"] as? String,
                 let eventTitle = dictionary["event_title"] as? String,
                 let startTimeString = dictionary["start_time"] as? String,
                 let endTimeString = dictionary["end_time"] as? String,
@@ -68,10 +68,16 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             id = try container.decode(UUID.self, forKey: .id)
-            user_id = try container.decode(Int.self, forKey: .user_id)
+            
             eventTitle = try container.decode(String.self, forKey: .eventTitle)
             startTime = try container.decode(Date.self, forKey: .startTime)
             endTime = try container.decode(Date.self, forKey: .endTime)
+            
+            if let userIdInt = try? container.decode(Int.self, forKey: .user_id) {
+                user_id = String(userIdInt)
+            } else {
+                user_id = try container.decode(String.self, forKey: .user_id)
+            }
             
             // Decode approved as Int and convert to Bool
             let approvedInt = try container.decode(Int.self, forKey: .approved)
@@ -91,28 +97,52 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
 
 
 class EventStore: ObservableObject {
-  @Published var events: [CalendarEvent] = []
-  
-  func getEvents() {
-    APIService.shared.fetchEvents { [weak self] newEvents, error in
-      DispatchQueue.main.async {
-          if let newEvents = newEvents {
-              print("Fetched events successfully: \(newEvents)")
-              self?.events = newEvents
-          } else if let error = error {
-              print("Error fetching events in EventStore: \(error.localizedDescription)")
-          }
-      }
+    @Published var userEvents: [CalendarEvent] = []
+    @Published var roommateEvents: [CalendarEvent] = []
+    
+    
+    @MainActor func getUserEvents(user_id: String) {
+        APIService.shared.fetchEvents(user_id: user_id) { [weak self] newEvents, error in
+            DispatchQueue.main.async {
+                if let newEvents = newEvents {
+                    print("Fetched user events successfully: \(newEvents)")
+                    self?.userEvents = newEvents
+                } else if let error = error {
+                    print("Error fetching user events in EventStore: \(error.localizedDescription)")
+                }
+            }
+        }
     }
-  }
+    
+    @MainActor func getRoommateEvents(roommate_id: String) {
+        APIService.shared.fetchEvents(user_id: roommate_id) { [weak self] newEvents, error in
+            DispatchQueue.main.async {
+                if let newEvents = newEvents {
+                    print("Fetched roommate events successfully: \(newEvents)")
+                    self?.roommateEvents = newEvents
+                } else if let error = error {
+                    print("Error fetching roommate events in EventStore: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    @MainActor func getAllEvents(user_id: String, roommate_id: String) {
+        getUserEvents(user_id: user_id)
+        getRoommateEvents(roommate_id: roommate_id)
+    }
+    @MainActor func clearEvents() {
+        self.userEvents.removeAll()
+        self.roommateEvents.removeAll()// Clear all events
+    }
   
-  func addEvent(_ newEvent: CalendarEvent) {
+    @MainActor func addEvent(user_id: String, _ newEvent: CalendarEvent) {
    
 //    add backend logic here 
-    APIService.shared.addEvent(event: newEvent) { success, error in
+        APIService.shared.addEvent(user_id: user_id, event: newEvent) { success, error in
       if success {
         DispatchQueue.main.async {
-          self.events.append(newEvent)
+          self.userEvents.append(newEvent)
           print("new event added successfully: ", newEvent)
         }
       } else if let error = error {
@@ -120,14 +150,14 @@ class EventStore: ObservableObject {
       }
     }
     
-    print("events array! \(events)")
+        print("events array! \(self.userEvents) and \(self.roommateEvents)")
   }
     
-    func deleteEvent(eventId: String) {
+    @MainActor func deleteEvent(eventId: String) {
             APIService.shared.deleteEvent(eventId: eventId) { [weak self] success, error in
                 if success {
                     DispatchQueue.main.async {
-                        self?.events.removeAll { $0.id.uuidString == eventId }
+                        self?.userEvents.removeAll { $0.id.uuidString == eventId }
                         print("Event deleted successfully.")
                     }
                 } else if let error = error {
