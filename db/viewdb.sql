@@ -15,4 +15,4 @@ use roombee;
 -- DELETE FROM events WHERE event_id = 12345;
 
 -- Delete rows from table 'TableName'
-SELECT * FROM todos;
+SELECT * FROM users;

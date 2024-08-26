@@ -54,6 +54,8 @@ class AuthenticationViewModel: ObservableObject {
     @Published var hive_code = ""
     @Published var hive_name = ""
     
+    @Published var showingErrorAlert = false
+    
     @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     @Published var toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
@@ -124,28 +126,48 @@ extension AuthenticationViewModel {
         authenticationState = .authenticating
         do {
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
-            
             return true
         }
         catch  {
             print(error)
-            errorMessage = error.localizedDescription
+            errorMessage = "Incorrect user or password"
             authenticationState = .unauthenticated
             return false
         }
     }
     
+    func validatePassword(_ password: String) -> Bool {
+        let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$")
+        return passwordRegex.evaluate(with: password)
+    }
+    
     func signUpWithEmailPassword() async -> Bool {
+        
+        guard validatePassword(password) else {
+           errorMessage = "Does not meet password requirements"
+           showingErrorAlert = true
+           authenticationState = .unauthenticated
+           return false
+       }
+        
         authenticationState = .authenticating
         do  {
             try await Auth.auth().createUser(withEmail: email, password: password)
             addUserLambda()
             return true
-        }
-        catch {
-            print(error)
-            errorMessage = error.localizedDescription
+        } catch let error as NSError {
+            if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
+                switch authErrorCode {
+                case .emailAlreadyInUse:
+                    errorMessage = "The email address is already in use."
+                default:
+                    errorMessage = error.localizedDescription
+                }
+            } else {
+                errorMessage = error.localizedDescription
+            }
             authenticationState = .unauthenticated
+            showingErrorAlert = true
             return false
         }
     }
@@ -249,6 +271,9 @@ extension AuthenticationViewModel {
             return nil
         }
     }
+    
+    
+    
     
 }
 
