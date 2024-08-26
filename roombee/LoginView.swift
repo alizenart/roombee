@@ -3,6 +3,7 @@ import SwiftUI
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var showingErrorAlert = false
     
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
 
@@ -40,6 +41,9 @@ struct LoginView: View {
                     .shadow(radius: 15))
                 .padding()
                 .navigationBarBackButtonHidden(true)
+                .alert(isPresented: $showingErrorAlert){
+                    Alert(title: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
+                }
             }
         }
     }
@@ -48,6 +52,9 @@ struct LoginView: View {
         Task {
             if await viewModel.signInWithEmailPassword() == true {
                 dismiss()
+            }
+            else{
+                showingErrorAlert = true
             }
         }
     }

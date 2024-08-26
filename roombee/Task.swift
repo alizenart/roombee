@@ -36,10 +36,6 @@ struct Tasks: Identifiable, Hashable, Equatable{
         self.todoCategory = todoCategory
         self.status = 0
     }
-    
-    static func == (lhs: Tasks, rhs: Tasks) -> Bool {
-            return lhs.id == rhs.id
-        }
 }
 
 
