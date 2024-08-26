@@ -31,6 +31,7 @@ struct HomepageView: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var toggleManager: ToggleViewModel
     @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var agreementManager: RoommateAgreementViewModel
     
     @State private var isActive: Bool = true
     @State private var showInviteLinkPopup: Bool = false
@@ -84,6 +85,9 @@ struct HomepageView: View {
                         ToDoView()
                     case 2:
                         EmptyView()
+                    case 3:
+                        RoommateAgreementView()
+                            .environmentObject(agreementManager)
                     default:
                         Text("Unknown Selection")
                     }
@@ -119,7 +123,7 @@ struct HomepageView: View {
                 }
             }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
-                if newValue == 3 {
+                if newValue == 4 {
                     signOut()
                     navManager.selectedSideMenuTab = 0
                 }

@@ -213,9 +213,9 @@ struct CalendarView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(event.startTime.formatted(.dateTime.hour().minute()))
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                     Text(event.eventTitle).bold()
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                     
                 }
                 Spacer()

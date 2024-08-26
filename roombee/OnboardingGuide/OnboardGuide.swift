@@ -188,7 +188,7 @@ struct OnboardGuide3: View {
                     .scaledToFit()
                     .frame(width: 300)
                     .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
-//                    .padding(.bottom, 30)
+                    .padding(.bottom, 30)
                 
                 HStack{
                     Button(action: {
@@ -332,6 +332,7 @@ struct OnboardGuide5: View {
                     
                     Spacer()
                 }
+                .padding(.horizontal, 10)
             }
         }
     }
