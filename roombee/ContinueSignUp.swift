@@ -7,6 +7,9 @@ struct ContinueSignUp: View {
     @State private var showingAlert = false
     @State private var shouldNavigate = false
     
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
+    
     var body: some View {
         ZStack {
             BackgroundView()
@@ -34,8 +37,12 @@ struct ContinueSignUp: View {
             .environmentObject(viewModel)
             .environmentObject(NavManager())
             .environmentObject(SelectedDateManager())
+            .environmentObject(ToggleViewModel())
+
+
         } else {
             Onboarding2()
+                .environmentObject(onboardGuideManager)
         }
     }
 
@@ -62,18 +69,31 @@ struct ContinueSignUp: View {
 
     private var signUpButton: some View {
         Button(action: {
-            if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
-                && !viewModel.gender.isEmpty) {
-                shouldNavigate = true
+            Task {
+                if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
+                    && !viewModel.gender.isEmpty) {
+                    if await viewModel.signUpWithEmailPassword() {
+                        shouldNavigate = true
+                    } else {
+                        showingAlert = true
+                    }
+                }
+                else{
+                    showingAlert = true
+                }
             }
         }) {
             buttonContent
+        }
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text("Error"), message: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
         }
         .disabled(!viewModel.isValid)
         .frame(width: 250, height: 50)
         .buttonStyle(.borderedProminent)
         .padding()
     }
+
 
     private var buttonContent: some View {
         Group {

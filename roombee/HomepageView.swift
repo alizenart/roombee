@@ -24,6 +24,7 @@ let creamColor = Color(red:231/255, green:224/255, blue:215/255)
 let date = Date()
 let formatter = DateFormatter()
 
+@MainActor
 struct HomepageView: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -31,6 +32,8 @@ struct HomepageView: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var toggleManager: ToggleViewModel
     @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var agreementManager: RoommateAgreementViewModel
+    @EnvironmentObject var auth: AuthenticationViewModel
     
     @State private var isActive: Bool = true
     @State private var showInviteLinkPopup: Bool = false
@@ -47,7 +50,7 @@ struct HomepageView: View {
     let roomieUserId = "80002"
     
     private func signOut() {
-        authViewModel.signOut()
+        authViewModel.signOut(eventStore: eventStore)
     }
     
     private func addRoommate() {
@@ -58,21 +61,23 @@ struct HomepageView: View {
     
     var body: some View {
         NavigationView {
+            
             ZStack {
                 backgroundColor
                     .ignoresSafeArea()
                 Group {
                     switch navManager.selectedSideMenuTab {
                     case 0:
-                        HomepageContent(
+                        if authViewModel.isUserDataLoaded {
+                            HomepageContent(
                                 myStatusToggleSleeping: $myStatusToggleSleeping,
                                 myStatusToggleInRoom: $myStatusToggleInRoom,
                                 roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
                                 roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
                                 isInitialLoad: $isInitialLoad,
                                 calGrid: GridView(cal: CalendarView(title: "Me")),
-                                yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: myUserId, isInitialLoad: $isInitialLoad),
-                                roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: roomieUserId, isInitialLoad: .constant(true))
+                                yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: auth.user_id ?? myUserId, isInitialLoad: $isInitialLoad),
+                                roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: auth.roommate_id ?? roomieUserId, isInitialLoad: .constant(true))
                             )
                             .environmentObject(eventStore)
                             .environmentObject(authViewModel)
@@ -80,10 +85,15 @@ struct HomepageView: View {
                             .environmentObject(selectedDateManager)
                             .environmentObject(toggleManager)
                             .environmentObject(todoManager)
+                        }
+                        
                     case 1:
                         ToDoView()
                     case 2:
                         EmptyView()
+                    case 3:
+                        RoommateAgreementView()
+                            .environmentObject(agreementManager)
                     default:
                         Text("Unknown Selection")
                     }
@@ -119,7 +129,7 @@ struct HomepageView: View {
                 }
             }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
-                if newValue == 3 {
+                if newValue == 4 {
                     signOut()
                     navManager.selectedSideMenuTab = 0
                 }
@@ -132,24 +142,26 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-            fetchMyInitialToggleState(userId: myUserId)
-            fetchRoomieInitialToggleState(userId: roomieUserId)
+            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
+            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
         }
     }
+    
+    
+    
     private func fetchMyInitialToggleState(userId: String) {
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
-                    myStatusToggleSleeping = (firstToggle.isSleeping != 0)
-                    myStatusToggleInRoom = (firstToggle.inRoom != 0)
-                    print("Fetched toggle states for user \(userId):")
-                    print("isSleeping: \(myStatusToggleSleeping)")
-                    print("inRoom: \(myStatusToggleInRoom)")
+                    self.myStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    self.myStatusToggleInRoom = (firstToggle.inRoom != 0)
                 }
             } else if let error = error {
-                print("error fetching toggles: \(error)")
+                print("Error fetching toggles: \(error)")
             }
-            isInitialLoad = false // Set to false after initial load
+            DispatchQueue.main.async {
+                self.isInitialLoad = false
+            }
         }
     }
 
@@ -157,16 +169,13 @@ struct HomepageView: View {
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
-                    roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
-                    roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
-                    print(toggles.first)
-                    print("Fetched toggle states for user \(userId):")
-                    print("isSleeping: \(roomieStatusToggleSleeping)")
-                    print("inRoom: \(roomieStatusToggleInRoom)")
+                    self.roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
+                    self.roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
                 }
             } else if let error = error {
-                print("error fetching toggles: \(error)")
+                print("Error fetching toggles: \(error)")
             }
         }
     }
+
 }

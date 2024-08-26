@@ -12,6 +12,10 @@ struct Onboarding3_joinExisting: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+    @State private var showOnboardingGuide = false // State to control the transition
+    
+    
     let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     
     let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
@@ -53,7 +57,10 @@ struct Onboarding3_joinExisting: View {
                             .cornerRadius(10)
                             .padding(.bottom, 10)
                         
-                        Button(action: signUpWithEmailPassword) {
+                        Button(action: {
+                            authViewModel.skipCreateOrJoin = true
+                            showOnboardingGuide = true 
+                        }) {                            
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)
@@ -76,13 +83,14 @@ struct Onboarding3_joinExisting: View {
                         .cornerRadius(15)
                         .shadow(radius: 15))
                     .padding()
-                    
-                    
-                    
-                    
-                    
-                    
-                }//vstack (big)
+                } // vstack
+                .sheet(isPresented: $showOnboardingGuide) {
+                    OnboardGuideView()
+                        .environmentObject(authViewModel)
+                        .environmentObject(onboardGuideManager)
+                } //sheet
+                
+                
             }//zstack
             
             
@@ -90,16 +98,7 @@ struct Onboarding3_joinExisting: View {
         } //geometry reader
         
     } //body
-    
-    private func signUpWithEmailPassword() {
-        Task {
-            if await authViewModel.signUpWithEmailPassword() == true {
-                dismiss()
-            }
-        }
-    }
-    
-} //Onboarding2
+}
 
 
 

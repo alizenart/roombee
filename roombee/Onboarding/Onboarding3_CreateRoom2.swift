@@ -64,10 +64,7 @@ struct Onboarding3_CreateRoom2: View {
                             .frame(width: 250, height: 50)
                             .padding(.bottom, 20)
                         
-                        
-                        
-                        
-                        
+
                         Button(action: signUpWithEmailPassword) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))

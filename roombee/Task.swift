@@ -27,19 +27,15 @@ struct Tasks: Identifiable, Hashable, Equatable{
     }
     
     // Custom initializer to create Tasks with specific values
-    init(todoTitle: String, todoPriority: String, todoCategory: String) {
+    init(userId: String, todoTitle: String, todoPriority: String, todoCategory: String) {
         self.hiveCode = "1"
-        self.userId = "80003"
+        self.userId = userId
         self.id = UUID().uuidString
         self.todoTitle = todoTitle
         self.todoPriority = todoPriority
         self.todoCategory = todoCategory
         self.status = 0
     }
-    
-    static func == (lhs: Tasks, rhs: Tasks) -> Bool {
-            return lhs.id == rhs.id
-        }
 }
 
 

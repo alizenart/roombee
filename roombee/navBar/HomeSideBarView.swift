@@ -102,6 +102,29 @@ struct AddRoommateViewNav: View {
     }
 }
 
+struct RoommateAgreementViewNav: View {
+    @Binding var presentSideMenu: Bool
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Button {
+                    presentSideMenu.toggle()}
+            label: {
+                Image("AgreementIcon")
+                    .resizable()
+                    .frame( width: 32, height: 32)
+                }
+                Spacer()
+            }
+            Spacer()
+            Text("Roommate Agreement")
+            Spacer()
+        }
+        .padding(.horizontal, 24)
+    }
+}
+
 
 struct SignOutViewNav: View {
     @Binding var presentSideMenu: Bool

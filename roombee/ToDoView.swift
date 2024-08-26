@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var auth: AuthenticationViewModel
     @State private var tasks = Tasks.samples
     @State
     private var addpresent = false
@@ -99,32 +100,33 @@ struct ToDoView: View {
                     // appending new task to list
                     .sheet(isPresented: $addpresent) {
                         AddToDoView { task in
-                            tasks.append(task)
+                            //tasks.append(task)
                         }
                     }// sheet
                 }//vstack
             }//zstack
         }
         .onAppear {
-            fetch()
+            fetchAllTasks()
             timer?.invalidate()
             timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                        fetch()
+                fetchAllTasks()
             }
         }// nav view
         
     }// body
-    private func fetch() {
-        todoManager.fetchToDo(hiveCode: "1") { fetchedTasks, error in
-            if let fetchedTasks = fetchedTasks {
-                let newTasks = fetchedTasks.map { Tasks(from: $0) }
-                let tasksToAdd = newTasks.filter { !tasks.contains($0) }
-                tasks.append(contentsOf: tasksToAdd)
-            } else if let error = error {
-                print("Error fetching tasks: \(error)")
-            }
-        }
-    }
+    private func fetchAllTasks() {
+       guard let userId = auth.user_id, let roommateId = auth.roommate_id else {
+           print("No user ID or roommate ID found.")
+           return
+       }
+       
+       todoManager.fetchAllTasks(user_id: userId, roommate_id: roommateId)
+
+       // Combine tasks from both the user and roommate
+       tasks = todoManager.userTasks + todoManager.roommateTasks
+   }
+
 }
 
 

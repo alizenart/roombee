@@ -39,33 +39,56 @@ class TodoViewModel: ObservableObject {
     static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
     static let getTodoEndpoint = "/todolist/?user_id="
     
-    func fetchToDo(hiveCode: String, completion: @escaping([ToDoInfo]?, Error?) -> Void) {
-        let endpoint = TodoViewModel.getTodoEndpoint + "\(hiveCode)"
+
+    @Published var userTasks: [Tasks] = []
+    @Published var roommateTasks: [Tasks] = []
+
+    func fetchUserTasks(user_id: String) {
+        fetchTasks(for: user_id) { [weak self] tasks in
+            DispatchQueue.main.async {
+                self?.userTasks = tasks
+            }
+        }
+    }
+
+    func fetchRoommateTasks(roommate_id: String) {
+        fetchTasks(for: roommate_id) { [weak self] tasks in
+            DispatchQueue.main.async {
+                self?.roommateTasks = tasks
+            }
+        }
+    }
+
+    func fetchAllTasks(user_id: String, roommate_id: String) {
+        fetchUserTasks(user_id: user_id)
+        fetchRoommateTasks(roommate_id: roommate_id)
+    }
+
+    private func fetchTasks(for userID: String, completion: @escaping ([Tasks]) -> Void) {
+        let endpoint = TodoViewModel.getTodoEndpoint + "\(userID)"
         guard let url = URL(string: TodoViewModel.baseURL + endpoint) else {
-            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            print("Invalid URL")
+            completion([])
             return
         }
-        URLSession.shared.dataTask(with:  url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, error == nil else {
-                completion(nil, error)
+                print("Error fetching tasks: \(error?.localizedDescription ?? "Unknown error")")
+                completion([])
                 return
             }
-            
+
             do {
                 let response = try JSONDecoder().decode(ToDoResponse.self, from: data)
-                print("Fetched tasks: \(response.data)")
-                DispatchQueue.main.async {
-                    completion(response.data, nil)
-                }
+                let tasks = response.data.map { Tasks(from: $0) }
+                completion(tasks)
             } catch {
-                print("Error decoding JSON: \(error)")
-                DispatchQueue.main.async {
-                    completion(nil, error)
-                }
+                print("Error decoding tasks: \(error)")
+                completion([])
             }
         }.resume()
     }
-    
+
     func addToDo(todoID: String, userId: String, hiveCode: String, todoTitle: String, todoPriority: String, todoCategory: String, todoStatus: String) {
         guard var urlComponents = URLComponents(string: TodoViewModel.baseURL + "/todolist") else {
             print("Invalid URL")
