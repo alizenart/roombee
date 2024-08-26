@@ -115,7 +115,7 @@ struct ToDoView: View {
         
     }// body
     private func fetch() {
-        todoManager.fetchToDo(hiveCode: "1") { fetchedTasks, error in
+        todoManager.fetchToDo(userID: myUserId) { fetchedTasks, error in
             if let fetchedTasks = fetchedTasks {
                 let newTasks = fetchedTasks.map { Tasks(from: $0) }
                 let tasksToAdd = newTasks.filter { !tasks.contains($0) }
