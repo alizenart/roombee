@@ -126,6 +126,7 @@ struct ToDoView: View {
        // Combine tasks from both the user and roommate
        tasks = todoManager.userTasks + todoManager.roommateTasks
    }
+
 }
 
 

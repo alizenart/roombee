@@ -39,6 +39,7 @@ class TodoViewModel: ObservableObject {
     static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
     static let getTodoEndpoint = "/todolist/?user_id="
     
+
     @Published var userTasks: [Tasks] = []
     @Published var roommateTasks: [Tasks] = []
 
