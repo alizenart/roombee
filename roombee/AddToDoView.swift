@@ -25,6 +25,8 @@ struct AddToDoView: View {
     @FocusState private var focusedField: FocusableField?
 
     private func add() {
+        
+        onCommit(newToDo)
         todoManager.addToDo(todoID: newToDo.id,
                             userId: newToDo.userId,
                             hiveCode: newToDo.hiveCode,
@@ -32,7 +34,6 @@ struct AddToDoView: View {
                             todoPriority: newToDo.todoPriority,
                             todoCategory: newToDo.todoCategory,
                             todoStatus: String(newToDo.status))
-        onCommit(newToDo)
         dismiss()
     }
     
