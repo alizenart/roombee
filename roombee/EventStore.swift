@@ -97,22 +97,43 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
 
 
 class EventStore: ObservableObject {
-  @Published var events: [CalendarEvent] = []
-  
-    @MainActor func getEvents(user_id: String) {
-    APIService.shared.fetchEvents(user_id: user_id) { [weak self] newEvents, error in
-      DispatchQueue.main.async {
-          if let newEvents = newEvents {
-              print("Fetched events successfully: \(newEvents)")
-              self?.events = newEvents
-          } else if let error = error {
-              print("Error fetching events in EventStore: \(error.localizedDescription)")
-          }
-      }
+    @Published var userEvents: [CalendarEvent] = []
+    @Published var roommateEvents: [CalendarEvent] = []
+    
+    
+    @MainActor func getUserEvents(user_id: String) {
+        APIService.shared.fetchEvents(user_id: user_id) { [weak self] newEvents, error in
+            DispatchQueue.main.async {
+                if let newEvents = newEvents {
+                    print("Fetched user events successfully: \(newEvents)")
+                    self?.userEvents = newEvents
+                } else if let error = error {
+                    print("Error fetching user events in EventStore: \(error.localizedDescription)")
+                }
+            }
+        }
     }
-  }
+    
+    @MainActor func getRoommateEvents(roommate_id: String) {
+        APIService.shared.fetchEvents(user_id: roommate_id) { [weak self] newEvents, error in
+            DispatchQueue.main.async {
+                if let newEvents = newEvents {
+                    print("Fetched roommate events successfully: \(newEvents)")
+                    self?.roommateEvents = newEvents
+                } else if let error = error {
+                    print("Error fetching roommate events in EventStore: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    @MainActor func getAllEvents(user_id: String, roommate_id: String) {
+        getUserEvents(user_id: user_id)
+        getRoommateEvents(roommate_id: roommate_id)
+    }
     @MainActor func clearEvents() {
-        self.events.removeAll()  // Clear all events
+        self.userEvents.removeAll()
+        self.roommateEvents.removeAll()// Clear all events
     }
   
     @MainActor func addEvent(user_id: String, _ newEvent: CalendarEvent) {
@@ -121,7 +142,7 @@ class EventStore: ObservableObject {
         APIService.shared.addEvent(user_id: user_id, event: newEvent) { success, error in
       if success {
         DispatchQueue.main.async {
-          self.events.append(newEvent)
+          self.userEvents.append(newEvent)
           print("new event added successfully: ", newEvent)
         }
       } else if let error = error {
@@ -129,14 +150,14 @@ class EventStore: ObservableObject {
       }
     }
     
-    print("events array! \(events)")
+        print("events array! \(self.userEvents) and \(self.roommateEvents)")
   }
     
     @MainActor func deleteEvent(eventId: String) {
             APIService.shared.deleteEvent(eventId: eventId) { [weak self] success, error in
                 if success {
                     DispatchQueue.main.async {
-                        self?.events.removeAll { $0.id.uuidString == eventId }
+                        self?.userEvents.removeAll { $0.id.uuidString == eventId }
                         print("Event deleted successfully.")
                     }
                 } else if let error = error {

@@ -123,7 +123,7 @@ struct CalendarView: View {
                                     let eventWidth = maxEventWidth - CGFloat(group.firstIndex(of: event)! * 10)
                                     eventCell(event, width: eventWidth)
                                         .frame(alignment: .trailing)
-//                                        .padding(1)
+                                    //                                        .padding(1)
                                 }
                             }
                             
@@ -141,15 +141,20 @@ struct CalendarView: View {
         } //ZStack
         .cornerRadius(30)
         .onAppear {
-            eventStore.getEvents(user_id: auth.user_id ?? "80003")
-            //print("event get events called")
+            eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
         }
+        //print("event get events called")
+        
     }
     
     var filteredEvents: [CalendarEvent] {
         let selectedDate = selectedDateManager.SelectedDate
         let calendar = Calendar.current
-        return eventStore.events.filter { event in
+        
+        // Combine both user events and roommate events
+        let combinedEvents = eventStore.userEvents + eventStore.roommateEvents
+        
+        return combinedEvents.filter { event in
             let eventDate = calendar.startOfDay(for: event.startTime)
             let selectedDay = calendar.startOfDay(for: selectedDate)
             return eventDate == selectedDay
@@ -203,6 +208,9 @@ struct CalendarView: View {
     }
     
     func eventCell(_ event: CalendarEvent, width: CGFloat) -> some View {
+        let isUserEvent = eventStore.userEvents.contains(event)
+        let backgroundColor = isUserEvent ? LighterPurple : highlightYellow // Different color for roommate's events
+
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
@@ -234,7 +242,7 @@ struct CalendarView: View {
             .frame(height: height, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(LighterPurple)
+                    .fill(backgroundColor)
             )
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(toggleColor, lineWidth: 2))
             .padding(.leading, 60) // Add padding on the right
@@ -242,6 +250,7 @@ struct CalendarView: View {
             .offset(x: maxEventWidth - width) //Offset the cell by the difference between maxEventWidth and current width
         }
     }
+
     
     
     func groupedEvents() -> [[CalendarEvent]] {
