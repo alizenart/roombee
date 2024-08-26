@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AddToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
-    @State var newToDo = Tasks(todoTitle: "", todoPriority: "low", todoCategory: "none")
+    @EnvironmentObject var auth: AuthenticationViewModel
+    @State var newToDo = Tasks(userId: "", todoTitle: "", todoPriority: "low", todoCategory: "none")
     var onCommit: (_ newToDo: Tasks) -> Void
     let options = ["low", "med", "high"]
     let categoryOptions = ["none", "shopping", "chores"]
@@ -28,8 +29,8 @@ struct AddToDoView: View {
         
         onCommit(newToDo)
         todoManager.addToDo(todoID: newToDo.id,
-                            userId: newToDo.userId,
-                            hiveCode: newToDo.hiveCode,
+                            userId: auth.user_id ?? "80003",
+                            hiveCode: auth.hive_code,
                             todoTitle: newToDo.todoTitle,
                             todoPriority: newToDo.todoPriority,
                             todoCategory: newToDo.todoCategory,
