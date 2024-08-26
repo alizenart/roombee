@@ -38,6 +38,9 @@ struct LoginView: View {
                     .shadow(radius: 15))
                 .padding()
                 .navigationBarBackButtonHidden(true)
+                .alert(isPresented: $showingErrorAlert){
+                    Alert(title: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
+                }
             }
         }
     }
