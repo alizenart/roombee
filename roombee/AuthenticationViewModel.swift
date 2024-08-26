@@ -176,9 +176,9 @@ extension AuthenticationViewModel {
                 DispatchQueue.main.async {
                         switch authErrorCode {
                     case .emailAlreadyInUse:
-                        errorMessage = "The email address is already in use."
+                        self.errorMessage = "The email address is already in use."
                     default:
-                        errorMessage = error.localizedDescription
+                        self.errorMessage = error.localizedDescription
                     }
                 }
             } else {
@@ -189,7 +189,7 @@ extension AuthenticationViewModel {
             showingErrorAlert = true
             return false
         }
-    }
+    
     
     func signOut(eventStore: EventStore) {
         do {
@@ -300,11 +300,6 @@ extension AuthenticationViewModel {
             }
         }
     }
-
-    
-    
-    
-    
 }
 
 // DateFormatter extension to parse date string
