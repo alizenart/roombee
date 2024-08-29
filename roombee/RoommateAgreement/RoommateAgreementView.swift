@@ -7,128 +7,299 @@
 
 import SwiftUI
 
-// main view for roommate agreement
+import SwiftUI
+
 struct RoommateAgreementView: View {
     @State private var showNewAgreementForm = false
     @EnvironmentObject var agreementStore: RoommateAgreementStore
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
-    @State private var timer:Timer?
+    @State private var timer: Timer?
+    
     var body: some View {
-        ZStack{
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: { showNewAgreementForm = true }) {
+                        Text("Edit")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(height: 25)
+                            .background(ourOrange)
+                            .cornerRadius(10)
+                    }
+                    .padding(.trailing)
+                    .sheet(isPresented: $showNewAgreementForm) {
+                        NewAgreementsForm(showForm: $showNewAgreementForm)
+                            .environmentObject(agreementStore)
+                    }
+                }
+                .padding(.top, 20)
+                
+                Text("Roommate Agreement")
+                    .font(.system(size: 30))
+                    .foregroundColor(ourOrange)
+                    .fontWeight(.bold)
+                    .padding(.top, 10)
+                Text("The purpose of this agreement is to establish some expectations to make the shared living experience positive for all people involved.")
+                    .fontWeight(.bold)
+                    .font(.system(size: 12))
+                    .foregroundColor(creamColor)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .fixedSize(horizontal: false, vertical: true)
                 
                 VStack {
-                    ScrollView {
-                        //Edit button
-                        HStack{
-                            Spacer()
-                            // the edit button allows users to update rules and items
-                            Button(action: {showNewAgreementForm = true}) {
-                                Text("Edit")
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(height: 25)
-                                    .background(ourOrange)
-                                    .cornerRadius(10)
-                            }
-                            .padding(.trailing)
-                            .sheet(isPresented: $showNewAgreementForm) {
-                                NewAgreementsForm(showForm: $showNewAgreementForm).environmentObject(agreementStore)
-                            }
-                        }
-                        .padding(.top, 20)
-
-                        Text("Roommate Agreement")
-                            .font(.system(size: 30))
-                            .foregroundColor(ourOrange)
-                            .fontWeight(.bold)
-                            .padding(.top, 10)
-                        Text("The purpose of this agreement is to establish some expectations to make the shared living experience positive for all people involved.")
-//                            .padding(.top, 2)
-                            .fontWeight(.bold)
-                            .font(.system(size:12))
+                    HStack {
+                        Text("Rules")
                             .foregroundColor(creamColor)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-                        
-                        HStack {
-                            Text("Rules")
-                                .foregroundColor(creamColor)
-                                .font(.system(size: 22))
-                                .fontWeight(.bold)
-                                .multilineTextAlignment(.leading)
-                                .padding(.leading)
-                                .padding(.top)
-                            Spacer()
-                        }
-                        
-                        // populates the view with rules/items
-                        if agreementStore.agreements.filter({ $0.isRule }).isEmpty {
-                            Text("No rules yet. Click edit to add a rule for your living arrangement.")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 12))
-                                .multilineTextAlignment(.center)
-                                .padding(.top, 10)
-                                .padding(.horizontal)
-                        } else {
-                            ForEach(agreementStore.agreements.filter { $0.isRule }) { agreement in
-                                AgreementView(agreement: agreement, cardWidth: geometry.size.width * 0.9)
-                                    .padding(.vertical, 5)
-                            }
-                        }
-                        
-                        
-                        HStack {
-                            Text("Community & Personal Items")
-                                .foregroundColor(creamColor)
-                                .font(.system(size: 22))
-                                .fontWeight(.bold)
-                                .multilineTextAlignment(.leading)
-                                .padding(.leading)
-                                .padding(.top)
-                            Spacer()
-                        }
-                        
-                        
-                        // populates the view with rules/items
-                        if agreementStore.agreements.filter({ !$0.isRule }).isEmpty {
-                            Text("No community items yet. Click edit to add a community or personal item for your living arrangement.")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 12))
-                                .multilineTextAlignment(.center)
-                                .padding(.top, 10)
-                                .padding(.horizontal)
-                        } else {
-                            ForEach(agreementStore.agreements.filter { !$0.isRule }) { agreement in
-                                AgreementView(agreement: agreement, cardWidth: geometry.size.width * 0.9)
-                                    .padding(.vertical, 5)
-                            }
-                        } //else
-                        
+                            .font(.system(size: 22))
+                            .fontWeight(.bold)
+                            .padding(.leading)
+                            .padding(.top)
                         Spacer()
-                    }//scroll
-                } // vstack
-//                .padding(.top, 10)
-            }//geometry
-            .padding(.horizontal)
+                    }
 
-        }//ZStack
-        .onAppear {
-            fetchAgreements()
-            timer?.invalidate()
-            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                    // Swipe-to-delete list for rules
+                    if agreementStore.agreements.isEmpty {
+                        Text("No rules yet. Click edit to add a rule for your living arrangement.")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 12))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 10)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.4, alignment: .center)  // Ensure it takes up space
+                    } else {
+                        List {
+                            ForEach(agreementStore.agreements.filter { $0.isRule }) { agreement in
+                                AgreementView(agreement: agreement, cardWidth: UIScreen.main.bounds.width * 0.9)
+                                    .padding(.vertical, 5)
+                                
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
+                            }
+                            .onDelete { indexSet in
+                                   for index in indexSet {
+                                       let agreement = agreementStore.agreements[index]
+                                       agreementStore.agreements.removeAll { $0.id == agreement.id }
+                                       agreementManager.deleteAgreement(agreementID: agreement.id)
+                                   }
+                               }
+                        }
+                        .scrollContentBackground(.hidden)
+                        .frame(maxHeight: geometry.size.height * 0.4)  // Restrict the height to half
+                    }
+                }
+                .frame(height: geometry.size.height * 0.4)  // Ensure the entire VStack takes up half
+                
+                VStack {
+                    HStack {
+                        Text("Community & Personal Items")
+                            .foregroundColor(creamColor)
+                            .font(.system(size: 22))
+                            .fontWeight(.bold)
+                            .padding(.leading)
+                            .padding(.top)
+                        Spacer()
+                    }
+
+                    // Swipe-to-delete list for community and personal items
+                    if agreementStore.items.isEmpty {
+                        Text("No community items yet. Click edit to add a community or personal item for your living arrangement.")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 12))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 10)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.4, alignment: .center)  // Ensure it takes up space
+                    } else {
+                        List {
+                            ForEach(agreementStore.items) { agreement in
+                                AgreementView(agreement: agreement, cardWidth: UIScreen.main.bounds.width * 0.9)
+                                    .padding(.vertical, 5)
+                                
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
+                            }
+                            .onDelete { indexSet in
+                                   for index in indexSet {
+                                       let agreement = agreementStore.items[index]
+                                       agreementStore.items.removeAll { $0.id == agreement.id }
+                                       agreementManager.deleteAgreement(agreementID: agreement.id)
+                                   }
+                               }
+                        }
+                        .scrollContentBackground(.hidden)
+                        .frame(maxHeight: geometry.size.height * 0.4)  // Restrict the height to half
+                    }
+                }
+                .frame(height: geometry.size.height * 0.4)  // Ensure the entire VStack takes up half
+                
+                Spacer()
+            }
+            .onAppear {
                 fetchAgreements()
+                timer?.invalidate()
+                timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                    fetchAgreements()
+                }
             }
         }
     }
-    
+
     private func fetchAgreements() {
         agreementManager.fetchAllAgreements(user_id: "80002", roommate_id: "80003")
-        agreementStore.agreements =  agreementManager.userAgreements + agreementManager.roommateAgreements
+        agreementStore.agreements =  (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { $0.isRule }
+        agreementStore.items = (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { !$0.isRule }
     }
-
 }
+
+//struct RoommateAgreementView: View {
+//    @State private var showNewAgreementForm = false
+//    @EnvironmentObject var agreementStore: RoommateAgreementStore
+//    @EnvironmentObject var agreementManager: RoommateAgreementHandler
+//    @State private var timer: Timer?
+//    
+//    var body: some View {
+//        GeometryReader { geometry in
+//            VStack {
+//                HStack {
+//                    Spacer()
+//                    Button(action: { showNewAgreementForm = true }) {
+//                        Text("Edit")
+//                            .font(.system(size: 15, weight: .bold))
+//                            .foregroundColor(.white)
+//                            .padding()
+//                            .frame(height: 25)
+//                            .background(ourOrange)
+//                            .cornerRadius(10)
+//                    }
+//                    .padding(.trailing)
+//                    .sheet(isPresented: $showNewAgreementForm) {
+//                        NewAgreementsForm(showForm: $showNewAgreementForm)
+//                            .environmentObject(agreementStore)
+//                    }
+//                }
+//                .padding(.top, 20)
+//                
+//                Text("Roommate Agreement")
+//                    .font(.system(size: 30))
+//                    .foregroundColor(ourOrange)
+//                    .fontWeight(.bold)
+//                    .padding(.top, 10)
+//                Text("The purpose of this agreement is to establish some expectations to make the shared living experience positive for all people involved.")
+//                    .fontWeight(.bold)
+//                    .font(.system(size: 12))
+//                    .foregroundColor(creamColor)
+//                    .multilineTextAlignment(.center)
+//                    .padding(.horizontal)
+//                
+//                HStack {
+//                    Text("Rules")
+//                        .foregroundColor(creamColor)
+//                        .font(.system(size: 22))
+//                        .fontWeight(.bold)
+//                        .multilineTextAlignment(.leading)
+//                        .padding(.leading)
+//                        .padding(.top)
+//                    Spacer()
+//                }
+//                
+//                // Swipe-to-delete list for rules
+//                if agreementStore.agreements.isEmpty {
+//                    Text("No rules yet. Click edit to add a rule for your living arrangement.")
+//                        .foregroundColor(.gray)
+//                        .font(.system(size: 12))
+//                        .multilineTextAlignment(.center)
+//                        .padding(.top, 10)
+//                        .padding(.horizontal)
+//                } else {
+//                    List {
+//                        ForEach(agreementStore.agreements.filter { $0.isRule }) { agreement in
+//                            AgreementView(agreement: agreement, cardWidth: UIScreen.main.bounds.width * 0.9)
+//                                .padding(.vertical, 5)
+//                            
+//                                .listRowSeparator(.hidden)
+//                                .listRowBackground(Color.clear)
+//                        }
+//                        .onDelete { indexSet in
+//                            for index in indexSet {
+//                                let agreement = agreementStore.agreements[index]
+//                                agreementStore.agreements.removeAll { $0.id == agreement.id }
+//                                agreementManager.deleteAgreement(agreementID: agreement.id)
+//                            }
+//                        }
+//                    }
+//                    .scrollContentBackground(.hidden)
+//                    .frame(maxHeight: geometry.size.height * 0.4)
+//                }
+//            }
+//            .frame(height: geometry.size.height * 0.4)
+//            VStack {
+//                HStack {
+//                    Text("Community & Personal Items")
+//                        .foregroundColor(creamColor)
+//                        .font(.system(size: 22))
+//                        .fontWeight(.bold)
+//                        .multilineTextAlignment(.leading)
+//                        .padding(.leading)
+//                        .padding(.top)
+//                    Spacer()
+//                }
+//                
+//                // Swipe-to-delete list for community and personal items
+//                if agreementStore.items.isEmpty {
+//                    Text("No community items yet. Click edit to add a community or personal item for your living arrangement.")
+//                        .foregroundColor(.gray)
+//                        .font(.system(size: 12))
+//                        .multilineTextAlignment(.center)
+//                        .padding(.top, 10)
+//                        .padding(.horizontal)
+//                } else {
+//                    List {
+//                        ForEach(agreementStore.items) { agreement in
+//                            AgreementView(agreement: agreement, cardWidth: UIScreen.main.bounds.width * 0.9)
+//                                .padding(.vertical, 5)
+//                            
+//                                .listRowSeparator(.hidden)
+//                                .listRowBackground(Color.clear)
+//                        }
+//                        .onDelete { indexSet in
+//                            for index in indexSet {
+//                                let agreement = agreementStore.items[index]
+//                                agreementStore.items.removeAll { $0.id == agreement.id }
+//                                agreementManager.deleteAgreement(agreementID: agreement.id)
+//                            }
+//                        }
+//                    }
+//                    .scrollContentBackground(.hidden)
+//                    .frame(maxHeight: geometry.size.height * 0.4)
+//                    
+//                }
+//            }
+//                .frame(height: geometry.size.height * 0.4)  // Ensure the entire VStack takes up half
+//                
+//                Spacer()
+//            }
+//        .onAppear {
+//            fetchAgreements()
+//            timer?.invalidate()
+//            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+//                fetchAgreements()
+//            }
+//        }
+//    }
+//
+//    private func fetchAgreements() {
+//            agreementManager.fetchAllAgreements(user_id: "80002", roommate_id: "80003")
+//        agreementStore.agreements =  (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { $0.isRule }
+//        agreementStore.items = (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { !$0.isRule }
+//        }
+//    
+//
+//}
+
 
 
 // Form for new agreements. Triggered when user presses 'Edit'

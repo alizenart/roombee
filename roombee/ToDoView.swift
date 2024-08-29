@@ -15,7 +15,7 @@ struct ToDoView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationView { 
             ZStack {
                 
                 backgroundColor
