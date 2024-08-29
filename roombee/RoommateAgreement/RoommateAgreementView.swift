@@ -10,7 +10,7 @@ import SwiftUI
 // main view for roommate agreement
 struct RoommateAgreementView: View {
     @State private var showNewAgreementForm = false
-    @EnvironmentObject var agreementStore: RoommateAgreementViewModel
+    @EnvironmentObject var agreementStore: RoommateAgreementStore
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @State private var timer:Timer?
     var body: some View {
@@ -133,7 +133,7 @@ struct RoommateAgreementView: View {
 
 // Form for new agreements. Triggered when user presses 'Edit'
 struct NewAgreementsForm: View {
-    @EnvironmentObject var agreementStore: RoommateAgreementViewModel
+    @EnvironmentObject var agreementStore: RoommateAgreementStore
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @Binding var showForm: Bool
     @State private var isRule = true

@@ -33,7 +33,7 @@ struct HomepageView: View {
     @EnvironmentObject var toggleManager: ToggleViewModel
     @EnvironmentObject var todoManager: TodoViewModel
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
-    @EnvironmentObject var agreementVM: RoommateAgreementViewModel
+    @EnvironmentObject var agreementStore: RoommateAgreementStore
     @EnvironmentObject var auth: AuthenticationViewModel
     
     @State private var isActive: Bool = true
@@ -95,7 +95,7 @@ struct HomepageView: View {
                         EmptyView()
                     case 3:
                         RoommateAgreementView()
-                            .environmentObject(agreementVM)
+                            .environmentObject(agreementStore)
                     default:
                         Text("Unknown Selection")
                     }
