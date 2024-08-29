@@ -60,6 +60,7 @@ struct Agreement: Identifiable {
 
 class RoommateAgreementStore: ObservableObject {
     @Published var agreements: [Agreement] = []
+    @Published var items: [Agreement] = []
     
     let tagDictionary: [String: Int] = [
         "Chores": 1,
@@ -67,7 +68,12 @@ class RoommateAgreementStore: ObservableObject {
     ]
     
     func addAgreement(_ agreement: Agreement) {
-        agreements.append(agreement)
+        if agreement.isRule {
+            agreements.append(agreement)
+        }
+        else {
+            items.append(agreement)
+        }
 //        sortAgreements()
     }
     
