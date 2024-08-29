@@ -9,7 +9,7 @@ struct ContentView: View {
     @StateObject var eventStore = EventStore()
     @StateObject var todoManager = TodoViewModel()
     @StateObject var agreementManager = RoommateAgreementHandler()
-    @StateObject var agreementVM = RoommateAgreementViewModel()
+    @StateObject var agreementStore = RoommateAgreementStore()
     
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
     @State private var isTimerDone = false
@@ -27,7 +27,7 @@ struct ContentView: View {
                 .environmentObject(toggleManager)
                 .environmentObject(todoManager)
                 .environmentObject(agreementManager)
-                .environmentObject(agreementVM)
+                .environmentObject(agreementStore)
 //            OnboardGuideView(viewModel: onboardGuideManager)
 
         case .authenticating, .unauthenticated:
