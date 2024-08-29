@@ -52,11 +52,7 @@ struct ToDoView: View {
                                         
                                         Spacer()
                                         RoundedRectangle(cornerRadius: 10)
-                                            .fill(priorityColor(for: task.todoPriority))
-                                            .frame(width: 50, height: 30)
-                                            .overlay(Text(task.todoPriority))
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill(categoryColor(for: task.todoCategory))
+                                            .fill(categoryColor(for: task.todoPriority))
                                             .frame(width: 50, height: 30)
                                             .overlay(Text(task.todoCategory))
                                         

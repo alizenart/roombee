@@ -15,6 +15,7 @@ struct HomepageContent: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var toggleManager: ToggleViewModel
     @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var agreementManager: RoommateAgreementHandler
     
     @Binding var myStatusToggleSleeping: Bool
     @Binding var myStatusToggleInRoom: Bool
@@ -356,4 +357,5 @@ struct DateToggle: View {
     .environmentObject(NavManager())
     .environmentObject(ToggleViewModel())
     .environmentObject(TodoViewModel())
+    .environmentObject(RoommateAgreementHandler())
 }

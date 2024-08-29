@@ -55,6 +55,7 @@ struct roombeeApp: App {
     @StateObject var navManager = NavManager()
     @StateObject var selectedDate = SelectedDateManager()
     @StateObject var todoManager = TodoViewModel()
+    @StateObject var agreementManager = RoommateAgreementHandler()
     @StateObject var eventStore = EventStore()
     @StateObject var toggleManager = ToggleViewModel()
         
@@ -70,6 +71,7 @@ struct roombeeApp: App {
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
                 .environmentObject(todoManager)
+                .environmentObject(agreementManager)
                 .environmentObject(onboardGuideManager)
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
                     if let userInfo = notification.userInfo,

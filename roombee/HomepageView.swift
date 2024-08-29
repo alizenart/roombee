@@ -32,7 +32,8 @@ struct HomepageView: View {
     @EnvironmentObject var navManager: NavManager
     @EnvironmentObject var toggleManager: ToggleViewModel
     @EnvironmentObject var todoManager: TodoViewModel
-    @EnvironmentObject var agreementManager: RoommateAgreementViewModel
+    @EnvironmentObject var agreementManager: RoommateAgreementHandler
+    @EnvironmentObject var agreementVM: RoommateAgreementViewModel
     @EnvironmentObject var auth: AuthenticationViewModel
     
     @State private var isActive: Bool = true
@@ -85,6 +86,7 @@ struct HomepageView: View {
                             .environmentObject(selectedDateManager)
                             .environmentObject(toggleManager)
                             .environmentObject(todoManager)
+                            .environmentObject(agreementManager)
                         }
                         
                     case 1:
@@ -93,7 +95,7 @@ struct HomepageView: View {
                         EmptyView()
                     case 3:
                         RoommateAgreementView()
-                            .environmentObject(agreementManager)
+                            .environmentObject(agreementVM)
                     default:
                         Text("Unknown Selection")
                     }

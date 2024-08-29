@@ -11,7 +11,8 @@ import SwiftUI
 struct RoommateAgreementView: View {
     @State private var showNewAgreementForm = false
     @EnvironmentObject var agreementStore: RoommateAgreementViewModel
-
+    @EnvironmentObject var agreementManager: RoommateAgreementHandler
+    @State private var timer:Timer?
     var body: some View {
         ZStack{
             GeometryReader { geometry in
@@ -113,15 +114,27 @@ struct RoommateAgreementView: View {
             .padding(.horizontal)
 
         }//ZStack
+        .onAppear {
+            fetchAgreements()
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                fetchAgreements()
+            }
+        }
     }
+    
+    private func fetchAgreements() {
+        agreementManager.fetchAllAgreements(user_id: "80002", roommate_id: "80003")
+        agreementStore.agreements =  agreementManager.userAgreements + agreementManager.roommateAgreements
+    }
+
 }
-
-
 
 
 // Form for new agreements. Triggered when user presses 'Edit'
 struct NewAgreementsForm: View {
     @EnvironmentObject var agreementStore: RoommateAgreementViewModel
+    @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @Binding var showForm: Bool
     @State private var isRule = true
     
@@ -165,7 +178,9 @@ struct NewAgreementsForm: View {
             .navigationBarItems(leading: Button("Cancel") {
                 showForm = false
             }, trailing: Button("Post") {
+                let new_id = UUID().uuidString
                 let newAgreement = Agreement(
+                    id: new_id,
                     title: title,
                     dateCreated: dateCreated,
                     isRule: isRule,
@@ -177,11 +192,18 @@ struct NewAgreementsForm: View {
                     whoCanUse: whoCanUse,
                     itemDetails: itemDetails
                 )
+                let date_string = format(date:newAgreement.dateCreated)
+                agreementManager.addAgree(id: newAgreement.id, title: newAgreement.title, dateCreated: date_string, isRule: isRule ? "0" : "1", tags: tags.joined(separator: ","), itemOwner: "80003", whoCanUse: "80003", itemDetails: itemDetails)
                 agreementStore.addAgreement(newAgreement)
             
                 showForm = false
             })
         }
+    }
+    private func format(date:Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from:date)
     }
 }
 

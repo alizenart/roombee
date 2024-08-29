@@ -35,6 +35,7 @@
 		4C2365B72C05366700D6FE49 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B62C05366700D6FE49 /* NotificationService.swift */; };
 		4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B82C05624B00D6FE49 /* LocalNotification.swift */; };
 		4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */; };
+		4C2429972C7CFE9500341ED9 /* RoommateAgreementHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2429962C7CFE9500341ED9 /* RoommateAgreementHandler.swift */; };
 		4CE4E4242C5C47DA0070C378 /* TodoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */; };
 		680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE52BBF6463002B3642 /* Onboarding2.swift */; };
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
@@ -91,6 +92,7 @@
 		4C2365B62C05366700D6FE49 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		4C2365B82C05624B00D6FE49 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
+		4C2429962C7CFE9500341ED9 /* RoommateAgreementHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoommateAgreementHandler.swift; sourceTree = "<group>"; };
 		4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoViewModel.swift; sourceTree = "<group>"; };
 		680FEBE52BBF6463002B3642 /* Onboarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2.swift; sourceTree = "<group>"; };
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				6897FCE72C793BB3001B0A52 /* RoommateAgreementView.swift */,
 				6897FCE92C795FC6001B0A52 /* RoommateAgreementViewModel.swift */,
 				6897FCEC2C79658C001B0A52 /* Dropdown.swift */,
+				4C2429962C7CFE9500341ED9 /* RoommateAgreementHandler.swift */,
 			);
 			path = RoommateAgreement;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 				3095ED992C5C8B77005A2192 /* InviteLinkPopupView.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
 				68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */,
+				4C2429972C7CFE9500341ED9 /* RoommateAgreementHandler.swift in Sources */,
 				68E7360D2BCDDF0B00D94A95 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

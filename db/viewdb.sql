@@ -1,3 +1,3 @@
 use roombee;
 
-select * from users;
+SELECT * FROM agreements;
