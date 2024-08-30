@@ -10,7 +10,7 @@
 import Foundation
 
 @MainActor
-class APIService {
+class APIService: ObservableObject {
   static let shared = APIService()
   static let baseURL = "https://syb5d3irh2.execute-api.us-east-1.amazonaws.com/prod"
   static let getEventsEndpoint = "/event/?user_id=0"
@@ -18,6 +18,8 @@ class APIService {
   static let addEventEndpoint = "/event"
   static let deleteEventEndpoint = "/event"
     static let updateHiveCodeEndpoint = "/hiveCode"  // Endpoint for updating hive code
+    @Published var joinHiveAlert: String?
+    @Published var joinHiveSuccess: Bool = false
         
     // Function to update hive_code for a user
     func updateHiveCode(userId: String, hiveCode: String, completion: @escaping (Bool, Error?) -> Void) {
@@ -30,6 +32,7 @@ class APIService {
         ]
         
         guard let url = urlComponents?.url else {
+            joinHiveAlert = "Invalid URL"
             completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
         }
@@ -39,20 +42,31 @@ class APIService {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard error == nil else {
+                DispatchQueue.main.async {
+                    self.joinHiveSuccess = false
+                    self.joinHiveAlert = error!.localizedDescription
+                }
                 completion(false, error)
                 return
             }
             
             guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to update hive_code"]))
-                if let responseData = data, let responseString = String(data: responseData, encoding: .utf8) {
-                    print("Response body: \(responseString)")
+                DispatchQueue.main.async {
+                    self.joinHiveSuccess = false
+                    self.joinHiveAlert = "Failed to update hive_code"
+                    if let responseData = data, let responseString = String(data: responseData, encoding: .utf8) {
+                        print("Response body: \(responseString)")
+                        self.joinHiveAlert = responseString
+                    }
                 }
+                completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to update hive_code"]))
                 return
             }
             
             print("Successfully updated hive_code for user with id: \(userId)")
             DispatchQueue.main.async {
+                self.joinHiveSuccess = true
+                self.joinHiveAlert = "Successfully updated hive_code!"
                 completion(true, nil)
             }
         }.resume()

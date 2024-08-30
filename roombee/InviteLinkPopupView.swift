@@ -13,6 +13,7 @@ struct InviteLinkPopupView: View {
     let inviteLink: String
     @Binding var isPresented: Bool
     @State private var inputHiveCode: String = ""
+    @ObservedObject var apiService = APIService.shared
 
     var body: some View {
         VStack {
@@ -48,16 +49,16 @@ struct InviteLinkPopupView: View {
             
             // Button to handle the submission of the input hive_code
             Button(action: {
-                auth.hive_code = inputHiveCode // Update the hive_code in the ViewModel
                 APIService.shared.updateHiveCode(userId: auth.user_id ?? "default_user_id", hiveCode: inputHiveCode) { success, error in
                     if success {
+                        auth.hive_code = inputHiveCode // Update the hive_code in the ViewModel
                         print("Hive code updated successfully!")
+                        isPresented = false
                     } else if let error = error {
-                        print("Failed to update hive code: \(error.localizedDescription)")
+                        print(error.localizedDescription)
                     }
                 }
 
-                isPresented = false
             }) {
                 Text("Submit Hive Code")
                     .padding()
@@ -82,5 +83,17 @@ struct InviteLinkPopupView: View {
             alignment: .topTrailing
         )
         .padding()
+        .alert(isPresented: .constant(APIService.shared.joinHiveAlert != nil)) {
+            Alert(
+                title: Text(APIService.shared.joinHiveAlert ?? ""),
+                dismissButton: .default(Text("OK")) {
+                    if APIService.shared.joinHiveSuccess {
+                        isPresented = false
+                    }
+                    apiService.joinHiveAlert = nil 
+                }
+            )
+        }
+
     }
 }
