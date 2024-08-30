@@ -65,6 +65,7 @@ class APIService: ObservableObject {
             
             print("Successfully updated hive_code for user with id: \(userId)")
             DispatchQueue.main.async {
+                AuthenticationViewModel().getUserData()
                 self.joinHiveSuccess = true
                 self.joinHiveAlert = "Successfully updated hive_code!"
                 completion(true, nil)

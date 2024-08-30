@@ -152,6 +152,7 @@ struct StatusView: View {
     @EnvironmentObject var toggleManager: ToggleViewModel
     var userId: String
     @Binding var isInitialLoad: Bool
+    @EnvironmentObject var auth: AuthenticationViewModel
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -167,35 +168,40 @@ struct StatusView: View {
                 Text(title)
                     .foregroundColor(.black)
                     .bold()
-                HStack{
-                    Toggle(isOn: $isSleeping, label: {bedIcon})
-                        .disabled(!canToggle)
-
-                        .onChange(of: isSleeping) { isOn in
-                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                print("isSleeping toggled to \(isOn) by \(title)")
-                                toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
+                if auth.roommate_id != nil {
+                    HStack {
+                        Toggle(isOn: $isSleeping, label: { bedIcon })
+                            .disabled(!canToggle)
+                            .onChange(of: isSleeping) { isOn in
+                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                    toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
+                                }
                             }
-                            
-                            if !canToggle{
-                                NotificationService.shared.toggleSleep(isAsleep: isOn)
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    HStack {
+                        Toggle(isOn: $inRoom, label: { roomIcon })
+                            .disabled(!canToggle)
+                            .onChange(of: inRoom) { isOn in
+                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                    toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                }
                             }
-                        }
-                }.padding(.leading, 20).padding(.trailing, 20)
-                HStack {
-                    Toggle(isOn: $inRoom, label: {roomIcon})
-                        .disabled(!canToggle)
-                        .onChange(of: inRoom) { isOn in
-                            if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                print("inRoom toggled to \(isOn) by \(title)")
-                                toggleManager.changeToggleState(userId: userId, state: "in_room")
-                            }
-                            
-                            if !canToggle {
-                                NotificationService.shared.toggleRoom(inRoom: isOn)
-                            }
-                        }
-                }.padding(.leading, 20).padding(.trailing, 20)
+                    }
+                    .padding(.horizontal, 20)
+                } else {
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(LighterPurple)
+                        .aspectRatio(1.0, contentMode: .fit)
+                        .overlay(
+                            Text("Add roommate to see toggles!")
+                                .font(.footnote)
+                                .foregroundColor(creamColor)
+                                .padding()
+                        )
+                        .padding(.horizontal, 20)
+                }
             }
         }
         .onAppear {

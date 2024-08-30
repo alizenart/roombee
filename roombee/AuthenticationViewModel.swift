@@ -170,6 +170,7 @@ extension AuthenticationViewModel {
         do  {
             try await Auth.auth().createUser(withEmail: email, password: password)
             addUserLambda()
+            await getUserData()
             return true
         } catch let error as NSError {
             if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
