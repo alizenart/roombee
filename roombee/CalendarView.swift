@@ -143,11 +143,11 @@ struct CalendarView: View {
         .cornerRadius(30)
         .onAppear {
             eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
-            timer?.invalidate()
-            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
-            }
-            
+//            timer?.invalidate()
+//            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+//                eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
+//            }
+//            
         }
         //print("event get events called")
         

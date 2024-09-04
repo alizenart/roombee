@@ -119,8 +119,15 @@ struct ToDoView: View {
        
        todoManager.fetchAllTasks(user_id: userId, roommate_id: roommateId)
 
-       // Combine tasks from both the user and roommate
-       tasks = todoManager.userTasks + todoManager.roommateTasks
+        let combinedTasks = todoManager.userTasks + todoManager.roommateTasks
+
+        // Filter and add tasks that don't already exist in the tasks list
+        let newTasks = combinedTasks.filter { task in
+            !tasks.contains(where: { $0.id == task.id })
+        }
+
+        // Append new unique tasks
+        tasks.append(contentsOf: newTasks)
    }
 
 }

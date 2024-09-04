@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Agreement: Identifiable {
+struct Agreement: Identifiable, Equatable {
     let id: String
     var title: String
     var dateCreated: Date
