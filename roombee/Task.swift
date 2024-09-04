@@ -6,7 +6,7 @@
 //
 
 import Foundation
-struct Tasks: Identifiable, Hashable, Equatable{
+struct Tasks: Identifiable, Hashable, Equatable {
     var hiveCode:String
     var id:String
     var userId: String

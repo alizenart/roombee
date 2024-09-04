@@ -150,9 +150,13 @@ struct RoommateAgreementView: View {
     }
 
     private func fetchAgreements() {
-        agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
-        agreementStore.agreements =  (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { $0.isRule }
-        agreementStore.items = (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { !$0.isRule }
+        agreementManager.fetchAllAgreements(user_id: "80002", roommate_id: "80003")
+        let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
+        let new_agreements = all_agreements.filter { agreement in
+            !agreementStore.agreements.contains(where: {$0.id == agreement.id}) && !agreementStore.items.contains(where: {$0.id == agreement.id})
+        }
+        agreementStore.agreements.append(contentsOf: new_agreements.filter { $0.isRule })
+        agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
     }
 }
 
