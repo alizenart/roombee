@@ -13,6 +13,7 @@ struct RoommateAgreementView: View {
     @State private var showNewAgreementForm = false
     @EnvironmentObject var agreementStore: RoommateAgreementStore
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
+    @EnvironmentObject var auth: AuthenticationViewModel
     @State private var timer: Timer?
     
     var body: some View {
@@ -310,6 +311,8 @@ struct RoommateAgreementView: View {
 struct NewAgreementsForm: View {
     @EnvironmentObject var agreementStore: RoommateAgreementStore
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
+    @EnvironmentObject var auth: AuthenticationViewModel
+    
     @Binding var showForm: Bool
     @State private var isRule = true
     
@@ -368,7 +371,7 @@ struct NewAgreementsForm: View {
                     itemDetails: itemDetails
                 )
                 let date_string = format(date:newAgreement.dateCreated)
-                agreementManager.addAgree(id: newAgreement.id, title: newAgreement.title, dateCreated: date_string, isRule: isRule ? "0" : "1", tags: tags.joined(separator: ","), itemOwner: "80003", whoCanUse: "80003", itemDetails: itemDetails)
+                agreementManager.addAgree(id: newAgreement.id, title: newAgreement.title, dateCreated: date_string, isRule: isRule ? "0" : "1", tags: tags.joined(separator: ","), itemOwner: auth.user_id ?? "80003", whoCanUse: auth.user_id ?? "80003", itemDetails: itemDetails)
                 agreementStore.addAgreement(newAgreement)
             
                 showForm = false
