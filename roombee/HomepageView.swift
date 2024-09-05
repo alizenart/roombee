@@ -87,7 +87,9 @@ struct HomepageView: View {
                             .environmentObject(toggleManager)
                             .environmentObject(todoManager)
                             .environmentObject(agreementManager)
+                            .environmentObject(agreementStore)
                         }
+                    
                         else{
                             ProgressView("Loading...") // Optional label "Loading..."
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))

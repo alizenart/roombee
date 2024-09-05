@@ -96,7 +96,14 @@ struct ToDoView: View {
                     // appending new task to list
                     .sheet(isPresented: $addpresent) {
                         AddToDoView { task in
-                            //tasks.append(task)
+                            tasks.append(task)
+                            todoManager.addToDo(todoID: task.id,
+                                                userId: auth.user_id ?? "80003",
+                                                hiveCode: auth.hive_code,
+                                                todoTitle: task.todoTitle,
+                                                todoPriority: task.todoPriority,
+                                                todoCategory: task.todoCategory,
+                                                todoStatus: String(task.status))
                         }
                     }// sheet
                 }//vstack
@@ -105,12 +112,14 @@ struct ToDoView: View {
         .onAppear {
             fetchAllTasks()
             timer?.invalidate()
-            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
                 fetchAllTasks()
             }
         }// nav view
         
     }// body
+    
+    // filter to check if any local tasks are not in the polled tasks
     private func fetchAllTasks() {
        guard let userId = auth.user_id, let roommateId = auth.roommate_id else {
            print("No user ID or roommate ID found.")
