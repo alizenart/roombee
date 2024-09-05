@@ -128,7 +128,7 @@ class APIService: ObservableObject {
       }
     
         if let rawString = String(data: data, encoding: .utf8) {
-            print("Raw data from server: \(rawString)")
+            //print("Raw data from server: \(rawString)")
         }
       
         do {

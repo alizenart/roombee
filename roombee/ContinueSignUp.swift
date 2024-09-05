@@ -73,7 +73,13 @@ struct ContinueSignUp: View {
                 if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
                     && !viewModel.gender.isEmpty) {
                     if await viewModel.signUpWithEmailPassword() {
-                        shouldNavigate = true
+                        await viewModel.getUserData()
+                        print("signUp successful")
+                        if viewModel.isUserDataLoaded {
+                            shouldNavigate = true
+                        } else {
+                            print("failed to load user data")
+                        }
                     } else {
                         showingAlert = true
                     }

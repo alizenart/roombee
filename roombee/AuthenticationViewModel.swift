@@ -265,6 +265,7 @@ extension AuthenticationViewModel {
             }
             if let result = task.result {
                 print("Lambda function result: \(result)")
+                self.getUserData()
             }
             return nil
         }
