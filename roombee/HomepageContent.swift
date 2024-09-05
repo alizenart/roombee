@@ -84,6 +84,14 @@ struct HomepageContent: View {
                         
             }
         }
+        .onChange(of: myStatusToggleSleeping) { newValue in
+            print("myStatusToggleSleeping changed to \(newValue)")
+            // Add any additional logic here if needed
+        }
+
+        .onChange(of: roomieStatusToggleSleeping) { newValue in
+            print("roomieStatusToggleSleeping changed to \(newValue)")
+        }
         .onAppear(perform: {
             //loading Roommate information
             fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)

@@ -3,14 +3,15 @@ import SwiftUI
 @MainActor
 struct ContentView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @StateObject var navManager = NavManager()
-    @StateObject var selectedDate = SelectedDateManager()
-    @StateObject var toggleManager = ToggleViewModel()
-    @StateObject var eventStore = EventStore()
-    @StateObject var todoManager = TodoViewModel()
-    @StateObject var agreementManager = RoommateAgreementHandler()
-    @StateObject var agreementStore = RoommateAgreementStore()
-    
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var navManager: NavManager
+    @EnvironmentObject var selectedDate: SelectedDateManager
+    @EnvironmentObject var toggleManager: ToggleViewModel
+    @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var agreementManager: RoommateAgreementHandler
+    @EnvironmentObject var agreementStore: RoommateAgreementHandler
+
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
     @State private var isTimerDone = false
     

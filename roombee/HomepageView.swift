@@ -88,6 +88,11 @@ struct HomepageView: View {
                             .environmentObject(todoManager)
                             .environmentObject(agreementManager)
                         }
+                        else{
+                            ProgressView("Loading...") // Optional label "Loading..."
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                               .scaleEffect(1.5) // Increase the size of the spinner
+                        }
                         
                     case 1:
                         ToDoView()
@@ -144,19 +149,35 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
-            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
+            print("Authentication state: \(auth.authenticationState)")
+            if auth.authenticationState == .authenticated {
+                // User is already signed in, fetch user data
+                fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
+                fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
+                auth.getUserData()
+            } else {
+                // Otherwise, make sure login happens first
+                //auth.signIn()
+            }
+            NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+            auth.getUserData()
+            }
+        }
+        .onDisappear{
+            NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         }
     }
     
     
     
     private func fetchMyInitialToggleState(userId: String) {
+        print("Fetching my toggles for userId: \(userId)")
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
                     self.myStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     self.myStatusToggleInRoom = (firstToggle.inRoom != 0)
+                    print("My toggles: Sleeping: \(self.myStatusToggleSleeping), In Room: \(self.myStatusToggleInRoom)")
                 }
             } else if let error = error {
                 print("Error fetching toggles: \(error)")
@@ -168,16 +189,22 @@ struct HomepageView: View {
     }
 
     private func fetchRoomieInitialToggleState(userId: String) {
+        print("Fetching roommate toggles for userId: \(userId)")
         toggleManager.fetchToggles(userId: userId) { toggles, error in
             if let toggles = toggles, let firstToggle = toggles.first {
                 DispatchQueue.main.async {
                     self.roomieStatusToggleSleeping = (firstToggle.isSleeping != 0)
                     self.roomieStatusToggleInRoom = (firstToggle.inRoom != 0)
+                    print("Roommate toggles: Sleeping: \(self.roomieStatusToggleSleeping), In Room: \(self.roomieStatusToggleInRoom)")
                 }
             } else if let error = error {
                 print("Error fetching toggles: \(error)")
             }
         }
     }
+    
+
+
+
 
 }
