@@ -66,11 +66,13 @@ struct roombeeApp: App {
     @State private var showInviteLinkPopup: Bool = false
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(authViewModel)
+            ContentView()
+                .environmentObject(authViewModel)
                 .environmentObject(eventStore)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
                 .environmentObject(todoManager)
+                .environmentObject(toggleManager)
                 .environmentObject(agreementManager)
                 .environmentObject(onboardGuideManager)
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in

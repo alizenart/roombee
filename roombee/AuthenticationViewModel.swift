@@ -35,7 +35,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var gender = ""
     @Published var showSignUp = false
     @Published var showLogIn = false
-    @Published var isUserSignedIn = true
+    @Published var isUserSignedIn = false
     @Published var addUserError = false
     @Published var addUserErrorMessage = ""
     @Published var getUserError = false
@@ -84,8 +84,14 @@ class AuthenticationViewModel: ObservableObject {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 DispatchQueue.main.async {
                     self.user = user
-                    self.authenticationState = user == nil ? .unauthenticated : .authenticated
-                    self.displayName = user?.email ?? ""
+                    if let user = user {
+                        print("User logged in: \(user.email ?? "No email")")
+                        self.email = user.email ?? ""
+                        self.authenticationState = .authenticated // User is logged in
+                    } else {
+                        print("No user logged in")
+                        self.authenticationState = .unauthenticated // No user logged in
+                    }
                 }
             }
         }
@@ -139,6 +145,9 @@ extension AuthenticationViewModel {
         do {
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
             await getUserData()
+            DispatchQueue.main.async {
+               self.authenticationState = .authenticated // Update state here
+            }
             return true
         }
         catch  {
@@ -170,6 +179,8 @@ extension AuthenticationViewModel {
         do  {
             try await Auth.auth().createUser(withEmail: email, password: password)
             addUserLambda()
+            await getUserData()
+            authenticationState = .authenticated
             return true
         } catch let error as NSError {
             if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
@@ -254,6 +265,7 @@ extension AuthenticationViewModel {
             }
             if let result = task.result {
                 print("Lambda function result: \(result)")
+                self.getUserData()
             }
             return nil
         }
@@ -262,10 +274,12 @@ extension AuthenticationViewModel {
     
     // Gets the current user's data from the database that is NOT already in their firebase user
     func getUserData() {
+        print("getUserData called")
         let lambdaInvoker = AWSLambdaInvoker.default()
         let jsonObject = [
             "queryStringParameters": ["email": email]
         ] as [String : Any]
+        print("lambda function calling with this email \(email)")
         
         lambdaInvoker.invokeFunction("getUserData", jsonObject: jsonObject).continueWith { task -> Any? in
             Task { @MainActor in
@@ -277,26 +291,44 @@ extension AuthenticationViewModel {
                     }
                     return nil as Any?
                 }
-                if let result = task.result as? [String: Any],
-                   let bodyString = result["body"] as? String,
-                   let data = bodyString.data(using: .utf8) {
-                    do {
-                        if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                            if let userData = jsonResponse["user_data"] as? [String: Any] {
-                                self.hive_code = userData["hive_code"] as? String ?? ""
-                                self.user_id = userData["user_id"] as? String ?? ""
-                                self.isUserDataLoaded = true
+                print("in task")
+                if let result = task.result as? [String: Any] {
+                print("Lambda invocation result: \(result)")  // Log the entire result
+                if let bodyString = result["body"] as? String {
+                    print("Body string from Lambda: \(bodyString)")
+                    if let data = bodyString.data(using: .utf8) {
+                        do {
+                            if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                                print("JSON response: \(jsonResponse)")  // Log the parsed JSON response
+                                
+                                if let userData = jsonResponse["user_data"] as? [String: Any] {
+                                    self.hive_code = userData["hive_code"] as? String ?? ""
+                                    self.user_id = userData["user_id"] as? String ?? ""
+                                    self.isUserDataLoaded = true
+                                    print("User data loaded: \(userData)")
+                                }
+                                
+                                if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
+                                    self.isUserDataLoaded = true
+                                    self.roommate_id = roommateData["user_id"] as? String ?? ""
+                                    print("Roommate data loaded: \(roommateData)")
+                                }
                             }
-                            if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
-                                self.roommate_id = roommateData["user_id"] as? String ?? ""
-                            }
+                        } catch {
+                            print("JSON parsing error: \(error)")
+                            self.getUserErrorMessage = error.localizedDescription
+                            self.getUserError = true
                         }
-                    } catch {
-                        self.getUserErrorMessage = error.localizedDescription
-                        self.getUserError = true
+                    } else {
+                        print("Failed to convert bodyString to Data")
                     }
+                } else {
+                    print("Body not found in Lambda response")
                 }
-                return nil
+            } else {
+                print("No result from Lambda invocation")
+            }
+            return nil
             }
         }
     }

@@ -20,9 +20,10 @@ class APIService: ObservableObject {
     static let updateHiveCodeEndpoint = "/hiveCode"  // Endpoint for updating hive code
     @Published var joinHiveAlert: String?
     @Published var joinHiveSuccess: Bool = false
+    let toggleViewModel = ToggleViewModel()
         
     // Function to update hive_code for a user
-    func updateHiveCode(userId: String, hiveCode: String, completion: @escaping (Bool, Error?) -> Void) {
+    func updateHiveCode(userId: String, hiveCode: String, viewModel: AuthenticationViewModel, completion: @escaping (Bool, Error?) -> Void) {
         var urlComponents = URLComponents(string: APIService.baseURL + APIService.updateHiveCodeEndpoint)
         
         // Add query string parameters
@@ -65,6 +66,18 @@ class APIService: ObservableObject {
             
             print("Successfully updated hive_code for user with id: \(userId)")
             DispatchQueue.main.async {
+                viewModel.getUserData()
+                self.toggleViewModel.fetchToggles(userId: viewModel.user_id ?? "") { toggles, error in
+                    if let toggles = toggles {
+                        print("User toggles updated: \(toggles)")
+                    }
+                }
+
+                self.toggleViewModel.fetchToggles(userId: viewModel.roommate_id ?? "") { toggles, error in
+                    if let toggles = toggles {
+                        print("Roommate toggles updated: \(toggles)")
+                    }
+                }
                 self.joinHiveSuccess = true
                 self.joinHiveAlert = "Successfully updated hive_code!"
                 completion(true, nil)
@@ -127,7 +140,7 @@ class APIService: ObservableObject {
       }
     
         if let rawString = String(data: data, encoding: .utf8) {
-            print("Raw data from server: \(rawString)")
+            //print("Raw data from server: \(rawString)")
         }
       
         do {

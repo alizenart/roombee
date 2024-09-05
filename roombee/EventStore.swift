@@ -105,7 +105,7 @@ class EventStore: ObservableObject {
         APIService.shared.fetchEvents(user_id: user_id) { [weak self] newEvents, error in
             DispatchQueue.main.async {
                 if let newEvents = newEvents {
-                    print("Fetched user events successfully: \(newEvents)")
+                    //print("Fetched user events successfully: \(newEvents)")
                     self?.userEvents = newEvents
                 } else if let error = error {
                     print("Error fetching user events in EventStore: \(error.localizedDescription)")
@@ -118,7 +118,7 @@ class EventStore: ObservableObject {
         APIService.shared.fetchEvents(user_id: roommate_id) { [weak self] newEvents, error in
             DispatchQueue.main.async {
                 if let newEvents = newEvents {
-                    print("Fetched roommate events successfully: \(newEvents)")
+                    //print("Fetched roommate events successfully: \(newEvents)")
                     self?.roommateEvents = newEvents
                 } else if let error = error {
                     print("Error fetching roommate events in EventStore: \(error.localizedDescription)")

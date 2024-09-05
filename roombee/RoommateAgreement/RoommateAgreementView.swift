@@ -150,7 +150,7 @@ struct RoommateAgreementView: View {
     }
 
     private func fetchAgreements() {
-        agreementManager.fetchAllAgreements(user_id: "80002", roommate_id: "80003")
+        agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
         let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
         let new_agreements = all_agreements.filter { agreement in
             !agreementStore.agreements.contains(where: {$0.id == agreement.id}) && !agreementStore.items.contains(where: {$0.id == agreement.id})
