@@ -1,3 +1,3 @@
 use roombee;
 
-SELECT * FROM users;
+SELECT * FROM toggles;

@@ -163,9 +163,19 @@ struct HomepageView: View {
             auth.getUserData()
             }
         }
+        .onChange(of: authViewModel.roommate_id) { newHiveCode in
+            // Trigger fetching of toggles when hiveCode changes
+            print("HiveCode updated to: \(newHiveCode)")
+            fetchInitialToggles()
+        }
         .onDisappear{
             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         }
+    }
+    
+    private func fetchInitialToggles() {
+        fetchMyInitialToggleState(userId: authViewModel.user_id ?? myUserId)
+        fetchRoomieInitialToggleState(userId: authViewModel.roommate_id ?? roomieUserId)
     }
     
     

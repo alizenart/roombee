@@ -49,7 +49,7 @@ struct InviteLinkPopupView: View {
             
             // Button to handle the submission of the input hive_code
             Button(action: {
-                APIService.shared.updateHiveCode(userId: auth.user_id ?? "default_user_id", hiveCode: inputHiveCode) { success, error in
+                APIService.shared.updateHiveCode(userId: auth.user_id ?? "default_user_id", hiveCode: inputHiveCode, viewModel: auth) { success, error in
                     if success {
                         auth.hive_code = inputHiveCode // Update the hive_code in the ViewModel
                         print("Hive code updated successfully!")

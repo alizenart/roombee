@@ -92,6 +92,18 @@ struct HomepageContent: View {
         .onChange(of: roomieStatusToggleSleeping) { newValue in
             print("roomieStatusToggleSleeping changed to \(newValue)")
         }
+        .onChange(of: auth.roommate_id) { newValue in
+            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
+            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
+            startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
+            
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
+                stopRoomieStatusPolling()
+            }
+            
+            NotificationService.shared.requestPerm()
+            NotificationService.shared.todoNotif()
+        }
         .onAppear(perform: {
             //loading Roommate information
             fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
