@@ -9,6 +9,7 @@ struct ToDoView: View {
     @State private var timer:Timer?
     let myUserId = "80003"
     let roomieUserId = "80002"
+    @State private var deletedTasks: Set<String> = []
     
     private func addview() {
         addpresent.toggle()
@@ -67,8 +68,9 @@ struct ToDoView: View {
                         .onDelete { indexSet in
                             if let index = indexSet.first {
                                 let deletedtask = $tasks.wrappedValue[index]
-                                todoManager.deleteTodo(todoID: deletedtask.id)
+                                deletedTasks.insert(deletedtask.id)
                                 $tasks.wrappedValue.remove(atOffsets: indexSet)
+                                todoManager.deleteTodo(todoID: deletedtask.id)
                                 
                             }
                         }
@@ -112,7 +114,7 @@ struct ToDoView: View {
         .onAppear {
             fetchAllTasks()
             timer?.invalidate()
-            timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
                 fetchAllTasks()
             }
         }// nav view
@@ -132,6 +134,7 @@ struct ToDoView: View {
 
         // Filter and add tasks that don't already exist in the tasks list
         let newTasks = combinedTasks.filter { task in
+            !deletedTasks.contains(task.id) &&
             !tasks.contains(where: { $0.id == task.id })
         }
 

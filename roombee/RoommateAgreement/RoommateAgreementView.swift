@@ -15,6 +15,7 @@ struct RoommateAgreementView: View {
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @EnvironmentObject var auth: AuthenticationViewModel
     @State private var timer: Timer?
+    @State private var deletedAgreementIDs: Set<String> = []
     
     var body: some View {
         GeometryReader { geometry in
@@ -81,9 +82,11 @@ struct RoommateAgreementView: View {
                                 .listRowBackground(Color.clear)
                             }
                             .onDelete { indexSet in
-                                   for index in indexSet {
+                                if let index = indexSet.first {
                                        let agreement = agreementStore.agreements[index]
-                                       agreementStore.agreements.removeAll { $0.id == agreement.id }
+                                    deletedAgreementIDs.insert(agreement.id)  // Mark as deleted
+
+                                    agreementStore.agreements.remove(atOffsets: indexSet)
                                        agreementManager.deleteAgreement(agreementID: agreement.id)
                                    }
                                }
@@ -124,11 +127,12 @@ struct RoommateAgreementView: View {
                                 .listRowBackground(Color.clear)
                             }
                             .onDelete { indexSet in
-                                   for index in indexSet {
-                                       let agreement = agreementStore.items[index]
-                                       agreementStore.items.removeAll { $0.id == agreement.id }
-                                       agreementManager.deleteAgreement(agreementID: agreement.id)
-                                   }
+                                if let index = indexSet.first {
+                                    let agreement = agreementStore.items[index]
+                                    deletedAgreementIDs.insert(agreement.id)
+                                    agreementStore.items.remove(atOffsets: indexSet)
+                                    agreementManager.deleteAgreement(agreementID: agreement.id)
+                                }
                                }
                         }
                         .scrollContentBackground(.hidden)
@@ -150,14 +154,19 @@ struct RoommateAgreementView: View {
     }
 
     private func fetchAgreements() {
-        agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
-        let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
-        let new_agreements = all_agreements.filter { agreement in
-            !agreementStore.agreements.contains(where: {$0.id == agreement.id}) && !agreementStore.items.contains(where: {$0.id == agreement.id})
-        }
-        agreementStore.agreements.append(contentsOf: new_agreements.filter { $0.isRule })
-        agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
-    }
+           agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
+           let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
+
+           // Filter out agreements that were deleted locally
+           let new_agreements = all_agreements.filter { agreement in
+               !deletedAgreementIDs.contains(agreement.id) &&  // Exclude deleted agreements
+               !agreementStore.agreements.contains(where: { $0.id == agreement.id }) &&
+               !agreementStore.items.contains(where: { $0.id == agreement.id })
+           }
+           
+           agreementStore.agreements.append(contentsOf: new_agreements.filter { $0.isRule })
+           agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
+       }
 }
 
 //struct RoommateAgreementView: View {
