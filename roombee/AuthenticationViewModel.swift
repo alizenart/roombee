@@ -211,6 +211,7 @@ extension AuthenticationViewModel {
                 eventStore.clearEvents()
                 
                 self.reset()
+                self.authenticationState = .unauthenticated
             }
         }
         catch {

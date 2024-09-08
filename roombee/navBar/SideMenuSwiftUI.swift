@@ -68,8 +68,24 @@ struct SideMenuView: View {
                     .padding(.trailing, 10)
                     .padding(.leading, 10)
                     Spacer()
+                    // Contact Information at the Bottom
+                    VStack(spacing: 5) {
+                        Text("Feedback/questions?")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                        
+                        Text("Contact us at")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                        
+                        Text("roombeeapp@gmail.com")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                            .underline()
+                    }
+                    .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
                 }
-                .frame(width: 270)
+                .frame(width: 270, height: geometry.size.height)
                 .background(toggleColor) // Your custom toggle color
                 .offset(x: navManager.presentSideMenu ? 0 : -270)
                 .animation(.easeInOut(duration: 0.7), value: navManager.presentSideMenu)
