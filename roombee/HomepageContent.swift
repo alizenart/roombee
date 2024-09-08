@@ -215,7 +215,7 @@ struct StatusView: View {
                         .fill(LighterPurple)
                         .aspectRatio(1.0, contentMode: .fit)
                         .overlay(
-                            Text("Add roommate to see toggles!")
+                            Text("Add roommate to see toggles! <--")
                                 .font(.footnote)
                                 .foregroundColor(creamColor)
                                 .padding()
