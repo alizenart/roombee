@@ -86,6 +86,7 @@ struct RoommateAgreementView: View {
                             }
                             .onDelete { indexSet in
                                 if let index = indexSet.first {
+                                    skipNextFilter = true
                                        let agreement = agreementStore.agreements[index]
                                     deletedAgreementIDs.insert(agreement.id)  // Mark as deleted
 
@@ -131,6 +132,7 @@ struct RoommateAgreementView: View {
                             }
                             .onDelete { indexSet in
                                 if let index = indexSet.first {
+                                    skipNextFilter = true
                                     let agreement = agreementStore.items[index]
                                     deletedAgreementIDs.insert(agreement.id)
                                     agreementStore.items.remove(atOffsets: indexSet)
@@ -397,7 +399,7 @@ struct NewAgreementsForm: View {
                 let date_string = format(date:newAgreement.dateCreated)
                 agreementManager.addAgree(id: newAgreement.id, title: newAgreement.title, dateCreated: date_string, isRule: isRule ? "0" : "1", tags: tags.joined(separator: ","), itemOwner: auth.user_id ?? "80003", whoCanUse: auth.user_id ?? "80003", itemDetails: itemDetails)
                 agreementStore.addAgreement(newAgreement)
-            
+                
                 showForm = false
             })
         }

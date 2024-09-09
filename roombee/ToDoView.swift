@@ -69,10 +69,12 @@ struct ToDoView: View {
                         // $ for wrapping
                         .onDelete { indexSet in
                             if let index = indexSet.first {
+                                
                                 let deletedtask = $tasks.wrappedValue[index]
                                 deletedTasks.insert(deletedtask.id)
                                 $tasks.wrappedValue.remove(atOffsets: indexSet)
                                 todoManager.deleteTodo(todoID: deletedtask.id)
+                                skipNextFilter = true
                                 
                             }
                         }

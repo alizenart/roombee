@@ -175,7 +175,7 @@ struct CalendarView: View {
         eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
         
         if skipFilter {
-            skipFilter = true
+            skipFilter = false
             return
         }
         let all_events = eventStore.userEvents + eventStore.roommateEvents
@@ -279,6 +279,7 @@ struct CalendarView: View {
                 }
                 Spacer()
                 Button(action: {
+                    skipFilter = true
                     deletedEvents.insert(event.id.uuidString)
                     events.removeAll(where: {$0.id == event.id})
                     eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
