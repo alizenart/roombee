@@ -63,6 +63,11 @@ class AuthenticationViewModel: ObservableObject {
     
     @Published var isUserDataLoaded: Bool = false
     
+    
+    //onboardGuide struggles
+    @Published var shouldNavigateToHomepage = false
+
+    
     init() {
         registerAuthStateHandler()
         
@@ -134,6 +139,8 @@ class AuthenticationViewModel: ObservableObject {
         hive_code = ""
         hive_name = ""
         isUserDataLoaded = false
+        
+        shouldNavigateToHomepage = false
     }
 }
 

@@ -80,7 +80,7 @@ struct roombeeApp: App {
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
                     if let userInfo = notification.userInfo,
                        let hiveCode = userInfo["hive_code"] as? String {
-                        authViewModel.skipCreateOrJoin = true
+//                        authViewModel.skipCreateOrJoin = false
                         authViewModel.hive_code = hiveCode
                     }
                 }

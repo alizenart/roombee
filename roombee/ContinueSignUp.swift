@@ -8,7 +8,7 @@ struct ContinueSignUp: View {
     @State private var shouldNavigate = false
     
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
-    @State private var showOnboardGuide = false
+    @State private var showOnboardingGuide = false
 
     
     var body: some View {
@@ -16,11 +16,11 @@ struct ContinueSignUp: View {
             BackgroundView()
             content
         }
-        .sheet(isPresented: $showOnboardGuide) { // Show onboarding guide when true
-             OnboardGuideView(shouldNavigate: $shouldNavigate)
-                 .environmentObject(viewModel)
-                 .environmentObject(onboardGuideManager)
-         }
+        .sheet(isPresented: $showOnboardingGuide) {
+                    OnboardGuideView()
+                        .environmentObject(viewModel)
+                        .environmentObject(onboardGuideManager) //commented out due to changes and this now causes errors
+        } //sheet
     }
 
     private var content: some View {
@@ -28,29 +28,39 @@ struct ContinueSignUp: View {
             headerText
             form
             signUpButton
-            NavigationLink(destination: destinationView, isActive: $shouldNavigate) { EmptyView() }
+            // extraneous code, along with destinationView. If it doesn't look familar/important to anyone feel free to delete.
+//            NavigationLink(destination: destinationView, isActive: $shouldNavigate) { EmptyView() }
         }
         .padding()
         .backgroundForm()
         .padding()
     }
 
+    // destinationView is extreneous code! it doesn't do anything. If
     @ViewBuilder
-    private var destinationView: some View {
-        if viewModel.skipCreateOrJoin {
-            HomepageView()
-            .environmentObject(EventStore())
-            .environmentObject(viewModel)
-            .environmentObject(NavManager())
-            .environmentObject(SelectedDateManager())
-            .environmentObject(ToggleViewModel())
-
-
-        } else {
-            Onboarding2()
-                .environmentObject(onboardGuideManager)
-        }
-    }
+//    private var destinationView: some View {
+//        if viewModel.skipCreateOrJoin {
+//            HomepageView()
+//            .environmentObject(EventStore())
+//            .environmentObject(viewModel)
+//            .environmentObject(NavManager())
+//            .environmentObject(SelectedDateManager())
+//            .environmentObject(ToggleViewModel())
+////            OnboardGuideView()
+////                .environmentObject(viewModel)
+////                .environmentObject(onboardGuideManager) //commented out due to changes and this now causes errors
+//////                        .environmentObject(EventStore())
+//////                        .environmentObject(viewModel)
+//////                        .environmentObject(NavManager())
+//////                        .environmentObject(SelectedDateManager())
+//////                        .environmentObject(ToggleViewModel())
+//
+//
+//        } else {
+//            Onboarding2()
+//                .environmentObject(onboardGuideManager)
+//        }
+//    }
 
     private var headerText: some View {
         Text("Create Profile")
@@ -73,24 +83,25 @@ struct ContinueSignUp: View {
         }
     }
 
+    // primarily pulls onboardGuide up, but also shows error messages
     private var signUpButton: some View {
         Button(action: {
             Task {
                 if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
                     && !viewModel.gender.isEmpty) {
-                    if await viewModel.signUpWithEmailPassword() {
-                        await viewModel.getUserData()
-                        print("signUp successful")
-                        if viewModel.isUserDataLoaded {
-                            showOnboardGuide = true // onboardguide change
+                    showOnboardingGuide = true
+//                    if await viewModel.signUpWithEmailPassword() {
+//                        await viewModel.getUserData()
+//                        print("signUp successful")
+//                        if viewModel.isUserDataLoaded {
 //                            shouldNavigate = true
-                        } else {
-                            print("failed to load user data")
-                        }
-                    } else {
-                        showingAlert = true
-                    }
-                }
+//                        } else {
+//                            print("failed to load user data")
+//                        }
+//                    } else {
+//                        showingAlert = true
+//                    }
+                } //big if under task
                 else{
                     showingAlert = true
                 }
