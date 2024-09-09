@@ -15,7 +15,7 @@ struct ToDoView: View {
     }
     
     var body: some View {
-        NavigationView { 
+//        NavigationView { 
             ZStack {
                 
                 backgroundColor
@@ -101,14 +101,14 @@ struct ToDoView: View {
                     }// sheet
                 }//vstack
             }//zstack
-        }
+//        } //navigationView
         .onAppear {
             fetchAllTasks()
             timer?.invalidate()
             timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
                 fetchAllTasks()
             }
-        }// nav view
+        } //onAppear
         
     }// body
     private func fetchAllTasks() {
@@ -128,7 +128,7 @@ struct ToDoView: View {
 
         // Append new unique tasks
         tasks.append(contentsOf: newTasks)
-   }
+   } //fetchAllTasks
 
 }
 

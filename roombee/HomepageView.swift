@@ -101,6 +101,7 @@ struct HomepageView: View {
                     case 3:
                         RoommateAgreementView()
                             .environmentObject(agreementStore)
+                            .environmentObject(agreementManager)
                     default:
                         Text("Unknown Selection")
                     }

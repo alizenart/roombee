@@ -85,9 +85,9 @@ struct Onboarding3_joinExisting: View {
                     .padding()
                 } // vstack
                 .sheet(isPresented: $showOnboardingGuide) {
-                    OnboardGuideView()
-                        .environmentObject(authViewModel)
-                        .environmentObject(onboardGuideManager)
+//                    OnboardGuideView()
+//                        .environmentObject(authViewModel)
+//                        .environmentObject(onboardGuideManager) //commented out due to changes and this now causes errors
                 } //sheet
                 
                 

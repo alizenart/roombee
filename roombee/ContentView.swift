@@ -10,7 +10,7 @@ struct ContentView: View {
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var todoManager: TodoViewModel
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
-    @EnvironmentObject var agreementStore: RoommateAgreementHandler
+    @EnvironmentObject var agreementStore: RoommateAgreementStore
 
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
     @State private var isTimerDone = false

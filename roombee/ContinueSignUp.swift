@@ -8,6 +8,7 @@ struct ContinueSignUp: View {
     @State private var shouldNavigate = false
     
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+    @State private var showOnboardGuide = false
 
     
     var body: some View {
@@ -15,6 +16,11 @@ struct ContinueSignUp: View {
             BackgroundView()
             content
         }
+        .sheet(isPresented: $showOnboardGuide) { // Show onboarding guide when true
+             OnboardGuideView(shouldNavigate: $shouldNavigate)
+                 .environmentObject(viewModel)
+                 .environmentObject(onboardGuideManager)
+         }
     }
 
     private var content: some View {
@@ -76,7 +82,8 @@ struct ContinueSignUp: View {
                         await viewModel.getUserData()
                         print("signUp successful")
                         if viewModel.isUserDataLoaded {
-                            shouldNavigate = true
+                            showOnboardGuide = true // onboardguide change
+//                            shouldNavigate = true
                         } else {
                             print("failed to load user data")
                         }

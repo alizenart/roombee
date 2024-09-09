@@ -11,6 +11,8 @@ struct OnboardGuideView: View {
 //    @ObservedObject var viewModel: OnboardGuideViewModel
     @EnvironmentObject var authModel: AuthenticationViewModel
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+    
+    @Binding var shouldNavigate: Bool //changes for updated Onboard Guide
 
 
     var body: some View {
@@ -28,7 +30,8 @@ struct OnboardGuideView: View {
                 } else if onboardGuideManager.currentPage == 3 {
                     OnboardGuide4().environmentObject(onboardGuideManager)
                 } else if onboardGuideManager.currentPage == 4 {
-                    OnboardGuide5().environmentObject(onboardGuideManager)
+                    OnboardGuide5(shouldNavigate: $shouldNavigate)
+                        .environmentObject(onboardGuideManager)
                         .environmentObject(authModel)
                 }
             } //vstack
@@ -281,6 +284,9 @@ struct OnboardGuide5: View {
     @EnvironmentObject var authModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
     
+    @Binding var shouldNavigate: Bool
+
+    
     var body: some View {
         ZStack {
             backgroundColor
@@ -339,9 +345,16 @@ struct OnboardGuide5: View {
         private func signUpWithEmailPassword() {
             Task {
                 if await authModel.signUpWithEmailPassword() == true {
-                    DispatchQueue.main.async {
-                        dismiss()
+                    print("SignUp successful")
+                    if authModel.isUserDataLoaded {
+//                        showOnboardGuide = true // onboardguide change
+                            shouldNavigate = true
+                    } else {
+                        print("failed to load user data")
                     }
+//                    DispatchQueue.main.async {
+//                        dismiss()
+//                    }
                 }
                 else {
                     print("Sign-In Failed: Invalid credentials.")
