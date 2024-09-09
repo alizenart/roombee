@@ -15,6 +15,7 @@ struct RoommateAgreementView: View {
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @EnvironmentObject var auth: AuthenticationViewModel
     @State private var timer: Timer?
+    @State private var skipNextFilter = false
     @State private var deletedAgreementIDs: Set<String> = []
     
     var body: some View {
@@ -32,7 +33,9 @@ struct RoommateAgreementView: View {
                             .cornerRadius(10)
                     }
                     .padding(.trailing)
-                    .sheet(isPresented: $showNewAgreementForm) {
+                    .sheet(isPresented: $showNewAgreementForm, onDismiss: {
+                        skipNextFilter = true // Set this flag when the sheet is dismissed
+                    }) {
                         NewAgreementsForm(showForm: $showNewAgreementForm)
                             .environmentObject(agreementStore)
                     }
@@ -154,19 +157,31 @@ struct RoommateAgreementView: View {
     }
 
     private func fetchAgreements() {
-           agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
-           let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
-
-           // Filter out agreements that were deleted locally
-           let new_agreements = all_agreements.filter { agreement in
-               !deletedAgreementIDs.contains(agreement.id) &&  // Exclude deleted agreements
-               !agreementStore.agreements.contains(where: { $0.id == agreement.id }) &&
-               !agreementStore.items.contains(where: { $0.id == agreement.id })
-           }
-           
-           agreementStore.agreements.append(contentsOf: new_agreements.filter { $0.isRule })
-           agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
-       }
+        agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
+        let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
+        
+        if skipNextFilter {
+            skipNextFilter = false
+            return
+        }
+        agreementStore.agreements = agreementStore.agreements.filter { ag in
+            all_agreements.contains(ag)
+        }
+        
+        agreementStore.items = agreementStore.items.filter { it in
+            all_agreements.contains(it)
+        }
+    
+        // Filter out agreements that were deleted locally
+        let new_agreements = all_agreements.filter { agreement in
+            //!deletedAgreementIDs.contains(agreement.id) &&  // Exclude deleted agreements
+            !agreementStore.agreements.contains(where: { $0.id == agreement.id }) &&
+            !agreementStore.items.contains(where: { $0.id == agreement.id })
+        }
+       
+        agreementStore.agreements.append(contentsOf: new_agreements.filter { $0.isRule })
+        agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
+   }
 }
 
 //struct RoommateAgreementView: View {

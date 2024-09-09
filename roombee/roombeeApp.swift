@@ -84,8 +84,6 @@ struct roombeeApp: App {
                         authViewModel.hive_code = hiveCode
                     }
                 }
-                
-            
         }
     }
 }

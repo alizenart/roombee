@@ -43,14 +43,24 @@ struct NewEventView: View {
                     TextField("Name of Event", text: $viewModel.title)
                         .frame(width: 300, height: 40)
                         .font(.system(size: 20))
+                        .onChange(of: viewModel.title) { newValue in
+                                                    // Optional: Handle text change manually
+                                                }
                     
                     Section(header: Text("Date").font(.system(size: 20))) {
                         DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
                             .datePickerStyle(GraphicalDatePickerStyle())
+                        
                     }
                     Section(header: Text("Start & End Time").font(.system(size: 20))){
                         DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
                             .datePickerStyle(WheelDatePickerStyle())
+                            .onChange(of: viewModel.startTime) { newStartTime in
+                                                            // Ensure end time remains valid, and update only if necessary
+                                                            if viewModel.endTime <= newStartTime {
+                                                                viewModel.endTime = Calendar.current.date(byAdding: .hour, value: 1, to: newStartTime) ?? newStartTime
+                                                            }
+                                                        }
                         DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
                             .datePickerStyle(WheelDatePickerStyle())
                     }
@@ -90,10 +100,13 @@ struct CalendarView: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var auth: AuthenticationViewModel
     @State private var timer:Timer?
+    @State private var deletedEvents: Set<String> = []
+    @State private var events: [CalendarEvent] = []
 
     var title: String
     @State private var showingAddEventSheet = false
     @State private var initialScrollOffset: CGFloat?
+    @State private var skipFilter = false
     
     
     let hourHeight = 50.0
@@ -142,25 +155,47 @@ struct CalendarView: View {
         } //ZStack
         .cornerRadius(30)
         .onAppear {
-            eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
-//            timer?.invalidate()
-//            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-//                eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
-//            }
-//            
+            getNewEvents()
+            startTimer()
         }
-        //print("event get events called")
         
+    }
+    private func startTimer() {
+            stopTimer()  // Ensure no timer is already running
+            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                getNewEvents()
+            }
+        }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+                timer = nil
+    }
+    private func getNewEvents() {
+        eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
+        
+        if skipFilter {
+            skipFilter = true
+            return
+        }
+        let all_events = eventStore.userEvents + eventStore.roommateEvents
+        events = events.filter { old_event in
+            all_events.contains(old_event)
+            
+        }
+        let new_events = all_events.filter { new_event in
+            //!deletedEvents.contains(new_event.id.uuidString) &&
+            !events.contains(where: {$0.id.uuidString == new_event.id.uuidString})
+        }
+        
+        events.append(contentsOf: new_events)
     }
     
     var filteredEvents: [CalendarEvent] {
         let selectedDate = selectedDateManager.SelectedDate
         let calendar = Calendar.current
         
-        // Combine both user events and roommate events
-        let combinedEvents = eventStore.userEvents + eventStore.roommateEvents
-        
-        return combinedEvents.filter { event in
+        return events.filter { event in
             let eventDate = calendar.startOfDay(for: event.startTime)
             let selectedDay = calendar.startOfDay(for: selectedDate)
             return eventDate == selectedDay
@@ -205,9 +240,17 @@ struct CalendarView: View {
                     .bold()
             }
         }
-        .sheet(isPresented: $showingAddEventSheet) {
+        .sheet(isPresented: $showingAddEventSheet, onDismiss: {
+            // Resume the timer when the NewEventView is dismissed
+            startTimer()
+        }) {// Move this into a closure to ensure it doesn’t return a View
             NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
                 eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
+                events.append(newEvent)
+                skipFilter = true
+            }
+            .onAppear {
+                            stopTimer()
             }
         }
         .padding()
@@ -236,6 +279,8 @@ struct CalendarView: View {
                 }
                 Spacer()
                 Button(action: {
+                    deletedEvents.insert(event.id.uuidString)
+                    events.removeAll(where: {$0.id == event.id})
                     eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
                 }) {
                     Image(systemName: "trash")

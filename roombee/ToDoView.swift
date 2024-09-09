@@ -10,6 +10,8 @@ struct ToDoView: View {
     let myUserId = "80003"
     let roomieUserId = "80002"
     @State private var deletedTasks: Set<String> = []
+    @State private var skipNextFilter = false
+
     
     private func addview() {
         addpresent.toggle()
@@ -98,7 +100,6 @@ struct ToDoView: View {
                     // appending new task to list
                     .sheet(isPresented: $addpresent) {
                         AddToDoView { task in
-                            tasks.append(task)
                             todoManager.addToDo(todoID: task.id,
                                                 userId: auth.user_id ?? "80003",
                                                 hiveCode: auth.hive_code,
@@ -106,6 +107,8 @@ struct ToDoView: View {
                                                 todoPriority: task.todoPriority,
                                                 todoCategory: task.todoCategory,
                                                 todoStatus: String(task.status))
+                            tasks.append(task)
+                            skipNextFilter = true
                         }
                     }// sheet
                 }//vstack
@@ -131,10 +134,18 @@ struct ToDoView: View {
        todoManager.fetchAllTasks(user_id: userId, roommate_id: roommateId)
 
         let combinedTasks = todoManager.userTasks + todoManager.roommateTasks
+        
+        if skipNextFilter {
+                skipNextFilter = false
+                return // Skip filtering once
+            }
+        
+        tasks = tasks.filter { task in
+            combinedTasks.contains(task)
+        }
 
         // Filter and add tasks that don't already exist in the tasks list
         let newTasks = combinedTasks.filter { task in
-            !deletedTasks.contains(task.id) &&
             !tasks.contains(where: { $0.id == task.id })
         }
 
