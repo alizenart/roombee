@@ -413,6 +413,7 @@ struct NewAgreementsForm: View {
 
 // Renders the post in the AnnouncementsPage screen. The code for the cream colored posts view
 struct AgreementView: View {
+    @EnvironmentObject var auth: AuthenticationViewModel
     var agreement: Agreement
     var cardWidth: CGFloat
     
@@ -465,7 +466,7 @@ struct AgreementView: View {
 //                            .font(.subheadline)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(backgroundColor)
-                        Text(itemOwner)
+                        Text(parseOwner(owner: itemOwner))
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(ourOrange)
                     }
@@ -477,7 +478,7 @@ struct AgreementView: View {
 //                            .font(.subheadline)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(backgroundColor)
-                        Text(whoCanUse)
+                        Text(parseUser(user: whoCanUse))
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(ourOrange)
                     }
@@ -498,6 +499,26 @@ struct AgreementView: View {
         .background(creamColor)
         .cornerRadius(10)
         .shadow(radius: 5)
+    }
+    private func parseOwner(owner: String) -> String {
+        if owner == "Roommate 1" || owner == auth.user_id {
+            return auth.firstName
+        }
+        else {
+            return "Roommate"
+        }
+    }
+    
+    private func parseUser(user: String) -> String {
+        if user == "Roommate1 Only" || user == auth.user_id {
+            return auth.firstName
+        }
+        else if user == "Roommate2 Only" || user == auth.roommate_id {
+            return "Roommate Only"
+        }
+        else {
+            return "Everyone"
+        }
     }
 }
 

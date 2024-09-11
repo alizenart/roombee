@@ -245,8 +245,8 @@ struct CalendarView: View {
             startTimer()
         }) {// Move this into a closure to ensure it doesn’t return a View
             NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
-                eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
                 events.append(newEvent)
+                eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
                 skipFilter = true
             }
             .onAppear {
@@ -278,6 +278,7 @@ struct CalendarView: View {
                     
                 }
                 Spacer()
+                
                 Button(action: {
                     skipFilter = true
                     deletedEvents.insert(event.id.uuidString)
@@ -287,6 +288,7 @@ struct CalendarView: View {
                     Image(systemName: "trash")
                         .foregroundColor(.white)
                 }
+                .disabled(backgroundColor == highlightYellow)
             }
             .font(.caption)
             .frame(width: width, alignment: .topLeading) // Align to the right
@@ -303,7 +305,6 @@ struct CalendarView: View {
         }
     }
 
-    
     
     func groupedEvents() -> [[CalendarEvent]] {
         var groups: [[CalendarEvent]] = []
