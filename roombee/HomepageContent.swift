@@ -21,6 +21,7 @@ struct HomepageContent: View {
     @Binding var myStatusToggleInRoom: Bool
     @Binding var roomieStatusToggleSleeping: Bool
     @Binding var roomieStatusToggleInRoom: Bool
+    @State private var isShowingCalendarPopup: Bool = false
     
     @Binding var isInitialLoad: Bool
     
@@ -110,6 +111,7 @@ struct HomepageContent: View {
             fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
             startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
             
+            
             NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
                 stopRoomieStatusPolling()
             }
@@ -117,6 +119,15 @@ struct HomepageContent: View {
             NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
         })
+        .onChange(of: isShowingCalendarPopup) { newValue in
+                    if newValue {
+                        // Calendar popup is showing, pause polling
+                        stopRoomieStatusPolling()
+                    } else {
+                        // Calendar popup dismissed, resume polling
+                        startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
+                    }
+                }
     }
     
     private func fetchMyInitialToggleState(userId: String) {

@@ -9,6 +9,9 @@ struct ToDoView: View {
     @State private var timer:Timer?
     let myUserId = "80003"
     let roomieUserId = "80002"
+    @State private var deletedTasks: Set<String> = []
+    @State private var skipNextFilter = false
+
     
     private func addview() {
         addpresent.toggle()
@@ -44,6 +47,7 @@ struct ToDoView: View {
                                         .onTapGesture {
                                             task.status = task.status == 0 ? 1 : 0
                                             todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
+                                            skipNextFilter = true
                                         }
                                         Text(task.todoTitle)
                                             .multilineTextAlignment(.leading)
@@ -66,9 +70,12 @@ struct ToDoView: View {
                         // $ for wrapping
                         .onDelete { indexSet in
                             if let index = indexSet.first {
+                                
                                 let deletedtask = $tasks.wrappedValue[index]
-                                todoManager.deleteTodo(todoID: deletedtask.id)
+                                deletedTasks.insert(deletedtask.id)
                                 $tasks.wrappedValue.remove(atOffsets: indexSet)
+                                todoManager.deleteTodo(todoID: deletedtask.id)
+                                skipNextFilter = true
                                 
                             }
                         }
@@ -96,7 +103,15 @@ struct ToDoView: View {
                     // appending new task to list
                     .sheet(isPresented: $addpresent) {
                         AddToDoView { task in
-                            //tasks.append(task)
+                            todoManager.addToDo(todoID: task.id,
+                                                userId: auth.user_id ?? "80003",
+                                                hiveCode: auth.hive_code,
+                                                todoTitle: task.todoTitle,
+                                                todoPriority: task.todoPriority,
+                                                todoCategory: task.todoCategory,
+                                                todoStatus: String(task.status))
+                            tasks.append(task)
+                            skipNextFilter = true
                         }
                     }// sheet
                 }//vstack
@@ -111,6 +126,8 @@ struct ToDoView: View {
         } //onAppear
         
     }// body
+    
+    // filter to check if any local tasks are not in the polled tasks
     private func fetchAllTasks() {
        guard let userId = auth.user_id, let roommateId = auth.roommate_id else {
            print("No user ID or roommate ID found.")
@@ -120,6 +137,15 @@ struct ToDoView: View {
        todoManager.fetchAllTasks(user_id: userId, roommate_id: roommateId)
 
         let combinedTasks = todoManager.userTasks + todoManager.roommateTasks
+        
+        if skipNextFilter {
+                skipNextFilter = false
+                return // Skip filtering once
+            }
+        
+        tasks = tasks.filter { task in
+            combinedTasks.contains(task)
+        }
 
         // Filter and add tasks that don't already exist in the tasks list
         let newTasks = combinedTasks.filter { task in

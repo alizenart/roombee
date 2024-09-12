@@ -77,6 +77,7 @@ struct roombeeApp: App {
                 .environmentObject(agreementManager)
                 .environmentObject(agreementStore)
                 .environmentObject(onboardGuideManager)
+                .environmentObject(agreementStore)
                 .onReceive(NotificationCenter.default.publisher(for: .receivedHiveCode)) { notification in
                     if let userInfo = notification.userInfo,
                        let hiveCode = userInfo["hive_code"] as? String {
@@ -84,8 +85,6 @@ struct roombeeApp: App {
                         authViewModel.hive_code = hiveCode
                     }
                 }
-                
-            
         }
     }
 }

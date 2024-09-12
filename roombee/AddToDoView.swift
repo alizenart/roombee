@@ -28,13 +28,6 @@ struct AddToDoView: View {
     private func add() {
         
         onCommit(newToDo)
-        todoManager.addToDo(todoID: newToDo.id,
-                            userId: auth.user_id ?? "80003",
-                            hiveCode: auth.hive_code,
-                            todoTitle: newToDo.todoTitle,
-                            todoPriority: newToDo.todoPriority,
-                            todoCategory: newToDo.todoCategory,
-                            todoStatus: String(newToDo.status))
         dismiss()
     }
     

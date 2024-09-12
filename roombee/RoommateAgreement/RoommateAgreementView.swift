@@ -15,6 +15,8 @@ struct RoommateAgreementView: View {
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @EnvironmentObject var auth: AuthenticationViewModel
     @State private var timer: Timer?
+    @State private var skipNextFilter = false
+    @State private var deletedAgreementIDs: Set<String> = []
     
     var body: some View {
         GeometryReader { geometry in
@@ -31,7 +33,9 @@ struct RoommateAgreementView: View {
                             .cornerRadius(10)
                     }
                     .padding(.trailing)
-                    .sheet(isPresented: $showNewAgreementForm) {
+                    .sheet(isPresented: $showNewAgreementForm, onDismiss: {
+                        skipNextFilter = true // Set this flag when the sheet is dismissed
+                    }) {
                         NewAgreementsForm(showForm: $showNewAgreementForm)
                             .environmentObject(agreementStore)
                     }
@@ -81,9 +85,12 @@ struct RoommateAgreementView: View {
                                 .listRowBackground(Color.clear)
                             }
                             .onDelete { indexSet in
-                                   for index in indexSet {
+                                if let index = indexSet.first {
+                                    skipNextFilter = true
                                        let agreement = agreementStore.agreements[index]
-                                       agreementStore.agreements.removeAll { $0.id == agreement.id }
+                                    deletedAgreementIDs.insert(agreement.id)  // Mark as deleted
+
+                                    agreementStore.agreements.remove(atOffsets: indexSet)
                                        agreementManager.deleteAgreement(agreementID: agreement.id)
                                    }
                                }
@@ -124,11 +131,13 @@ struct RoommateAgreementView: View {
                                 .listRowBackground(Color.clear)
                             }
                             .onDelete { indexSet in
-                                   for index in indexSet {
-                                       let agreement = agreementStore.items[index]
-                                       agreementStore.items.removeAll { $0.id == agreement.id }
-                                       agreementManager.deleteAgreement(agreementID: agreement.id)
-                                   }
+                                if let index = indexSet.first {
+                                    skipNextFilter = true
+                                    let agreement = agreementStore.items[index]
+                                    deletedAgreementIDs.insert(agreement.id)
+                                    agreementStore.items.remove(atOffsets: indexSet)
+                                    agreementManager.deleteAgreement(agreementID: agreement.id)
+                                }
                                }
                         }
                         .scrollContentBackground(.hidden)
@@ -152,12 +161,29 @@ struct RoommateAgreementView: View {
     private func fetchAgreements() {
         agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
         let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
-        let new_agreements = all_agreements.filter { agreement in
-            !agreementStore.agreements.contains(where: {$0.id == agreement.id}) && !agreementStore.items.contains(where: {$0.id == agreement.id})
+        
+        if skipNextFilter {
+            skipNextFilter = false
+            return
         }
+        agreementStore.agreements = agreementStore.agreements.filter { ag in
+            all_agreements.contains(ag)
+        }
+        
+        agreementStore.items = agreementStore.items.filter { it in
+            all_agreements.contains(it)
+        }
+    
+        // Filter out agreements that were deleted locally
+        let new_agreements = all_agreements.filter { agreement in
+            //!deletedAgreementIDs.contains(agreement.id) &&  // Exclude deleted agreements
+            !agreementStore.agreements.contains(where: { $0.id == agreement.id }) &&
+            !agreementStore.items.contains(where: { $0.id == agreement.id })
+        }
+       
         agreementStore.agreements.append(contentsOf: new_agreements.filter { $0.isRule })
         agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
-    }
+   }
 }
 
 //struct RoommateAgreementView: View {
@@ -373,7 +399,7 @@ struct NewAgreementsForm: View {
                 let date_string = format(date:newAgreement.dateCreated)
                 agreementManager.addAgree(id: newAgreement.id, title: newAgreement.title, dateCreated: date_string, isRule: isRule ? "0" : "1", tags: tags.joined(separator: ","), itemOwner: auth.user_id ?? "80003", whoCanUse: auth.user_id ?? "80003", itemDetails: itemDetails)
                 agreementStore.addAgreement(newAgreement)
-            
+                
                 showForm = false
             })
         }
@@ -387,6 +413,7 @@ struct NewAgreementsForm: View {
 
 // Renders the post in the AnnouncementsPage screen. The code for the cream colored posts view
 struct AgreementView: View {
+    @EnvironmentObject var auth: AuthenticationViewModel
     var agreement: Agreement
     var cardWidth: CGFloat
     
@@ -439,7 +466,7 @@ struct AgreementView: View {
 //                            .font(.subheadline)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(backgroundColor)
-                        Text(itemOwner)
+                        Text(parseOwner(owner: itemOwner))
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(ourOrange)
                     }
@@ -451,7 +478,7 @@ struct AgreementView: View {
 //                            .font(.subheadline)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(backgroundColor)
-                        Text(whoCanUse)
+                        Text(parseUser(user: whoCanUse))
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(ourOrange)
                     }
@@ -472,6 +499,26 @@ struct AgreementView: View {
         .background(creamColor)
         .cornerRadius(10)
         .shadow(radius: 5)
+    }
+    private func parseOwner(owner: String) -> String {
+        if owner == "Roommate 1" || owner == auth.user_id {
+            return auth.firstName
+        }
+        else {
+            return "Roommate"
+        }
+    }
+    
+    private func parseUser(user: String) -> String {
+        if user == "Roommate1 Only" || user == auth.user_id {
+            return auth.firstName
+        }
+        else if user == "Roommate2 Only" || user == auth.roommate_id {
+            return "Roommate Only"
+        }
+        else {
+            return "Everyone"
+        }
     }
 }
 
