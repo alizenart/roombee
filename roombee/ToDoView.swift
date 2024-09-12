@@ -47,6 +47,7 @@ struct ToDoView: View {
                                         .onTapGesture {
                                             task.status = task.status == 0 ? 1 : 0
                                             todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
+                                            skipNextFilter = true
                                         }
                                         Text(task.todoTitle)
                                             .multilineTextAlignment(.leading)
