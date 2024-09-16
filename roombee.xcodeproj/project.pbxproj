@@ -63,6 +63,7 @@
 		C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C739AD022BBE53E5001378D3 /* NewEventViewModel.swift */; };
 		C775E0562B8BFC26009F644B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C775E0552B8BFC26009F644B /* EventStore.swift */; };
 		C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FE5F632BE06F9E00161711 /* APIService.swift */; };
+		FA14A73C2C9826640042F1EB /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = FA14A73B2C9826640042F1EB /* KeychainAccess */; };
 		FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5554592C4460B50002E18F /* ToggleViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -133,6 +134,7 @@
 			files = (
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
 				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
+				FA14A73C2C9826640042F1EB /* KeychainAccess in Frameworks */,
 				3099890E2BFC7343005519F1 /* AWSLambda in Frameworks */,
 				309989112BFC7386005519F1 /* FirebaseAnalytics in Frameworks */,
 				309989132BFC7386005519F1 /* FirebaseAuth in Frameworks */,
@@ -296,6 +298,7 @@
 				309989102BFC7386005519F1 /* FirebaseAnalytics */,
 				309989122BFC7386005519F1 /* FirebaseAuth */,
 				685ACAF62C66BEAB0069E7BA /* Mixpanel */,
+				FA14A73B2C9826640042F1EB /* KeychainAccess */,
 			);
 			productName = roombee;
 			productReference = FAF91EAB2C6662C500B60E68 /* roombee.app */;
@@ -329,6 +332,8 @@
 				3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */,
 				3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
+				FA14A7352C9815AD0042F1EB /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
+				FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = 30AA0BAF2AD1BC0400344002;
 			projectDirPath = "";
@@ -558,11 +563,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
-				DEVELOPMENT_TEAM = 9HVH5HT9SG;
+				DEVELOPMENT_TEAM = 969KZQT2H6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = roombee/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -577,7 +584,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.roombee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -598,11 +605,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"roombee/Preview Content\"";
-				DEVELOPMENT_TEAM = 9HVH5HT9SG;
+				DEVELOPMENT_TEAM = 969KZQT2H6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = roombee/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -617,7 +626,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
+				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.roombee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -676,6 +686,22 @@
 				kind = branch;
 			};
 		};
+		FA14A7352C9815AD0042F1EB /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jrendel/SwiftKeychainWrapper";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
+		FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -728,6 +754,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
 			productName = AWSCore;
+		};
+		FA14A73B2C9826640042F1EB /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

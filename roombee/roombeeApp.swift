@@ -11,6 +11,8 @@ import FirebaseCore
 import FirebaseAuth
 import AWSLambda
 import AWSCore
+import KeychainAccess
+
 
 @MainActor
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -18,13 +20,28 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
         FirebaseApp.configure()
-        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: ProcessInfo.processInfo.environment["ROOMBEE_ADWAIT_IAMUSER_ACCESSKEY"] ?? "", secretKey: ProcessInfo.processInfo.environment["ROOMBEE_ADWAIT_IAMUSER_SECRETKEY"] ?? "")
+        let keychain = Keychain(service: "com.yourapp.roombee")
+                
+        if keychain["AWSAccessKey"] == nil || keychain["AWSSecretKey"] == nil {
+            keychain["AWSAccessKey"] = "AKIAVRUVUAMKWI2RRWPK"
+            keychain["AWSSecretKey"] = "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"
+        }
+        
+        // Retrieve AWS credentials from Keychain
+        guard let accessKey = keychain["AWSAccessKey"],
+              let secretKey = keychain["AWSSecretKey"] else {
+            print("Failed to retrieve AWS credentials from Keychain.")
+            return false
+        }
+        
+        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
         return true
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        print("in Roombee App")
         if let incomingURL = userActivity.webpageURL {
             print("Incoming URL: \(incomingURL)")
             handleIncomingURL(incomingURL)
@@ -59,6 +76,7 @@ struct roombeeApp: App {
     @StateObject var agreementStore = RoommateAgreementStore()
     @StateObject var eventStore = EventStore()
     @StateObject var toggleManager = ToggleViewModel()
+
         
     //onboard Guide manager
     @StateObject var onboardGuideManager = OnboardGuideViewModel()

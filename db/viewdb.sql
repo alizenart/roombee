@@ -1,3 +1,3 @@
 use roombee;
 
-SELECT * FROM toggles;
+SELECT * FROM agreements;
