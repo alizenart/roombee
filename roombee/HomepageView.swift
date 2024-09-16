@@ -106,8 +106,8 @@ struct HomepageView: View {
                             .environmentObject(agreementManager)
                     default:
                         Text("Unknown Selection")
-                    }
-                }
+                    } //switch
+                } //group
                 VStack {
                     HStack {
                         Button(action: {
@@ -125,7 +125,7 @@ struct HomepageView: View {
                     .padding(.leading, 30)
                     .frame(width: 400, alignment: .leading)
                     Spacer()
-                }
+                } //vstack for menu button
                 
                 if navManager.presentSideMenu {
                     SideMenuView(navManager: navManager)

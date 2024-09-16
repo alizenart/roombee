@@ -53,52 +53,58 @@ struct SideMenuView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            HStack {
-                VStack {
-                    ProfileImageView()
-                        .frame(height: 140)
-                        .padding(.top, geometry.safeAreaInsets.top+30)
-                        .padding(.bottom, 30)
-
-                    ForEach(SideMenuRowType.allCases, id: \.self) { row in
-                        RowView(isSelected: navManager.selectedSideMenuTab == row.rawValue, imageName: row.iconName, title: row.title) {
-                            navManager.switchTab(to: row.rawValue)
-                        }
-                    }
-                    .padding(.trailing, 10)
-                    .padding(.leading, 10)
+            ZStack{
+                HStack {
+                    VStack {
+                        ProfileImageView()
+                            .frame(height: 140)
+                            .padding(.top, geometry.safeAreaInsets.top+30)
+                            .padding(.bottom, 30)
+                        
+                        ForEach(SideMenuRowType.allCases, id: \.self) { row in
+                            RowView(isSelected: navManager.selectedSideMenuTab == row.rawValue, imageName: row.iconName, title: row.title) {
+                                navManager.switchTab(to: row.rawValue)
+                            }
+                        } //foreach
+                        .padding(.trailing, 10)
+                        .padding(.leading, 10)
+                        Spacer()
+                        Spacer()
+                        // Contact Information at the Bottom
+                        VStack(spacing: 5) {
+                            Text("Feedback/questions?")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                            
+                            Text("Contact us at")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                            
+                            Text("roombeeapp@gmail.com")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                                .underline()
+                        } //vstack
+//                        .padding(.bottom)
+                        .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
+                    }//vstack
+                    .frame(width: 270, height: geometry.size.height + 100) 
+                    .background(toggleColor) // Your custom toggle color
+                    .offset(x: navManager.presentSideMenu ? 0 : -270)
+                    .animation(.easeInOut(duration: 0.7), value: navManager.presentSideMenu)
                     Spacer()
-                    // Contact Information at the Bottom
-                    VStack(spacing: 5) {
-                        Text("Feedback/questions?")
-                            .font(.footnote)
-                            .foregroundColor(.gray)
-                        
-                        Text("Contact us at")
-                            .font(.footnote)
-                            .foregroundColor(.gray)
-                        
-                        Text("roombeeapp@gmail.com")
-                            .font(.footnote)
-                            .foregroundColor(.gray)
-                            .underline()
-                    }
-                    .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
-                }
-                .frame(width: 270, height: geometry.size.height)
-                .background(toggleColor) // Your custom toggle color
-                .offset(x: navManager.presentSideMenu ? 0 : -270)
-                .animation(.easeInOut(duration: 0.7), value: navManager.presentSideMenu)
-                Spacer()
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height+200)
-            .background(Color.black.opacity(navManager.presentSideMenu ? 0.5 : 0))
-            .edgesIgnoringSafeArea(.all) // Ignore safe area to cover full screen
-            .onTapGesture {
-                if navManager.presentSideMenu {
-                    navManager.closeSideMenu()
-                }
-            }
+                } //hstack
+                .edgesIgnoringSafeArea(.all) // Ignore safe area to cover full screen
+
+                .frame(width: geometry.size.width, height: geometry.size.height) //+200
+                .background(Color.black.opacity(navManager.presentSideMenu ? 0.5 : 0))
+//                .edgesIgnoringSafeArea(.all) // Ignore safe area to cover full screen
+                .onTapGesture {
+                    if navManager.presentSideMenu {
+                        navManager.closeSideMenu()
+                    } //if
+                } //ontapgesture
+            }//zstack
         }
     }
 

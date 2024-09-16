@@ -285,11 +285,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				6897FCDC2C70F7BA001B0A52 /* PBXTargetDependency */,
-				6897FCDA2C70F7AB001B0A52 /* PBXTargetDependency */,
-				6897FCD82C70F7A3001B0A52 /* PBXTargetDependency */,
-				6897FCD62C70F798001B0A52 /* PBXTargetDependency */,
-				6897FCD42C70F78F001B0A52 /* PBXTargetDependency */,
+				686995632C984D45001B44F9 /* PBXTargetDependency */,
+				686995612C984D3A001B44F9 /* PBXTargetDependency */,
+				6869955F2C984D34001B44F9 /* PBXTargetDependency */,
+				6869955D2C984D2F001B44F9 /* PBXTargetDependency */,
+				6869955B2C984D26001B44F9 /* PBXTargetDependency */,
+				686995592C984D21001B44F9 /* PBXTargetDependency */,
 			);
 			name = roombee;
 			packageProductDependencies = (
@@ -417,25 +418,29 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6897FCD42C70F78F001B0A52 /* PBXTargetDependency */ = {
+		686995592C984D21001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 6897FCD32C70F78F001B0A52 /* AWSLambda */;
+			productRef = 686995582C984D21001B44F9 /* AWSLambda */;
 		};
-		6897FCD62C70F798001B0A52 /* PBXTargetDependency */ = {
+		6869955B2C984D26001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 6897FCD52C70F798001B0A52 /* FirebaseAnalytics */;
+			productRef = 6869955A2C984D26001B44F9 /* AWSCore */;
 		};
-		6897FCD82C70F7A3001B0A52 /* PBXTargetDependency */ = {
+		6869955D2C984D2F001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 6897FCD72C70F7A3001B0A52 /* Mixpanel */;
+			productRef = 6869955C2C984D2F001B44F9 /* FirebaseAnalytics */;
 		};
-		6897FCDA2C70F7AB001B0A52 /* PBXTargetDependency */ = {
+		6869955F2C984D34001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 6897FCD92C70F7AB001B0A52 /* FirebaseAuth */;
+			productRef = 6869955E2C984D34001B44F9 /* FirebaseAuth */;
 		};
-		6897FCDC2C70F7BA001B0A52 /* PBXTargetDependency */ = {
+		686995612C984D3A001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 6897FCDB2C70F7BA001B0A52 /* AWSCore */;
+			productRef = 686995602C984D3A001B44F9 /* Mixpanel */;
+		};
+		686995632C984D45001B44F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 686995622C984D45001B44F9 /* KeychainAccess */;
 		};
 /* End PBXTargetDependency section */
 
@@ -730,30 +735,35 @@
 			package = 685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
 			productName = Mixpanel;
 		};
-		6897FCD32C70F78F001B0A52 /* AWSLambda */ = {
+		686995582C984D21001B44F9 /* AWSLambda */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
 			productName = AWSLambda;
 		};
-		6897FCD52C70F798001B0A52 /* FirebaseAnalytics */ = {
+		6869955A2C984D26001B44F9 /* AWSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSCore;
+		};
+		6869955C2C984D2F001B44F9 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
 		};
-		6897FCD72C70F7A3001B0A52 /* Mixpanel */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
-			productName = Mixpanel;
-		};
-		6897FCD92C70F7AB001B0A52 /* FirebaseAuth */ = {
+		6869955E2C984D34001B44F9 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		6897FCDB2C70F7BA001B0A52 /* AWSCore */ = {
+		686995602C984D3A001B44F9 /* Mixpanel */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
-			productName = AWSCore;
+			package = 685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
+		};
+		686995622C984D45001B44F9 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 		FA14A73B2C9826640042F1EB /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
