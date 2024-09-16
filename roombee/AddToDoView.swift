@@ -24,7 +24,7 @@ struct AddToDoView: View {
     }
 
     @FocusState private var focusedField: FocusableField?
-
+    
     private func add() {
         
         onCommit(newToDo)
@@ -82,9 +82,12 @@ struct AddToDoView: View {
                     }
                 }
                 .scrollContentBackground(.hidden)
-                .navigationTitle("New Reminder")
-                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .principal) {
+                           Text("New Reminder")
+                               .foregroundColor(ourOrange) // Set text color to white
+                               .font(.headline)
+                       }
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: cancel) {
                             Text("Cancel")

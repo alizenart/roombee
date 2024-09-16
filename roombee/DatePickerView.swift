@@ -16,7 +16,7 @@ struct DatePickerModule: View {
                        in: ...Date(),
                        displayedComponents: .date
             ).font(.title3).bold().foregroundColor(viewModel.backgroundColor)
-            .padding(.horizontal, 25)  // Reduced horizontal padding
+            .padding(.horizontal, 25) 
         }
         .padding()
     }

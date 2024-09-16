@@ -12,7 +12,11 @@ struct SignupView: View {
     
     var body: some View {
         ZStack {
-            viewModel.backgroundColor.ignoresSafeArea()
+            viewModel.backgroundColor
+                .ignoresSafeArea()
+                .onTapGesture {
+                    hideKeyboard()
+                }
             VStack {
                 headerText
                 form
@@ -29,6 +33,10 @@ struct SignupView: View {
         .alert(isPresented: $showingErrorAlert) {
             Alert(title: Text("Oops!"), message: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
         }
+    }
+    
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
     var headerText: some View {

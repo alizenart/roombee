@@ -11,7 +11,11 @@ struct LoginView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                viewModel.backgroundColor.ignoresSafeArea()
+                viewModel.backgroundColor
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
                 VStack(spacing: 25){
                     Text("Login")
                         .font(.largeTitle)
@@ -46,6 +50,9 @@ struct LoginView: View {
                 }
             }
         }
+    }
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
     private func signInWithEmailPassword() {
