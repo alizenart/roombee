@@ -97,6 +97,7 @@ struct NewEventView: View {
 
 
 struct CalendarView: View {
+    @StateObject private var newEventViewModel = NewEventViewModel(selectedDate: Date())
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     @EnvironmentObject var auth: AuthenticationViewModel
@@ -246,7 +247,6 @@ struct CalendarView: View {
             // Resume the timer when the NewEventView is dismissed
             startTimer()
         }) {// Move this into a closure to ensure it doesn’t return a View
-            let newEventViewModel = NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)
             NewEventView(viewModel: newEventViewModel) { newEvent in
                 events.append(newEvent)
                 eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
