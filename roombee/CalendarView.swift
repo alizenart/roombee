@@ -16,6 +16,7 @@ class NewEventViewModel: ObservableObject {
     @Published var endTime: Date = Date()
     
     init(selectedDate: Date) {
+        print("NewEventViewModel initialized with date: \(selectedDate)")
         let calendar = Calendar.current
         self.dateEvent = calendar.startOfDay(for: selectedDate)
         self.startTime = calendar.startOfDay(for: selectedDate)
@@ -44,8 +45,8 @@ struct NewEventView: View {
                         .frame(width: 300, height: 40)
                         .font(.system(size: 20))
                         .onChange(of: viewModel.title) { newValue in
-                                                    // Optional: Handle text change manually
-                                                }
+                            print("New event title: \(newValue)")
+                        }
                     
                     Section(header: Text("Date").font(.system(size: 20))) {
                         DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
@@ -56,11 +57,11 @@ struct NewEventView: View {
                         DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
                             .datePickerStyle(WheelDatePickerStyle())
                             .onChange(of: viewModel.startTime) { newStartTime in
-                                                            // Ensure end time remains valid, and update only if necessary
-                                                            if viewModel.endTime <= newStartTime {
-                                                                viewModel.endTime = Calendar.current.date(byAdding: .hour, value: 1, to: newStartTime) ?? newStartTime
-                                                            }
-                                                        }
+                                // Ensure end time remains valid, and update only if necessary
+                                if viewModel.endTime <= newStartTime {
+                                    viewModel.endTime = Calendar.current.date(byAdding: .hour, value: 1, to: newStartTime) ?? newStartTime
+                                }
+                            }
                         DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
                             .datePickerStyle(WheelDatePickerStyle())
                     }
@@ -102,6 +103,7 @@ struct CalendarView: View {
     @State private var timer:Timer?
     @State private var deletedEvents: Set<String> = []
     @State private var events: [CalendarEvent] = []
+
 
     var title: String
     @State private var showingAddEventSheet = false
@@ -244,13 +246,14 @@ struct CalendarView: View {
             // Resume the timer when the NewEventView is dismissed
             startTimer()
         }) {// Move this into a closure to ensure it doesn’t return a View
-            NewEventView(viewModel: NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)) { newEvent in
+            let newEventViewModel = NewEventViewModel(selectedDate: selectedDateManager.SelectedDate)
+            NewEventView(viewModel: newEventViewModel) { newEvent in
                 events.append(newEvent)
                 eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
                 skipFilter = true
             }
             .onAppear {
-                            stopTimer()
+                stopTimer()
             }
         }
         .padding()
