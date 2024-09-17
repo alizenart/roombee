@@ -45,7 +45,6 @@ struct NewEventView: View {
                         .frame(width: 300, height: 40)
                         .font(.system(size: 20))
                         .onChange(of: viewModel.title) { newValue in
-                            print("New event title: \(newValue)")
                         }
                     
                     Section(header: Text("Date").font(.system(size: 20))) {
