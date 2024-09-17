@@ -14,6 +14,9 @@ struct ContinueSignUp: View {
     var body: some View {
         ZStack {
             BackgroundView()
+            .onTapGesture {
+                hideKeyboard()
+            }
             content
         }
         .sheet(isPresented: $showOnboardingGuide) {
@@ -139,6 +142,9 @@ struct ContinueSignUp: View {
             .foregroundColor(Color(red: 230/255, green: 217/255, blue: 197/255))
             .cornerRadius(15)
             .shadow(radius: 15)
+    }
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 

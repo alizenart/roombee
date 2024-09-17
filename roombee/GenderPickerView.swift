@@ -12,17 +12,25 @@ struct GenderPickerView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
 
     var body: some View {
-        Picker("Gender", selection: $viewModel.gender) {
-            ForEach(viewModel.genderOptions, id: \.self) { gender in
-                Text(gender)
-                    .foregroundColor(viewModel.backgroundColor)  // Custom text color
-                    .font(.title3)             // Custom font style
-                    .tag(gender).bold()
+        VStack {
+            HStack {
+                Text("Gender")
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(viewModel.backgroundColor)
+                
+                Picker("Gender", selection: $viewModel.gender) {
+                    ForEach(viewModel.genderOptions, id: \.self) { gender in
+                        Text(gender)
+                            .tag(gender)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .accentColor(viewModel.backgroundColor)
+                .font(.title3)
             }
+            .padding(.horizontal, 25)  // Adjust padding as needed
         }
-        .pickerStyle(MenuPickerStyle())
-        .accentColor(viewModel.backgroundColor)
-        .font(.title3)
         .padding()
     }
 }
