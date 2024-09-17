@@ -81,25 +81,27 @@ struct ToDoView: View {
                         }
                     } // List
                     .scrollContentBackground(.hidden)
-                    .toolbar {
-                        ToolbarItemGroup(placement: .bottomBar) {
-                            Button(action: addview) {
-                                ZStack {
-                                    hexagonShape()
-                                        .fill(Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255))
-                                        .frame(width: 50, height: 60)
-                                    Text("+")
-                                        .foregroundColor(.white)
-                                        .fontWeight(.heavy
-                                        )
-                                        .font(.system(size: 45
-                                                     ))
-                                        .padding(.bottom, 5)
-                                }
-                            }
-                            Spacer()
-                        }
-                    }// toolbar
+                    
+                    //tool bar makes the button show up even when the navbar is being shown
+//                    .toolbar {
+//                        ToolbarItemGroup(placement: .bottomBar) {
+//                            Button(action: addview) {
+//                                ZStack {
+//                                    hexagonShape()
+//                                        .fill(Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255))
+//                                        .frame(width: 50, height: 60)
+//                                    Text("+")
+//                                        .foregroundColor(.white)
+//                                        .fontWeight(.heavy
+//                                        )
+//                                        .font(.system(size: 45
+//                                                     ))
+//                                        .padding(.bottom, 5)
+//                                }
+//                            }
+//                            Spacer()
+//                        } //toolbaritemgroup
+//                    }// toolbar
                     // appending new task to list
                     .sheet(isPresented: $addpresent) {
                         AddToDoView { task in
@@ -114,6 +116,32 @@ struct ToDoView: View {
                             skipNextFilter = true
                         }
                     }// sheet
+                    
+                    
+                    // Add button edit - ziye
+                    Spacer()
+                    HStack{
+                        Spacer()
+                        Button(action: addview) {
+                            ZStack {
+                                hexagonShape()
+                                    .fill(Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255))
+                                    .frame(width: 50, height: 60)
+                                Text("+")
+                                    .foregroundColor(.white)
+                                    .fontWeight(.heavy
+                                    )
+                                    .font(.system(size: 45
+                                                 ))
+                                    .padding(.bottom, 5)
+                            }
+                        }
+                    } //hstack
+                    .padding(.trailing, 30)
+                    .frame(width: 400, alignment: .trailing)
+                    .padding(.bottom, 10)
+                    .padding(.top, 10)
+                
                 }//vstack
             }//zstack
 //        } //navigationView

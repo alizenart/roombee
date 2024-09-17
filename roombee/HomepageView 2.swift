@@ -87,12 +87,12 @@ struct HomepageView: View {
                             .environmentObject(toggleManager)
                             .environmentObject(todoManager)
                             .environmentObject(agreementManager)
-                            .environmentObject(agreementStore)
                         }
-                    
                         else{
-                            ProgressView("Loading...") // Optional label "Loading..."
+//                            ProgressView("Loading...") // Optional label "Loading..."
+                            ProgressView() // Optional label "Loading..."
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .foregroundColor(.white)
                                .scaleEffect(1.5) // Increase the size of the spinner
                         }
                         
@@ -106,8 +106,8 @@ struct HomepageView: View {
                             .environmentObject(agreementManager)
                     default:
                         Text("Unknown Selection")
-                    } //switch
-                } //group
+                    }
+                }
                 VStack {
                     HStack {
                         Button(action: {
@@ -121,11 +121,11 @@ struct HomepageView: View {
                         }
                         .padding(.trailing, 50)
                         .frame(width: 400, alignment: .leading)
-                    } // Hstack for nav button
+                    }
                     .padding(.leading, 30)
                     .frame(width: 400, alignment: .leading)
                     Spacer()
-                } //vstack for menu button
+                }
                 
                 if navManager.presentSideMenu {
                     SideMenuView(navManager: navManager)
