@@ -89,7 +89,13 @@ class TodoViewModel: ObservableObject {
         }.resume()
     }
 
-    func addToDo(todoID: String, userId: String, hiveCode: String, todoTitle: String, todoPriority: String, todoCategory: String, todoStatus: String) {
+    func addToDo(todoID: String, userId: String?, hiveCode: String, todoTitle: String, todoPriority: String, todoCategory: String, todoStatus: String) {
+        
+        guard let userId = userId else {
+            print("User ID not available. Cannot add task.")
+            return
+        }
+        
         guard var urlComponents = URLComponents(string: TodoViewModel.baseURL + "/todolist") else {
             print("Invalid URL")
             return

@@ -61,9 +61,14 @@ class RoommateAgreementHandler: ObservableObject {
         }
     }
 
-    func fetchAllAgreements(user_id: String, roommate_id: String) {
-        fetchUserAgreements(user_id: user_id)
-        fetchRoommateAgreements(roommate_id: roommate_id)
+    func fetchAllAgreements(user_id: String?, roommate_id: String?) {
+        if let userId = user_id {
+            fetchUserAgreements(user_id: userId)
+        }
+        
+        if let roommateId = roommate_id {
+            fetchRoommateAgreements(roommate_id: roommateId)
+        }
     }
     
     private func fetchAgreement(for userID: String, completion: @escaping ([Agreement]) -> Void) {
@@ -93,7 +98,7 @@ class RoommateAgreementHandler: ObservableObject {
         }.resume()
     }
     
-    func addAgree(id: String, title:String, dateCreated: String, isRule: String, tags: String, itemOwner:String, whoCanUse: String, itemDetails: String) {
+    func addAgree(id: String, title:String, dateCreated: String, isRule: String, tags: String, itemOwner:String?, whoCanUse: String?, itemDetails: String) {
         guard var urlComponents = URLComponents(string: RoommateAgreementHandler.baseURL + "/agreements") else {
             print("Invalid URL")
             return

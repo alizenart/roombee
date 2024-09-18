@@ -1,3 +1,3 @@
 use roombee;
 
-SELECT * FROM events;
+SELECT * FROM agreements;

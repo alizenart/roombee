@@ -105,15 +105,21 @@ struct ToDoView: View {
                     // appending new task to list
                     .sheet(isPresented: $addpresent) {
                         AddToDoView { task in
-                            todoManager.addToDo(todoID: task.id,
-                                                userId: auth.user_id ?? "80003",
-                                                hiveCode: auth.hive_code,
-                                                todoTitle: task.todoTitle,
-                                                todoPriority: task.todoPriority,
-                                                todoCategory: task.todoCategory,
-                                                todoStatus: String(task.status))
-                            tasks.append(task)
-                            skipNextFilter = true
+                            if let userId = auth.user_id {
+                                todoManager.addToDo(
+                                    todoID: task.id,
+                                    userId: userId,
+                                    hiveCode: auth.hive_code,
+                                    todoTitle: task.todoTitle,
+                                    todoPriority: task.todoPriority,
+                                    todoCategory: task.todoCategory,
+                                    todoStatus: String(task.status)
+                                )
+                                tasks.append(task)
+                                skipNextFilter = true
+                            } else {
+                                print("User ID not available. Task not added.")
+                            }
                         }
                     }// sheet
                     
@@ -157,12 +163,14 @@ struct ToDoView: View {
     
     // filter to check if any local tasks are not in the polled tasks
     private func fetchAllTasks() {
-       guard let userId = auth.user_id, let roommateId = auth.roommate_id else {
-           print("No user ID or roommate ID found.")
-           return
-       }
-       
-       todoManager.fetchAllTasks(user_id: userId, roommate_id: roommateId)
+        if let userId = auth.user_id {
+            todoManager.fetchUserTasks(user_id: userId)
+        }
+        
+        if let roommateId = auth.roommate_id {
+            todoManager.fetchRoommateTasks(roommate_id: roommateId)
+        }
+   
 
         let combinedTasks = todoManager.userTasks + todoManager.roommateTasks
         

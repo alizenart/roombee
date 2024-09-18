@@ -159,7 +159,7 @@ struct RoommateAgreementView: View {
     }
 
     private func fetchAgreements() {
-        agreementManager.fetchAllAgreements(user_id: auth.user_id ?? "80002", roommate_id: auth.roommate_id ?? "80003")
+        agreementManager.fetchAllAgreements(user_id: auth.user_id, roommate_id: auth.roommate_id)
         let all_agreements = agreementManager.userAgreements + agreementManager.roommateAgreements
         
         if skipNextFilter {
@@ -185,151 +185,6 @@ struct RoommateAgreementView: View {
         agreementStore.items.append(contentsOf: new_agreements.filter { !$0.isRule })
    }
 }
-
-//struct RoommateAgreementView: View {
-//    @State private var showNewAgreementForm = false
-//    @EnvironmentObject var agreementStore: RoommateAgreementStore
-//    @EnvironmentObject var agreementManager: RoommateAgreementHandler
-//    @State private var timer: Timer?
-//    
-//    var body: some View {
-//        GeometryReader { geometry in
-//            VStack {
-//                HStack {
-//                    Spacer()
-//                    Button(action: { showNewAgreementForm = true }) {
-//                        Text("Edit")
-//                            .font(.system(size: 15, weight: .bold))
-//                            .foregroundColor(.white)
-//                            .padding()
-//                            .frame(height: 25)
-//                            .background(ourOrange)
-//                            .cornerRadius(10)
-//                    }
-//                    .padding(.trailing)
-//                    .sheet(isPresented: $showNewAgreementForm) {
-//                        NewAgreementsForm(showForm: $showNewAgreementForm)
-//                            .environmentObject(agreementStore)
-//                    }
-//                }
-//                .padding(.top, 20)
-//                
-//                Text("Roommate Agreement")
-//                    .font(.system(size: 30))
-//                    .foregroundColor(ourOrange)
-//                    .fontWeight(.bold)
-//                    .padding(.top, 10)
-//                Text("The purpose of this agreement is to establish some expectations to make the shared living experience positive for all people involved.")
-//                    .fontWeight(.bold)
-//                    .font(.system(size: 12))
-//                    .foregroundColor(creamColor)
-//                    .multilineTextAlignment(.center)
-//                    .padding(.horizontal)
-//                
-//                HStack {
-//                    Text("Rules")
-//                        .foregroundColor(creamColor)
-//                        .font(.system(size: 22))
-//                        .fontWeight(.bold)
-//                        .multilineTextAlignment(.leading)
-//                        .padding(.leading)
-//                        .padding(.top)
-//                    Spacer()
-//                }
-//                
-//                // Swipe-to-delete list for rules
-//                if agreementStore.agreements.isEmpty {
-//                    Text("No rules yet. Click edit to add a rule for your living arrangement.")
-//                        .foregroundColor(.gray)
-//                        .font(.system(size: 12))
-//                        .multilineTextAlignment(.center)
-//                        .padding(.top, 10)
-//                        .padding(.horizontal)
-//                } else {
-//                    List {
-//                        ForEach(agreementStore.agreements.filter { $0.isRule }) { agreement in
-//                            AgreementView(agreement: agreement, cardWidth: UIScreen.main.bounds.width * 0.9)
-//                                .padding(.vertical, 5)
-//                            
-//                                .listRowSeparator(.hidden)
-//                                .listRowBackground(Color.clear)
-//                        }
-//                        .onDelete { indexSet in
-//                            for index in indexSet {
-//                                let agreement = agreementStore.agreements[index]
-//                                agreementStore.agreements.removeAll { $0.id == agreement.id }
-//                                agreementManager.deleteAgreement(agreementID: agreement.id)
-//                            }
-//                        }
-//                    }
-//                    .scrollContentBackground(.hidden)
-//                    .frame(maxHeight: geometry.size.height * 0.4)
-//                }
-//            }
-//            .frame(height: geometry.size.height * 0.4)
-//            VStack {
-//                HStack {
-//                    Text("Community & Personal Items")
-//                        .foregroundColor(creamColor)
-//                        .font(.system(size: 22))
-//                        .fontWeight(.bold)
-//                        .multilineTextAlignment(.leading)
-//                        .padding(.leading)
-//                        .padding(.top)
-//                    Spacer()
-//                }
-//                
-//                // Swipe-to-delete list for community and personal items
-//                if agreementStore.items.isEmpty {
-//                    Text("No community items yet. Click edit to add a community or personal item for your living arrangement.")
-//                        .foregroundColor(.gray)
-//                        .font(.system(size: 12))
-//                        .multilineTextAlignment(.center)
-//                        .padding(.top, 10)
-//                        .padding(.horizontal)
-//                } else {
-//                    List {
-//                        ForEach(agreementStore.items) { agreement in
-//                            AgreementView(agreement: agreement, cardWidth: UIScreen.main.bounds.width * 0.9)
-//                                .padding(.vertical, 5)
-//                            
-//                                .listRowSeparator(.hidden)
-//                                .listRowBackground(Color.clear)
-//                        }
-//                        .onDelete { indexSet in
-//                            for index in indexSet {
-//                                let agreement = agreementStore.items[index]
-//                                agreementStore.items.removeAll { $0.id == agreement.id }
-//                                agreementManager.deleteAgreement(agreementID: agreement.id)
-//                            }
-//                        }
-//                    }
-//                    .scrollContentBackground(.hidden)
-//                    .frame(maxHeight: geometry.size.height * 0.4)
-//                    
-//                }
-//            }
-//                .frame(height: geometry.size.height * 0.4)  // Ensure the entire VStack takes up half
-//                
-//                Spacer()
-//            }
-//        .onAppear {
-//            fetchAgreements()
-//            timer?.invalidate()
-//            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-//                fetchAgreements()
-//            }
-//        }
-//    }
-//
-//    private func fetchAgreements() {
-//            agreementManager.fetchAllAgreements(user_id: "80002", roommate_id: "80003")
-//        agreementStore.agreements =  (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { $0.isRule }
-//        agreementStore.items = (agreementManager.userAgreements + agreementManager.roommateAgreements).filter { !$0.isRule }
-//        }
-//    
-//
-//}
 
 
 
@@ -397,7 +252,19 @@ struct NewAgreementsForm: View {
                     itemDetails: itemDetails
                 )
                 let date_string = format(date:newAgreement.dateCreated)
-                agreementManager.addAgree(id: newAgreement.id, title: newAgreement.title, dateCreated: date_string, isRule: isRule ? "0" : "1", tags: tags.joined(separator: ","), itemOwner: auth.user_id ?? "80003", whoCanUse: auth.user_id ?? "80003", itemDetails: itemDetails)
+                if let userId = auth.user_id {
+                    agreementManager.addAgree(
+                        id: newAgreement.id,
+                        title: newAgreement.title,
+                        dateCreated: date_string,
+                        isRule: isRule ? "0" : "1",
+                        tags: tags.joined(separator: ","),
+                        itemOwner: userId,
+                        whoCanUse: userId,
+                        itemDetails: itemDetails
+                    )
+                }
+
                 agreementStore.addAgreement(newAgreement)
                 
                 showForm = false
