@@ -11,6 +11,8 @@ struct ToDoView: View {
     let roomieUserId = "80002"
     @State private var deletedTasks: Set<String> = []
     @State private var skipNextFilter = false
+    
+    @State private var isLoading = true
 
     
     private func addview() {
@@ -30,57 +32,62 @@ struct ToDoView: View {
                         .fontWeight(.bold)
                         .padding(.top, 20)
 
-                    
-                    List {
-                        // $ used for binding
-                        ForEach($tasks, id: \.self) {$task in
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255))
-                                .frame(height: 65)
-                                .overlay(
-                                    HStack {
-                                        Image(systemName: task.status != 0
-                                              ? "largecircle.fill.circle"
-                                              : "circle")
-                                        .imageScale(.large)
-                                        .foregroundColor(.accentColor)
-                                        .onTapGesture {
-                                            task.status = task.status == 0 ? 1 : 0
-                                            todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
-                                            skipNextFilter = true
+                    if isLoading {
+                        ProgressView("Loading...") // Show loading indicator
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(1.5)
+                    } else {
+                        List {
+                            // $ used for binding
+                            ForEach($tasks, id: \.self) {$task in
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255))
+                                    .frame(height: 65)
+                                    .overlay(
+                                        HStack {
+                                            Image(systemName: task.status != 0
+                                                  ? "largecircle.fill.circle"
+                                                  : "circle")
+                                            .imageScale(.large)
+                                            .foregroundColor(.accentColor)
+                                            .onTapGesture {
+                                                task.status = task.status == 0 ? 1 : 0
+                                                todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
+                                                skipNextFilter = true
+                                            }
+                                            Text(task.todoTitle)
+                                                .multilineTextAlignment(.leading)
+                                                .foregroundColor(backgroundColor)
+                                                .fontWeight(.bold)
+                                            
+                                            Spacer()
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(categoryColor(for: task.todoPriority))
+                                                .frame(width: 50, height: 30)
+                                                .overlay(Text(task.todoCategory))
+                                            
                                         }
-                                        Text(task.todoTitle)
-                                            .multilineTextAlignment(.leading)
-                                            .foregroundColor(backgroundColor)
-                                            .fontWeight(.bold)
-                                        
-                                        Spacer()
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill(categoryColor(for: task.todoPriority))
-                                            .frame(width: 50, height: 30)
-                                            .overlay(Text(task.todoCategory))
-                                        
-                                    }
-                                        .padding()
-                                )
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
-                            
-                        }
-                        // $ for wrapping
-                        .onDelete { indexSet in
-                            if let index = indexSet.first {
-                                
-                                let deletedtask = $tasks.wrappedValue[index]
-                                deletedTasks.insert(deletedtask.id)
-                                $tasks.wrappedValue.remove(atOffsets: indexSet)
-                                todoManager.deleteTodo(todoID: deletedtask.id)
-                                skipNextFilter = true
+                                            .padding()
+                                    )
+                                    .listRowSeparator(.hidden)
+                                    .listRowBackground(Color.clear)
                                 
                             }
-                        }
-                    } // List
-                    .scrollContentBackground(.hidden)
+                            // $ for wrapping
+                            .onDelete { indexSet in
+                                if let index = indexSet.first {
+                                    
+                                    let deletedtask = $tasks.wrappedValue[index]
+                                    deletedTasks.insert(deletedtask.id)
+                                    $tasks.wrappedValue.remove(atOffsets: indexSet)
+                                    todoManager.deleteTodo(todoID: deletedtask.id)
+                                    skipNextFilter = true
+                                    
+                                }
+                            }
+                        } // List
+                    
+                        .scrollContentBackground(.hidden)
                     
                     //tool bar makes the button show up even when the navbar is being shown
 //                    .toolbar {
@@ -123,7 +130,7 @@ struct ToDoView: View {
                         }
                     }// sheet
                     
-                    
+                    }
                     // Add button edit - ziye
                     Spacer()
                     HStack{
@@ -219,6 +226,7 @@ struct ToDoView: View {
 
         // Append new unique tasks
         tasks.append(contentsOf: newTasks)
+        self.isLoading = false
    } //fetchAllTasks
 
 }
