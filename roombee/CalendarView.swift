@@ -34,6 +34,7 @@ struct NewEventView: View {
     @EnvironmentObject var auth: AuthenticationViewModel
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
+    @State private var errorMessage: String? = nil
     
     var body: some View {
 
@@ -41,6 +42,10 @@ struct NewEventView: View {
             creamColor
             NavigationView {
                 Form {
+                    if let errorMessage = errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                    }
                     TextField("Name of Event", text: $viewModel.title)
                         .frame(width: 300, height: 40)
                         .font(.system(size: 20))
@@ -79,11 +84,14 @@ struct NewEventView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Save") {
-                            let newEvent = CalendarEvent(user_id: auth.user_id ?? "80003", eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
-//                            let newEvent = CalendarEvent(dateEvent: viewModel.dateEvent, startTimeCal: viewModel.startTime, endTimeCal: viewModel.endTime, title: viewModel.title)
-                            onSave(newEvent)
-                            NotificationService.shared.scheduleNotification(for: newEvent)
-                            dismiss()
+                            if let userId = auth.user_id {
+                                let newEvent = CalendarEvent(user_id: userId, eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+                                onSave(newEvent)
+                                NotificationService.shared.scheduleNotification(for: newEvent)
+                                dismiss()
+                            } else {
+                                errorMessage = "No user information found."
+                            }
                         }
                         .foregroundColor(backgroundColor)
                     } // ToolbarItem
@@ -109,6 +117,8 @@ struct CalendarView: View {
     @State private var showingAddEventSheet = false
     @State private var initialScrollOffset: CGFloat?
     @State private var skipFilter = false
+    
+    @State private var errorMessage: String? = nil
     
     
     let hourHeight = 50.0
@@ -160,6 +170,15 @@ struct CalendarView: View {
             getNewEvents()
             startTimer()
         }
+        .alert(isPresented: .constant(errorMessage != nil), content: {
+            Alert(
+                title: Text("Error"),
+                message: Text(errorMessage ?? "Unknown error"),
+                dismissButton: .default(Text("OK")) {
+                    errorMessage = nil // Clear the error message when the alert is dismissed
+                }
+            )
+        })
         
     }
     private func startTimer() {
@@ -174,24 +193,30 @@ struct CalendarView: View {
                 timer = nil
     }
     private func getNewEvents() {
-        eventStore.getAllEvents(user_id: auth.user_id ?? "80003", roommate_id: auth.roommate_id ?? "80002")
+        guard let userId = auth.user_id else {
+            errorMessage = "Error: No user information found."
+            return
+        }
+        
+        eventStore.getAllEvents(user_id: userId, roommate_id: auth.roommate_id)
         
         if skipFilter {
             skipFilter = false
             return
         }
+        
         let all_events = eventStore.userEvents + eventStore.roommateEvents
         events = events.filter { old_event in
             all_events.contains(old_event)
-            
         }
+        
         let new_events = all_events.filter { new_event in
-            //!deletedEvents.contains(new_event.id.uuidString) &&
-            !events.contains(where: {$0.id.uuidString == new_event.id.uuidString})
+            !events.contains(where: { $0.id.uuidString == new_event.id.uuidString })
         }
         
         events.append(contentsOf: new_events)
     }
+
     
     var filteredEvents: [CalendarEvent] {
         let selectedDate = selectedDateManager.SelectedDate
@@ -247,9 +272,14 @@ struct CalendarView: View {
             startTimer()
         }) {// Move this into a closure to ensure it doesn’t return a View
             NewEventView(viewModel: newEventViewModel) { newEvent in
-                events.append(newEvent)
-                eventStore.addEvent(user_id: auth.user_id ?? "80003", newEvent)
-                skipFilter = true
+                if let userId = auth.user_id {
+                    events.append(newEvent)
+                    eventStore.addEvent(user_id: userId, newEvent)
+                    skipFilter = true
+                } else {
+                    // Handle the case where user_id is nil (e.g., show an error message)
+                    errorMessage = "Error: No user information found."
+                }
             }
             .onAppear {
                 stopTimer()

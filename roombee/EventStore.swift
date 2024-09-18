@@ -127,9 +127,11 @@ class EventStore: ObservableObject {
         }
     }
 
-    @MainActor func getAllEvents(user_id: String, roommate_id: String) {
+    @MainActor func getAllEvents(user_id: String, roommate_id: String?) {
         getUserEvents(user_id: user_id)
-        getRoommateEvents(roommate_id: roommate_id)
+        if let roommateId = roommate_id {
+            getRoommateEvents(roommate_id: roommateId)
+        }
     }
     @MainActor func clearEvents() {
         self.userEvents.removeAll()

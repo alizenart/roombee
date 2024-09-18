@@ -25,16 +25,14 @@ struct HomepageContent: View {
     
     @Binding var isInitialLoad: Bool
     
-    let myUserId = "80003"
-    let roomieUserId = "80002"
     @State private var pollingTimer: Timer?
     
     @State private var weekOffset: Int = 0
 
 
     var calGrid: GridView
-    var yourStatus: StatusView
-    var roomStatus: StatusView
+    var yourStatus: StatusView?
+    var roomStatus: StatusView?
     
     var schedCara: DatesCarousel {
         let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7, weekOffset: weekOffset)
@@ -94,9 +92,14 @@ struct HomepageContent: View {
             print("roomieStatusToggleSleeping changed to \(newValue)")
         }
         .onChange(of: auth.roommate_id) { newValue in
-            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
-            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
-            startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
+            if let userId = auth.user_id {
+                fetchMyInitialToggleState(userId: userId)
+            }
+
+            if let roommateId = auth.roommate_id {
+                fetchRoomieInitialToggleState(userId: roommateId)
+                startRoomieStatusPolling(userId: roommateId)
+            }
             
             NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
                 stopRoomieStatusPolling()
@@ -107,9 +110,14 @@ struct HomepageContent: View {
         }
         .onAppear(perform: {
             //loading Roommate information
-            fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
-            fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
-            startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
+            if let userId = auth.user_id {
+                fetchMyInitialToggleState(userId: userId)
+            }
+
+            if let roommateId = auth.roommate_id {
+                fetchRoomieInitialToggleState(userId: roommateId)
+                startRoomieStatusPolling(userId: roommateId)
+            }
             
             
             NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
@@ -125,7 +133,10 @@ struct HomepageContent: View {
                         stopRoomieStatusPolling()
                     } else {
                         // Calendar popup dismissed, resume polling
-                        startRoomieStatusPolling(userId: auth.roommate_id ?? roomieUserId)
+                        if let roommateId = auth.roommate_id {
+                            fetchRoomieInitialToggleState(userId: roommateId)
+                            startRoomieStatusPolling(userId: roommateId)
+                        }
                     }
                 }
     }
@@ -199,7 +210,7 @@ struct StatusView: View {
                 Text(title)
                     .foregroundColor(.black)
                     .bold()
-                if auth.roommate_id != nil {
+                if auth.user_id != nil && auth.roommate_id != nil {
                     HStack {
                         Toggle(isOn: $isSleeping, label: { bedIcon })
                             .disabled(!canToggle)

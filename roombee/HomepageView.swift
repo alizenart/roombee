@@ -47,8 +47,6 @@ struct HomepageView: View {
     @State var roomieStatusToggleSleeping = false
     @State var roomieStatusToggleInRoom = false
     
-    let myUserId = "80003"
-    let roomieUserId = "80002"
     
     private func signOut() {
         authViewModel.signOut(eventStore: eventStore)
@@ -77,8 +75,22 @@ struct HomepageView: View {
                                 roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
                                 isInitialLoad: $isInitialLoad,
                                 calGrid: GridView(cal: CalendarView(title: "Me")),
-                                yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: $myStatusToggleSleeping, inRoom: $myStatusToggleInRoom, userId: auth.user_id ?? myUserId, isInitialLoad: $isInitialLoad),
-                                roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: $roomieStatusToggleSleeping, inRoom: $roomieStatusToggleInRoom, userId: auth.roommate_id ?? roomieUserId, isInitialLoad: .constant(true))
+                                yourStatus: auth.user_id != nil ? StatusView(
+                                    title: "Me:",
+                                    canToggle: true,
+                                    isSleeping: $myStatusToggleSleeping,
+                                    inRoom: $myStatusToggleInRoom,
+                                    userId: auth.user_id!, // Forced unwrapping is safe here because of the check above
+                                    isInitialLoad: $isInitialLoad
+                                ) : nil,
+                                roomStatus: StatusView(
+                                    title: "Roommate:",
+                                    canToggle: false,
+                                    isSleeping: $roomieStatusToggleSleeping,
+                                    inRoom: $roomieStatusToggleInRoom,
+                                    userId: auth.roommate_id ?? "", // Forced unwrapping is safe here because of the check above
+                                    isInitialLoad: .constant(true)
+                                )
                             )
                             .environmentObject(eventStore)
                             .environmentObject(authViewModel)
@@ -155,8 +167,13 @@ struct HomepageView: View {
             print("Authentication state: \(auth.authenticationState)")
             if auth.authenticationState == .authenticated {
                 // User is already signed in, fetch user data
-                fetchMyInitialToggleState(userId: auth.user_id ?? myUserId)
-                fetchRoomieInitialToggleState(userId: auth.roommate_id ?? roomieUserId)
+                if let userId = auth.user_id {
+                    fetchMyInitialToggleState(userId: userId)
+                }
+
+                if let roommateId = auth.roommate_id {
+                    fetchRoomieInitialToggleState(userId: roommateId)
+                }
                 auth.getUserData()
             } else {
                 // Otherwise, make sure login happens first
@@ -177,8 +194,13 @@ struct HomepageView: View {
     }
     
     private func fetchInitialToggles() {
-        fetchMyInitialToggleState(userId: authViewModel.user_id ?? myUserId)
-        fetchRoomieInitialToggleState(userId: authViewModel.roommate_id ?? roomieUserId)
+        if let userId = authViewModel.user_id {
+                fetchMyInitialToggleState(userId: userId)
+        }
+
+        if let roommateId = authViewModel.roommate_id {
+            fetchRoomieInitialToggleState(userId: roommateId)
+        }
     }
     
     
