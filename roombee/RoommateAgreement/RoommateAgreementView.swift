@@ -149,14 +149,47 @@ struct RoommateAgreementView: View {
                 Spacer()
             }
             .onAppear {
-                fetchAgreements()
-                timer?.invalidate()
-                timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                    fetchAgreements()
-                }
+                startPolling()
+                observeAppStateChanges()
+            }
+            .onDisappear {
+                stopPolling()
+                removeAppStateObserver()
             }
         }
     }
+    
+    // Start polling by creating a timer
+        private func startPolling() {
+            fetchAgreements()
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                fetchAgreements()
+            }
+        }
+        
+        // Stop polling by invalidating the timer
+        private func stopPolling() {
+            timer?.invalidate()
+            timer = nil
+        }
+
+        // Observe app state changes to handle background and foreground transitions
+        private func observeAppStateChanges() {
+            NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
+                stopPolling()
+            }
+            
+            NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+                startPolling()
+            }
+        }
+
+        // Remove the observer when the view disappears
+        private func removeAppStateObserver() {
+            NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+        }
 
     private func fetchAgreements() {
         agreementManager.fetchAllAgreements(user_id: auth.user_id, roommate_id: auth.roommate_id)

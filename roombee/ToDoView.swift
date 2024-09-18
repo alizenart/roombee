@@ -151,15 +151,44 @@ struct ToDoView: View {
                 }//vstack
             }//zstack
 //        } //navigationView
-        .onAppear {
-            fetchAllTasks()
-            timer?.invalidate()
-            timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                fetchAllTasks()
+            .onAppear {
+                startPolling()
+                observeAppStateChanges()
             }
-        } //onAppear
+            .onDisappear {
+                stopPolling()
+                removeAppStateObserver()
+            }
         
     }// body
+    
+    private func startPolling() {
+        fetchAllTasks()
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            fetchAllTasks()
+        }
+    }
+    
+    private func stopPolling() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    private func observeAppStateChanges() {
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
+            stopPolling()
+        }
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
+            startPolling()
+        }
+    }
+
+    private func removeAppStateObserver() {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
     
     // filter to check if any local tasks are not in the polled tasks
     private func fetchAllTasks() {
