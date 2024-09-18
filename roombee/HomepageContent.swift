@@ -112,11 +112,17 @@ struct HomepageContent: View {
             //loading Roommate information
             if let userId = auth.user_id {
                 fetchMyInitialToggleState(userId: userId)
+                eventStore.getUserEvents(user_id: userId)
+                todoManager.fetchUserTasks(user_id: userId)
+                agreementManager.fetchUserAgreements(user_id: userId)
             }
 
             if let roommateId = auth.roommate_id {
                 fetchRoomieInitialToggleState(userId: roommateId)
+                eventStore.getRoommateEvents(roommate_id: roommateId)
                 startRoomieStatusPolling(userId: roommateId)
+                todoManager.fetchRoommateTasks(roommate_id: roommateId)
+                agreementManager.fetchRoommateAgreements(roommate_id: roommateId)
             }
             
             
