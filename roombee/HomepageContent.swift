@@ -105,7 +105,6 @@ struct HomepageContent: View {
                 stopRoomieStatusPolling()
             }
             
-            NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
         }
         .onAppear(perform: {
@@ -225,6 +224,9 @@ struct StatusView: View {
                                 if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
                                     toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
                                 }
+                                if hasLoaded && !canToggle {
+                                    NotificationService.shared.toggleSleep(isAsleep: isOn)
+                                }
                             }
                     }
                     .padding(.horizontal, 20)
@@ -235,6 +237,9 @@ struct StatusView: View {
                             .onChange(of: inRoom) { isOn in
                                 if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
                                     toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                }
+                                if hasLoaded && !canToggle {
+                                    NotificationService.shared.toggleRoom(inRoom: isOn)
                                 }
                             }
                     }
