@@ -201,6 +201,7 @@ struct StatusView: View {
     var userId: String
     @Binding var isInitialLoad: Bool
     @EnvironmentObject var auth: AuthenticationViewModel
+    @State private var showInviteLinkPopup = false
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -239,16 +240,20 @@ struct StatusView: View {
                     }
                     .padding(.horizontal, 20)
                 } else {
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(LighterPurple)
-                        .aspectRatio(1.0, contentMode: .fit)
-                        .overlay(
-                            Text("Add roommate to see toggles! <--")
-                                .font(.footnote)
-                                .foregroundColor(creamColor)
-                                .padding()
-                        )
-                        .padding(.horizontal, 20)
+                    Button(action: {
+                        showInviteLinkPopup.toggle()
+                    }) {
+                        Text("Add roommate to see toggles")
+                            .font(.footnote)
+                            .foregroundColor(creamColor)
+                            .padding()
+                            .background(LighterPurple)
+                            .cornerRadius(10)
+                    }
+                    .padding(.horizontal, 20)
+                    .sheet(isPresented: $showInviteLinkPopup) {
+                        InviteLinkPopupView(inviteLink: "https://roombee.com/invite?hive_code=\(auth.hive_code)", isPresented: $showInviteLinkPopup)
+                    }
                 }
             }
         }

@@ -132,7 +132,6 @@ struct PasswordGuidelinesView: View {
             PasswordRequirementView(isMet: containsUppercase, text: "At least one uppercase letter (A-Z)")
             PasswordRequirementView(isMet: containsLowercase, text: "At least one lowercase letter (a-z)")
             PasswordRequirementView(isMet: containsDigit, text: "At least one digit (0-9)")
-            PasswordRequirementView(isMet: containsSpecialCharacter, text: "At least one special character (e.g., !@#$%^&*)")
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
@@ -151,10 +150,6 @@ struct PasswordGuidelinesView: View {
         password.rangeOfCharacter(from: .decimalDigits) != nil
     }
 
-    private var containsSpecialCharacter: Bool {
-        let specialCharacterSet = CharacterSet(charactersIn: "!@#$%^&*")
-        return password.rangeOfCharacter(from: specialCharacterSet) != nil
-    }
 }
 struct PasswordRequirementView: View {
     var isMet: Bool

@@ -169,7 +169,7 @@ extension AuthenticationViewModel {
     }
     
     func validatePassword(_ password: String) -> Bool {
-        let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$")
+        let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$")
         return passwordRegex.evaluate(with: password)
     }
     
