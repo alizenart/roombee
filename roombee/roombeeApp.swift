@@ -37,6 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
+        UIApplication.shared.registerForRemoteNotifications()
         return true
     }
     
