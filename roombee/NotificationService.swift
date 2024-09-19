@@ -47,6 +47,36 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
         }
     }
     
+    func taskNotif(for task: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "New Task Added!"
+        content.body = "Your rommate added \"\(task)\" to tasks"
+        content.sound = UNNotificationSound.default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "task", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error with task: \(error)")
+            }
+        }
+    }
+    
+    func multtask(for numtask: Int) {
+        let content = UNMutableNotificationContent()
+        content.title = "New Tasks Added!"
+        content.body = "Your rommate added \"\(numtask)\" new tasks"
+        content.sound = UNNotificationSound.default
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "task", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error with task mult: \(error)")
+            }
+        }
+    }
+    
     func todoNotif() {
         // Get the current date's day component
         let currentDay = Calendar.current.component(.day, from: Date())

@@ -13,6 +13,7 @@ struct ToDoView: View {
     @State private var skipNextFilter = false
     
     @State private var isLoading = true
+    @State private var tasknotif = false
 
     
     private func addview() {
@@ -161,6 +162,7 @@ struct ToDoView: View {
             .onAppear {
                 startPolling()
                 observeAppStateChanges()
+                tasknotif = true
             }
             .onDisappear {
                 stopPolling()
@@ -222,6 +224,17 @@ struct ToDoView: View {
         // Filter and add tasks that don't already exist in the tasks list
         let newTasks = combinedTasks.filter { task in
             !tasks.contains(where: { $0.id == task.id })
+        }
+        
+        if tasknotif {
+            if newTasks.count == 1 {
+                for newTask in newTasks {
+                    NotificationService.shared.taskNotif(for: newTask.todoTitle)
+                }
+            }
+            if newTasks.count > 1{
+                NotificationService.shared.multtask(for: newTasks.count)
+            }
         }
 
         // Append new unique tasks
