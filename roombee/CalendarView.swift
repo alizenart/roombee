@@ -85,7 +85,18 @@ struct NewEventView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Save") {
                             if let userId = auth.user_id {
-                                let newEvent = CalendarEvent(user_id: userId, eventTitle: viewModel.title, startTime: viewModel.startTime, endTime: viewModel.endTime)
+                                let calendar = Calendar.current
+                                
+                                // Combine the selected date with the time component of startTime and endTime
+                                let selectedDate = viewModel.dateEvent
+                                let startComponents = calendar.dateComponents([.hour, .minute], from: viewModel.startTime)
+                                let endComponents = calendar.dateComponents([.hour, .minute], from: viewModel.endTime)
+                                
+                                // Create new start and end dates with the selected date
+                                let startTime = calendar.date(bySettingHour: startComponents.hour!, minute: startComponents.minute!, second: 0, of: selectedDate) ?? selectedDate
+                                let endTime = calendar.date(bySettingHour: endComponents.hour!, minute: endComponents.minute!, second: 0, of: selectedDate) ?? selectedDate
+                                
+                                let newEvent = CalendarEvent(user_id: userId, eventTitle: viewModel.title, startTime: startTime, endTime: endTime)
                                 onSave(newEvent)
                                 NotificationService.shared.scheduleNotification(for: newEvent)
                                 dismiss()
@@ -93,6 +104,7 @@ struct NewEventView: View {
                                 errorMessage = "No user information found."
                             }
                         }
+
                         .foregroundColor(backgroundColor)
                     } // ToolbarItem
                 } // toolbar
