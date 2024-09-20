@@ -29,6 +29,10 @@ struct OnboardGuideView: View {
                     OnboardGuide4().environmentObject(onboardGuideManager)
                 } else if onboardGuideManager.currentPage == 4 {
                     OnboardGuide5().environmentObject(onboardGuideManager)
+                } else if onboardGuideManager.currentPage == 5 {
+                    OnboardGuide6().environmentObject(onboardGuideManager)
+                } else if onboardGuideManager.currentPage == 6 {
+                    OnboardGuide7().environmentObject(onboardGuideManager)
                         .environmentObject(authModel)
                 }
             } //vstack
@@ -276,7 +280,127 @@ struct OnboardGuide4: View {
     }
 }
 
+
+
 struct OnboardGuide5: View {
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
+    var body: some View {
+        ZStack {
+            highlightYellow
+                .ignoresSafeArea()
+            VStack {
+                HStack {
+                    Button("Skip") {
+                        onboardGuideManager.skipToLastPage()
+                    }
+                    .foregroundColor(.white)
+                    .padding(.leading)
+                    .padding(.top)
+                    
+                    Spacer()
+                }//Hstack
+                Spacer()
+                Text("Protect the peace with a dynamic roommate agreement")
+                    .font(.largeTitle)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                
+                Image("Guide5")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300)
+                    .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                    .padding(.bottom, 30)
+                
+                
+                HStack{
+                    Button(action: {
+                        onboardGuideManager.previousPage()
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .foregroundColor(.white)
+                            .opacity(1.0)
+                            .frame(width: 50, height: 50)
+                            .background(Color.white.opacity(0.5))
+                            .clipShape(Circle())
+                    }//button
+                    Button(action: {
+                        onboardGuideManager.nextPage()
+                    }) {
+                        Image(systemName: "arrow.right")
+                            .foregroundColor(.white)
+                            .opacity(1.0)
+                            .frame(width: 50, height: 50)
+                            .background(Color.white.opacity(0.5))
+                            .clipShape(Circle())
+                    }//button
+                } // buttons hstack
+            }
+        } //Zstack
+    }
+}
+
+struct OnboardGuide6: View {
+    @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
+
+    var body: some View {
+        ZStack {
+            ourOrange
+                .ignoresSafeArea()
+            VStack {
+                HStack {
+                    Button("Skip") {
+                        onboardGuideManager.skipToLastPage()
+                    }
+                    .foregroundColor(.white)
+                    .padding(.leading)
+                    .padding(.top)
+                    
+                    Spacer()
+                }//Hstack
+                Spacer()
+                Text("Effortlessly join a Hive to access essential roommate features")
+                    .font(.largeTitle)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                
+                Image("Guide4")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300)
+                    .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 5)
+                    .padding(.bottom, 30)
+                
+                
+                HStack{
+                    Button(action: {
+                        onboardGuideManager.previousPage()
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .foregroundColor(.white)
+                            .opacity(1.0)
+                            .frame(width: 50, height: 50)
+                            .background(Color.white.opacity(0.5))
+                            .clipShape(Circle())
+                    }//button
+                    Button(action: {
+                        onboardGuideManager.nextPage()
+                    }) {
+                        Image(systemName: "arrow.right")
+                            .foregroundColor(.white)
+                            .opacity(1.0)
+                            .frame(width: 50, height: 50)
+                            .background(Color.white.opacity(0.5))
+                            .clipShape(Circle())
+                    }//button
+                } // buttons hstack
+            }
+        } //Zstack
+    }
+}
+
+struct OnboardGuide7: View {
     @EnvironmentObject var onboardGuideManager: OnboardGuideViewModel
     @EnvironmentObject var authModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss

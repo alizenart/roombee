@@ -13,7 +13,7 @@ import SwiftUI
 class OnboardGuideViewModel: ObservableObject {
     @Published var currentPage: Int = 0
     
-    let totalPages = 5
+    let totalPages = 7
     
     func nextPage() {
         if currentPage < totalPages - 1 {
