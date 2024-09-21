@@ -84,7 +84,7 @@ struct AddToDoView: View {
                 .scrollContentBackground(.hidden)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                           Text("New Reminder")
+                           Text("New Task")
                                .foregroundColor(ourOrange) // Set text color to white
                                .font(.headline)
                        }

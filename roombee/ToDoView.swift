@@ -37,12 +37,6 @@ struct ToDoView: View {
                         ProgressView("Loading...") // Show loading indicator
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             .scaleEffect(1.5)
-                    } else if tasks.isEmpty {
-                           // Show "No Tasks" message if there are no tasks
-                           Text("No Tasks")
-                               .foregroundColor(.white)
-                               .font(.title2)
-                               .padding(.top, 50)
                     } else {
                         List {
                             // $ used for binding
