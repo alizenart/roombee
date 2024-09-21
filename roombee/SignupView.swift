@@ -70,14 +70,20 @@ struct SignupView: View {
     var continueButton: some View {
         Button(action: {
             Task {
-                if !viewModel.validatePassword(viewModel.password) {
+                print("Continue button pressed. Validating email, password, and confirmation.")
+                if await viewModel.isEmailAlreadyInUse(email: viewModel.email) {
+                    // Email is already in use, show an error message
+                    print("Email is in use.")
+                    viewModel.errorMessage = "The email address is already in use."
+                    showingErrorAlert = true
+                } else if !viewModel.validatePassword(viewModel.password) {
                     // Password does not meet the requirements
                     viewModel.errorMessage = "Does not meet password requirements"
                     showingErrorAlert = true
                 } else if viewModel.password != viewModel.confirmPassword {
                     // Passwords do not match
                     viewModel.errorMessage = "Passwords don't match"
-                    showingPasswordAlert = true
+                    showingErrorAlert = true
                 } else {
                     // Passwords are valid and match, proceed with navigation
                     shouldNavigate = true
@@ -99,12 +105,6 @@ struct SignupView: View {
         .frame(width: 250, height: 50)
         .buttonStyle(.borderedProminent)
         .padding()
-        .alert("Passwords do not match", isPresented: $showingPasswordAlert) {
-            Button("OK", role: .cancel) { }
-        }
-        .alert(isPresented: $viewModel.showingErrorAlert) {
-            Alert(title: Text("Oops!"), message: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
-        }
     }
 }
 
@@ -158,7 +158,7 @@ struct PasswordRequirementView: View {
     var body: some View {
         HStack(spacing: 3) {  // Very tight spacing between the icon and text
             Image(systemName: isMet ? "checkmark" : "circle")
-                .foregroundColor(isMet ? Color.gray.opacity(0.5) : Color.gray.opacity(0.3))
+                .foregroundColor(isMet ? Color.green.opacity(0.5) : Color.red.opacity(0.3))
                 .imageScale(.small)  // Smaller icon size
             Text(text)
                 .foregroundColor(isMet ? Color.gray.opacity(0.7) : Color.primary.opacity(0.6))

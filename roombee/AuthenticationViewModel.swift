@@ -173,6 +173,8 @@ extension AuthenticationViewModel {
         return passwordRegex.evaluate(with: password)
     }
     
+    
+    
     func signUpWithEmailPassword() async -> Bool {
         
         guard validatePassword(password) else {
@@ -200,13 +202,13 @@ extension AuthenticationViewModel {
                     }
                 }
             } else {
-                    self.errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
             }
-                self.authenticationState = .unauthenticated
-            }
+            self.authenticationState = .unauthenticated
             showingErrorAlert = true
             return false
         }
+    }
     
     
     func signOut(eventStore: EventStore) {
@@ -243,6 +245,12 @@ extension AuthenticationViewModel {
             return false
         }
     }
+    func generateShorterUUID() -> String {
+        let uuid = UUID().uuidString
+        // Shorten to the first 8 characters for example
+        let shortUUID = String(uuid.prefix(12))
+        return shortUUID
+    }
     
     func addUserLambda() {
         let lambdaInvoker = AWSLambdaInvoker.default()
@@ -255,7 +263,7 @@ extension AuthenticationViewModel {
         let dateString = dateFormatter.string(from: birthDate)
         user_id = UUID().uuidString
         if hive_code == "" {
-            hive_code = UUID().uuidString
+            hive_code = generateShorterUUID()
         }
         
         let jsonObject = [
@@ -350,4 +358,26 @@ extension DateFormatter {
         return formatter
     }()
 }
+
+extension AuthenticationViewModel {
+    func isEmailAlreadyInUse(email: String) async -> Bool {
+        // Normalize the email by trimming spaces and converting to lowercase
+        let normalizedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        print("Checking if email is already in use: \(normalizedEmail)")
+
+        do {
+            let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: normalizedEmail)
+            print("Sign-in methods: \(signInMethods)")  // Debugging: print the sign-in methods result
+            let isInUse = !signInMethods.isEmpty
+            print("Email is \(isInUse ? "already" : "not") in use.")
+            return isInUse
+        } catch {
+            print("Error checking email: \(error.localizedDescription)")
+            errorMessage = error.localizedDescription
+            showingErrorAlert = true
+            return false
+        }
+    }
+}
+
 

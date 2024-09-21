@@ -20,7 +20,7 @@ struct InviteLinkPopupView: View {
             Text("Your Hive Code")
                 .font(.headline)
                 .padding()
-            Text("Share your Hive Code to connect with your roommate and join the same Hive! (Limit 2)")
+            Text("Share your Hive Code to connect with your roommate and join the same Hive! (2 roommate max)")
                 .padding()
             Text(auth.hive_code)
                 .padding()

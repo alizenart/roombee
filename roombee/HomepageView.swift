@@ -47,6 +47,19 @@ struct HomepageView: View {
     @State var roomieStatusToggleSleeping = false
     @State var roomieStatusToggleInRoom = false
     
+    private func refreshPage() async {
+        print("Refreshing data...")
+        // Fetch the user's and roommate's initial data again
+        if let userId = auth.user_id {
+            fetchMyInitialToggleState(userId: userId)
+        }
+
+        if let roommateId = auth.roommate_id {
+            fetchRoomieInitialToggleState(userId: roommateId)
+        }
+        auth.getUserData() // Re-fetch user data
+    }
+    
     
     private func signOut() {
         authViewModel.signOut(eventStore: eventStore)
@@ -68,38 +81,44 @@ struct HomepageView: View {
                     switch navManager.selectedSideMenuTab {
                     case 0:
                         if authViewModel.isUserDataLoaded {
-                            HomepageContent(
-                                myStatusToggleSleeping: $myStatusToggleSleeping,
-                                myStatusToggleInRoom: $myStatusToggleInRoom,
-                                roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
-                                roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
-                                isInitialLoad: $isInitialLoad,
-                                calGrid: GridView(cal: CalendarView(title: "Me")),
-                                yourStatus: auth.user_id != nil ? StatusView(
-                                    title: "Me:",
-                                    canToggle: true,
-                                    isSleeping: $myStatusToggleSleeping,
-                                    inRoom: $myStatusToggleInRoom,
-                                    userId: auth.user_id!, // Forced unwrapping is safe here because of the check above
-                                    isInitialLoad: $isInitialLoad
-                                ) : nil,
-                                roomStatus: StatusView(
-                                    title: "Roommate:",
-                                    canToggle: false,
-                                    isSleeping: $roomieStatusToggleSleeping,
-                                    inRoom: $roomieStatusToggleInRoom,
-                                    userId: auth.roommate_id ?? "", // Forced unwrapping is safe here because of the check above
-                                    isInitialLoad: .constant(true)
+                            // Add the refreshable modifier here
+                            ScrollView {
+                                HomepageContent(
+                                    myStatusToggleSleeping: $myStatusToggleSleeping,
+                                    myStatusToggleInRoom: $myStatusToggleInRoom,
+                                    roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
+                                    roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
+                                    isInitialLoad: $isInitialLoad,
+                                    calGrid: GridView(cal: CalendarView(title: "Me")),
+                                    yourStatus: auth.user_id != nil ? StatusView(
+                                        title: "Me:",
+                                        canToggle: true,
+                                        isSleeping: $myStatusToggleSleeping,
+                                        inRoom: $myStatusToggleInRoom,
+                                        userId: auth.user_id!, // Forced unwrapping is safe here because of the check above
+                                        isInitialLoad: $isInitialLoad
+                                    ) : nil,
+                                    roomStatus: StatusView(
+                                        title: "Roommate:",
+                                        canToggle: false,
+                                        isSleeping: $roomieStatusToggleSleeping,
+                                        inRoom: $roomieStatusToggleInRoom,
+                                        userId: auth.roommate_id ?? "", // Forced unwrapping is safe here because of the check above
+                                        isInitialLoad: .constant(true)
+                                    )
                                 )
-                            )
-                            .environmentObject(eventStore)
-                            .environmentObject(authViewModel)
-                            .environmentObject(navManager)
-                            .environmentObject(selectedDateManager)
-                            .environmentObject(toggleManager)
-                            .environmentObject(todoManager)
-                            .environmentObject(agreementManager)
-                            .environmentObject(agreementStore)
+                                .environmentObject(eventStore)
+                                .environmentObject(authViewModel)
+                                .environmentObject(navManager)
+                                .environmentObject(selectedDateManager)
+                                .environmentObject(toggleManager)
+                                .environmentObject(todoManager)
+                                .environmentObject(agreementManager)
+                                .environmentObject(agreementStore)
+                            }
+                            .refreshable {
+                                await refreshPage() // This will trigger the refresh logic
+                            }
                         }
                     
                         else{
@@ -131,6 +150,7 @@ struct HomepageView: View {
                                 Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
                             }
                         }
+                        .frame(width: 20, height: 60)
                         .padding(.trailing, 50)
                         .frame(width: 400, alignment: .leading)
                     } // Hstack for nav button

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 var ourPurple = hexStringToUIColor(hex: "#381e38")
 
@@ -40,6 +41,10 @@ struct NewEventView: View {
 
         ZStack {
             creamColor
+                .onTapGesture {
+                    // This will dismiss the keyboard when you tap anywhere on the screen
+                    UIApplication.shared.dismissKeyboard()
+                }
             NavigationView {
                 Form {
                     if let errorMessage = errorMessage {
@@ -411,5 +416,11 @@ func hexStringToUIColor (hex:String) -> UIColor {
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
         CalendarView(title: String()).environmentObject(EventStore())
+    }
+}
+
+extension UIApplication {
+    func dismissKeyboard() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
