@@ -112,7 +112,7 @@ class NotificationService: NSObject, UNUserNotificationCenterDelegate, Observabl
     func toggleSleep(isAsleep: Bool) {
         let content = UNMutableNotificationContent()
         content.title = isAsleep ? "😴" : "🌞"
-        content.body = isAsleep ? "Your roommate is heading to bed!" : "Rise and Shine!"
+        content.body = isAsleep ? "Your roommate is heading to bed!" : "Your roommate is awake! Rise and Shine"
         content.sound = UNNotificationSound.default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
