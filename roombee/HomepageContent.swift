@@ -285,13 +285,35 @@ struct DatesCarousel: View {
 
     var body: some View {
         VStack {
-            Text("Schedules")
-                .font(.system(size: 25))
-                .fontWeight(.bold)
-                .foregroundColor(.white)
-                .padding(.top, 30)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 20)
+            HStack {
+                Text("Schedules")
+                    .font(.system(size: 25))
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.top, 30)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .alignmentGuide(.firstTextBaseline) { d in d[.firstTextBaseline] }
+                Button(action: {
+                    onSwipeRight() // Call onSwipeRight when the left arrow button is pressed
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                        .font(.system(size: 20))
+                }
+                .padding(.trailing, 10) // Space between arrow and text
+                .alignmentGuide(.firstTextBaseline) { d in d[.firstTextBaseline] }
+                
+                Button(action: {
+                    onSwipeLeft() // Call onSwipeLeft when the right arrow button is pressed
+                }) {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.white)
+                        .font(.system(size: 20))
+                }
+                .padding(.leading, 10) // Space between text and arrow
+                .alignmentGuide(.firstTextBaseline) { d in d[.firstTextBaseline] }
+            }
+            .padding(.horizontal, 20)
 
             HStack {
                 ForEach(dates, id: \.self) { date in
