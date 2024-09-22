@@ -49,28 +49,35 @@ struct NewEventView: View {
             NavigationView {
                 Form {
                     VStack {
-                        if let errorMessage = errorMessage {
-                            Text(errorMessage)
-                                .foregroundColor(.red)
-                        }
+//                        if let errorMessage = errorMessage {
+//                            Text(errorMessage)
+//                                .foregroundColor(.red)
+//                        }
                         
                         TextField("Name of Event", text: $viewModel.title)
                             .frame(width: 300, height: 40)
                             .font(.system(size: 20))
                         
                         // Event Date Selection
-                        Section(header: Text("Date").font(.system(size: 20))) {
+//                        Section(header: Text("Date")
+//                            .font(.system(size: 20, weight: .bold))
+//                            .frame(maxWidth: .infinity, alignment: .leading)) 
+                        
+                        Section {
+//                            Text("Date") // Custom label for date
+//                                .font(.system(size: 20, weight: .bold))
+//                                .frame(maxWidth: .infinity, alignment: .leading)
                             DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .onChange(of: viewModel.dateEvent) { newDate in
                                     // Adjust startTime and endTime to match the selected date
                                     let calendar = Calendar.current
                                     viewModel.startTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.startTime),
-                                                                        minute: calendar.component(.minute, from: viewModel.startTime),
-                                                                        second: 0, of: newDate) ?? newDate
+                                        minute: calendar.component(.minute, from: viewModel.startTime),
+                                        second: 0, of: newDate) ?? newDate
                                     viewModel.endTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.endTime),
-                                                                      minute: calendar.component(.minute, from: viewModel.endTime),
-                                                                      second: 0, of: newDate) ?? newDate
+                                        minute: calendar.component(.minute, from: viewModel.endTime),
+                                        second: 0, of: newDate) ?? newDate
                                     print("Updated dateEvent: \(viewModel.dateEvent)")
                                     print("Updated startTime: \(viewModel.startTime)")
                                     print("Updated endTime: \(viewModel.endTime)")
@@ -78,9 +85,13 @@ struct NewEventView: View {
                                     updateMultidayEventStatus()
                                 }
                         }
+                        .padding(.bottom)
                         
                         // Start & End Time Section
-                        Section(header: Text("Start & End Time").font(.system(size: 20))) {
+                        Section {
+                            Text("Start Time") // Custom label for start time
+                                .font(.system(size: 20, weight: .medium))
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
                                 .datePickerStyle(WheelDatePickerStyle())
                                 .onChange(of: viewModel.startTime) { newStartTime in
@@ -90,14 +101,17 @@ struct NewEventView: View {
                                     }
                                     // Ensure that the endTime remains on the same date
                                     viewModel.endTime = Calendar.current.date(bySettingHour: Calendar.current.component(.hour, from: viewModel.endTime),
-                                                                              minute: Calendar.current.component(.minute, from: viewModel.endTime),
-                                                                              second: 0, of: viewModel.dateEvent) ?? newStartTime
+                                            minute: Calendar.current.component(.minute, from: viewModel.endTime),
+                                            second: 0, of: viewModel.dateEvent) ?? newStartTime
                                     print("Updated startTime: \(viewModel.startTime)")
                                     print("Adjusted endTime: \(viewModel.endTime)")
                                     checkAndFixEndTime()
                                     updateMultidayEventStatus()
                                 }
 
+                            Text("End Time") // Custom label for end time
+                                .font(.system(size: 20, weight: .medium))
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
                                 .datePickerStyle(WheelDatePickerStyle())
                                 .onChange(of: viewModel.endTime) { newEndTime in
@@ -121,7 +135,7 @@ struct NewEventView: View {
 //                            Text("Currently unable to add multiday events. Please keep your event within the 24-hour window of the selected date.")
 //                                .foregroundColor(.red)
 //                        }
-                        Text("Roombee is currently unable to accomodate multi-day events. Please keep your event within the 24-hour window of the selected date.")
+                        Text("Roombee is currently unable to accommodate multi-day events. Please keep your event within the 24-hour window of the selected date.")
         //                            .font(.subheadline)
                             .font(.system(size: 9))
                             .foregroundColor(.gray)
