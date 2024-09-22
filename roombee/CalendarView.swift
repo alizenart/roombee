@@ -92,7 +92,7 @@ struct NewEventView: View {
                             Text("Start Time") // Custom label for start time
                                 .font(.system(size: 20, weight: .medium))
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
+                            DatePicker("", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
                                 .datePickerStyle(WheelDatePickerStyle())
                                 .onChange(of: viewModel.startTime) { newStartTime in
                                     // Ensure endTime remains valid, and update only if necessary
@@ -112,7 +112,7 @@ struct NewEventView: View {
                             Text("End Time") // Custom label for end time
                                 .font(.system(size: 20, weight: .medium))
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
+                            DatePicker("    ", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
                                 .datePickerStyle(WheelDatePickerStyle())
                                 .onChange(of: viewModel.endTime) { newEndTime in
                                     print("Updated endTime: \(newEndTime)")
