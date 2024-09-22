@@ -285,14 +285,14 @@ struct DatesCarousel: View {
 
     var body: some View {
         VStack {
-            HStack {
+            HStack (alignment: .firstTextBaseline){
                 Text("Schedules")
                     .font(.system(size: 25))
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .padding(.top, 30)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .alignmentGuide(.firstTextBaseline) { d in d[.firstTextBaseline] }
+//                    .alignmentGuide(.firstTextBaseline) { d in d[.firstTextBaseline] }
                 Button(action: {
                     onSwipeRight() // Call onSwipeRight when the left arrow button is pressed
                 }) {
