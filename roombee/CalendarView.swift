@@ -36,9 +36,10 @@ struct NewEventView: View {
     var onSave: (CalendarEvent) -> Void
     @Environment(\.dismiss) var dismiss
     @State private var errorMessage: String? = nil
-    
-    var body: some View {
+    @State private var isMultidayEvent: Bool = false
+    @State private var showEndTimeWarning: Bool = false // State for warning
 
+    var body: some View {
         ZStack {
             creamColor
                 .onTapGesture {
@@ -47,39 +48,94 @@ struct NewEventView: View {
                 }
             NavigationView {
                 Form {
-                    if let errorMessage = errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                    }
-                    TextField("Name of Event", text: $viewModel.title)
-                        .frame(width: 300, height: 40)
-                        .font(.system(size: 20))
-                        .onChange(of: viewModel.title) { newValue in
+                    VStack {
+                        if let errorMessage = errorMessage {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
                         }
-                    
-                    Section(header: Text("Date").font(.system(size: 20))) {
-                        DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
-                            .datePickerStyle(GraphicalDatePickerStyle())
                         
-                    }
-                    Section(header: Text("Start & End Time").font(.system(size: 20))){
-                        DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
-                            .datePickerStyle(WheelDatePickerStyle())
-                            .onChange(of: viewModel.startTime) { newStartTime in
-                                // Ensure end time remains valid, and update only if necessary
-                                if viewModel.endTime <= newStartTime {
-                                    viewModel.endTime = Calendar.current.date(byAdding: .hour, value: 1, to: newStartTime) ?? newStartTime
+                        TextField("Name of Event", text: $viewModel.title)
+                            .frame(width: 300, height: 40)
+                            .font(.system(size: 20))
+                        
+                        // Event Date Selection
+                        Section(header: Text("Date").font(.system(size: 20))) {
+                            DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
+                                .datePickerStyle(GraphicalDatePickerStyle())
+                                .onChange(of: viewModel.dateEvent) { newDate in
+                                    // Adjust startTime and endTime to match the selected date
+                                    let calendar = Calendar.current
+                                    viewModel.startTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.startTime),
+                                                                        minute: calendar.component(.minute, from: viewModel.startTime),
+                                                                        second: 0, of: newDate) ?? newDate
+                                    viewModel.endTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.endTime),
+                                                                      minute: calendar.component(.minute, from: viewModel.endTime),
+                                                                      second: 0, of: newDate) ?? newDate
+                                    print("Updated dateEvent: \(viewModel.dateEvent)")
+                                    print("Updated startTime: \(viewModel.startTime)")
+                                    print("Updated endTime: \(viewModel.endTime)")
+                                    checkAndFixEndTime()
+                                    updateMultidayEventStatus()
                                 }
+                        }
+                        
+                        // Start & End Time Section
+                        Section(header: Text("Start & End Time").font(.system(size: 20))) {
+                            DatePicker("Start Time", selection: $viewModel.startTime, displayedComponents: .hourAndMinute)
+                                .datePickerStyle(WheelDatePickerStyle())
+                                .onChange(of: viewModel.startTime) { newStartTime in
+                                    // Ensure endTime remains valid, and update only if necessary
+                                    if viewModel.endTime <= newStartTime {
+                                        viewModel.endTime = Calendar.current.date(byAdding: .hour, value: 1, to: newStartTime) ?? newStartTime
+                                    }
+                                    // Ensure that the endTime remains on the same date
+                                    viewModel.endTime = Calendar.current.date(bySettingHour: Calendar.current.component(.hour, from: viewModel.endTime),
+                                                                              minute: Calendar.current.component(.minute, from: viewModel.endTime),
+                                                                              second: 0, of: viewModel.dateEvent) ?? newStartTime
+                                    print("Updated startTime: \(viewModel.startTime)")
+                                    print("Adjusted endTime: \(viewModel.endTime)")
+                                    checkAndFixEndTime()
+                                    updateMultidayEventStatus()
+                                }
+
+                            DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
+                                .datePickerStyle(WheelDatePickerStyle())
+                                .onChange(of: viewModel.endTime) { newEndTime in
+                                    print("Updated endTime: \(newEndTime)")
+                                    checkAndFixEndTime()
+                                    updateMultidayEventStatus()
+                                }
+                            
+
+                            // Show warning if the end time was reset due to multiday event
+                            if showEndTimeWarning {
+                                Text("No multiday time allowed.")
+                                    .foregroundColor(.red)
+                                    .font(.caption)
+                                    .padding(.top, 5)
                             }
-                        DatePicker("End Time", selection: $viewModel.endTime, displayedComponents: .hourAndMinute)
-                            .datePickerStyle(WheelDatePickerStyle())
-                    }
-                }
+                        }//section
+
+                        // Error message for multiday events -- not working
+//                        if isMultidayEvent {
+//                            Text("Currently unable to add multiday events. Please keep your event within the 24-hour window of the selected date.")
+//                                .foregroundColor(.red)
+//                        }
+                        Text("Roombee is currently unable to accomodate multi-day events. Please keep your event within the 24-hour window of the selected date.")
+        //                            .font(.subheadline)
+                            .font(.system(size: 9))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                        
+                            
+                    } // VStack
+                }//form
                 .scrollContentBackground(.hidden)
                 .foregroundColor(backgroundColor)
                 .background(creamColor)
                 .navigationTitle("New Event")
-                
+
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button("Cancel") {
@@ -91,16 +147,18 @@ struct NewEventView: View {
                         Button("Save") {
                             if let userId = auth.user_id {
                                 let calendar = Calendar.current
-                                
+
                                 // Combine the selected date with the time component of startTime and endTime
                                 let selectedDate = viewModel.dateEvent
                                 let startComponents = calendar.dateComponents([.hour, .minute], from: viewModel.startTime)
                                 let endComponents = calendar.dateComponents([.hour, .minute], from: viewModel.endTime)
-                                
+
                                 // Create new start and end dates with the selected date
                                 let startTime = calendar.date(bySettingHour: startComponents.hour!, minute: startComponents.minute!, second: 0, of: selectedDate) ?? selectedDate
                                 let endTime = calendar.date(bySettingHour: endComponents.hour!, minute: endComponents.minute!, second: 0, of: selectedDate) ?? selectedDate
-                                
+
+                                print("Saving event with startTime: \(startTime), endTime: \(endTime)")
+
                                 let newEvent = CalendarEvent(user_id: userId, eventTitle: viewModel.title, startTime: startTime, endTime: endTime)
                                 onSave(newEvent)
                                 NotificationService.shared.scheduleNotification(for: newEvent)
@@ -109,15 +167,46 @@ struct NewEventView: View {
                                 errorMessage = "No user information found."
                             }
                         }
-
+                        .disabled(isMultidayEvent)
                         .foregroundColor(backgroundColor)
                     } // ToolbarItem
                 } // toolbar
+                
 
             }
         }
     }
+
+    // Function to check if the event is a multiday event and update the state
+    private func updateMultidayEventStatus() {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: viewModel.dateEvent)
+        
+        if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)?.addingTimeInterval(-1) {
+            let isMultiday = viewModel.endTime > endOfDay
+            if isMultidayEvent != isMultiday {
+                print("Multiday status updated: \(isMultiday)")
+                isMultidayEvent = isMultiday // Ensure this triggers the view update
+            }
+            print("Multiday event status: \(isMultidayEvent)")
+            print("End of day boundary: \(endOfDay)")
+        }
+    }
+
+    // Ensure that the endTime is not earlier than startTime and update the warning state
+    private func checkAndFixEndTime() {
+        if viewModel.endTime < viewModel.startTime {
+            print("Error: endTime (\(viewModel.endTime)) is earlier than startTime (\(viewModel.startTime))! Fixing it...")
+            viewModel.endTime = Calendar.current.date(byAdding: .hour, value: 1, to: viewModel.startTime) ?? viewModel.startTime
+            showEndTimeWarning = true // Show warning when reset occurs
+            print("New endTime: \(viewModel.endTime)")
+        } else {
+            showEndTimeWarning = false // Hide the warning if no reset is needed
+        }
+    }
 }
+
+
 
 
 struct CalendarView: View {
