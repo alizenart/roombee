@@ -1,3 +1,3 @@
 use roombee;
 
-SELECT * FROM users;
+SELECT * FROM users order by hive_code asc;
