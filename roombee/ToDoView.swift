@@ -32,6 +32,9 @@ struct ToDoView: View {
                         .foregroundColor(ourOrange)
                         .fontWeight(.bold)
                         .padding(.top, 20)
+                    Text("May take a second to populate...")
+                        .foregroundColor(Color.gray)
+                    
 
                     if isLoading {
                         ProgressView("Loading...") // Show loading indicator
