@@ -287,6 +287,39 @@ extension AuthenticationViewModel {
         }
     }
     
+    func deleteAccountLambda() {
+        let lambdaInvoker = AWSLambdaInvoker.default()
+        
+        guard let user_id = user_id else {
+            print("No user_id found, cannot proceed with deletion.")
+            return
+        }
+        
+        let jsonObject = [
+            "queryStringParameters": ["user_id": user_id]
+        ] as [String : Any]
+        
+        lambdaInvoker.invokeFunction("deleteAccount", jsonObject: jsonObject).continueWith { task -> Any? in
+            if let error = task.error {
+                print("Error occurred: \(error)")
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                    self.showingErrorAlert = true
+                }
+                return nil
+            }
+            if let result = task.result {
+                print("Lambda function result: \(result)")
+                DispatchQueue.main.async {
+                    self.reset()
+                    self.showingErrorAlert = false
+                }
+            }
+            return nil
+        }
+    }
+
+    
     
     // Gets the current user's data from the database that is NOT already in their firebase user
     func getUserData() {
