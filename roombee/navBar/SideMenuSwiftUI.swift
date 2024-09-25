@@ -13,7 +13,7 @@ enum SideMenuRowType: Int, CaseIterable {
     case task = 1
     case addRoommate = 2
     case agreement = 3
-    case signout = 4
+    case setting = 4
     
     
     var title: String {
@@ -26,8 +26,8 @@ enum SideMenuRowType: Int, CaseIterable {
             return "Add Roommate"
         case .agreement:
             return "Agreement"
-        case .signout:
-            return "Sign Out"
+        case .setting:
+            return "Settings"
         }
     }
     
@@ -41,8 +41,8 @@ enum SideMenuRowType: Int, CaseIterable {
             return "AddRoomateIcon"
         case .agreement:
             return "AgreementIcon"
-        case .signout:
-            return "SignOutIcon"
+        case .setting:
+            return "SettingIcon"
         }
     }
 }

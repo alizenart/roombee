@@ -72,7 +72,7 @@ struct SettingsViewNav: View {
                 Spacer()
             }
             Spacer()
-            Text("SettingsBeta")
+            Text("Settings")
             Spacer()
         }
         .padding(.horizontal, 24)
@@ -124,6 +124,8 @@ struct RoommateAgreementViewNav: View {
         .padding(.horizontal, 24)
     }
 }
+
+
 
 
 struct SignOutViewNav: View {

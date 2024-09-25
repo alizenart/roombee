@@ -135,6 +135,9 @@ struct HomepageView: View {
                         RoommateAgreementView()
                             .environmentObject(agreementStore)
                             .environmentObject(agreementManager)
+                    case 4:
+                        SettingsView()
+                            .environmentObject(authViewModel)
                     default:
                         Text("Unknown Selection")
                     } //switch
@@ -170,12 +173,12 @@ struct HomepageView: View {
                         .animation(.easeInOut, value: showInviteLinkPopup)
                 }
             }
-            .onChange(of: navManager.selectedSideMenuTab) { newValue in
-                if newValue == 4 {
-                    signOut()
-                    navManager.selectedSideMenuTab = 0
-                }
-            }
+//            .onChange(of: navManager.selectedSideMenuTab) { newValue in
+//                if newValue == 4 {
+//                    signOut()
+//                    navManager.selectedSideMenuTab = 0
+//                }
+//            }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
                 if newValue == 2 {
                     addRoommate()
