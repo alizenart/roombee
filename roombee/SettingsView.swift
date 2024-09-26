@@ -148,7 +148,7 @@ struct AboutRoombeeView: View {
             Form {
 //                backgroundColor.ignoresSafeArea()
                 VStack(alignment: .leading, spacing: 15) { // Adjust spacing as needed
-                    Text("Roombee was founded by a group of Northwestern University students at The Garage, the university's startup incubator. Alison Bai, a junior at Northwestern, came up with the idea while navigating the challenges of living with roommates.")
+                    Text("Roombee is founded by a group of Northwestern University students at The Garage, the university's startup incubator. Alison Bai, a junior at Northwestern, came up with the idea while navigating the experiences of living with roommates.")
                     
                     Text("With the help of like-minded peers, Roombee was born during a hackathon, where it won first place. Inspired by their success, the team decided to continue developing the project.")
                 }
@@ -160,15 +160,19 @@ struct AboutRoombeeView: View {
         }//navigation
     }
 }
-
 struct DeleteAccountWarningView: View {
     @Environment(\.dismiss) var dismiss // Access the dismiss action
+    @EnvironmentObject var authManager: AuthenticationViewModel
+    
+    @State private var password: String = ""
+    @State private var showingErrorAlert = false
+    @State private var errorMessage: String = ""
 
     var body: some View {
         NavigationView {
             VStack {
-                
                 Spacer()
+                
                 VStack(spacing: 10) {
                     Text("Are you sure you want to delete your account?")
                         .font(.system(size: 20))
@@ -177,18 +181,33 @@ struct DeleteAccountWarningView: View {
                         .multilineTextAlignment(.center)
                 }
                 .padding()
-                .padding(.top)
-                .padding(.bottom)
                 
+                // Password input field
+                SecureField("Enter your password to confirm", text: $password)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    .padding(.horizontal, 20)
                 
                 Button("Yes, delete my account") {
-                    // #alison
+                    Task {
+                        let success = await authManager.deleteAccount(withPassword: password)
+                        if success {
+                            dismiss()
+                        } else {
+                            showingErrorAlert = true
+                            errorMessage = authManager.errorMessage
+                        }
+                    }
                 }
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.red)
                 .cornerRadius(10)
                 .padding(.horizontal, 20)
+                .alert(isPresented: $showingErrorAlert) {
+                    Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+                }
                 
                 Spacer()
                 
@@ -199,15 +218,14 @@ struct DeleteAccountWarningView: View {
                 .padding()
                 .background(Color.gray)
                 .cornerRadius(10)
-                .padding(.horizontal, 20) // Add padding to the sides
+                .padding(.horizontal, 20)
                 .padding(.bottom)
-                
-//                Spacer()
             }
             .navigationBarTitle("Delete Account", displayMode: .inline)
         }
     }
 }
+
 
 
     

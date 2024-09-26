@@ -231,20 +231,41 @@ extension AuthenticationViewModel {
         }
     }
     
-    func deleteAccount() async -> Bool {
+    func deleteAccount(withPassword password: String) async -> Bool {
         do {
-            try await user?.delete()
+            // Reauthenticate the user before deletion
+            guard let user = user else {
+                print("No user is currently signed in.")
+                return false
+            }
+            
+            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+            try await user.reauthenticate(with: credential)
+            print("User reauthenticated successfully")
+            
+            // Attempt to delete the user from Firebase
+            try await user.delete()
+            print("User deleted successfully from Firebase")
+            
+            // Delete user from backend (Lambda)
+            deleteAccountLambda()
+            
+            // Reset and return success
             DispatchQueue.main.async {
                 self.reset()
+                self.authenticationState = .unauthenticated
             }
             return true
+            
         } catch {
+            print("Error deleting account: \(error.localizedDescription)")
             DispatchQueue.main.async {
                 self.errorMessage = error.localizedDescription
             }
             return false
         }
     }
+
     func generateShorterUUID() -> String {
         let uuid = UUID().uuidString
         // Shorten to the first 8 characters for example
