@@ -135,6 +135,7 @@ struct HomepageView: View {
                         RoommateAgreementView()
                             .environmentObject(agreementStore)
                             .environmentObject(agreementManager)
+                            .environmentObject(eventStore)
                     case 4:
                         SettingsView()
                             .environmentObject(authViewModel)
