@@ -375,7 +375,7 @@ struct CalendarView: View {
     func addButton() -> some View {
         Button(action: {
             showingAddEventSheet = true
-            Mixpanel.mainInstance().track(event: "AddEvent", properties: ["userID": auth.user_id])
+            Mixpanel.mainInstance().track(event: "AddEvent", properties: ["userID": auth.user_id ?? "Unknown", "eventName": newEventViewModel.title])
         }) {
             ZStack {
                 hexagonShape()
@@ -435,7 +435,7 @@ struct CalendarView: View {
                 
                 Button(action: {
                     skipFilter = true
-                    Mixpanel.mainInstance().track(event: "DeletedEvent", properties: ["userID": auth.user_id])
+                    Mixpanel.mainInstance().track(event: "DeletedEvent", properties: ["userID": auth.user_id ?? "Unknown", "eventName": newEventViewModel.title])
                     deletedEvents.insert(event.id.uuidString)
                     events.removeAll(where: {$0.id == event.id})
                     eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
