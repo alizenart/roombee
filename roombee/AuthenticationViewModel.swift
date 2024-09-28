@@ -9,6 +9,7 @@ import Foundation
 import FirebaseAuth
 import SwiftUI
 import AWSLambda
+import Mixpanel
 
 enum AuthenticationState {
     case unauthenticated
@@ -155,6 +156,8 @@ extension AuthenticationViewModel {
             DispatchQueue.main.async {
                self.authenticationState = .authenticated // Update state here
             }
+            Mixpanel.mainInstance().track(event: "User Signed In", properties: ["userId":user_id ?? "Unknown",
+                                                                                "email":email])
             return true
         }
         catch  {
@@ -164,6 +167,9 @@ extension AuthenticationViewModel {
                 self.errorMessage = error.localizedDescription
                 self.authenticationState = .unauthenticated
             }
+            Mixpanel.mainInstance().track(event: "Sign-In Error", properties: [
+                            "error": error.localizedDescription
+                        ])
             return false
         }
     }
@@ -190,6 +196,10 @@ extension AuthenticationViewModel {
             addUserLambda()
             await getUserData()
             authenticationState = .authenticated
+            Mixpanel.mainInstance().track(event: "User Signed Up", properties: [
+                            "userId": user?.uid ?? "Unknown",
+                            "email": email
+                        ])
             return true
         } catch let error as NSError {
             if let authErrorCode = AuthErrorCode.Code(rawValue: error.code) {
@@ -206,6 +216,9 @@ extension AuthenticationViewModel {
             }
             self.authenticationState = .unauthenticated
             showingErrorAlert = true
+            Mixpanel.mainInstance().track(event: "Sign-Up Error", properties: [
+                            "error": error.localizedDescription
+                        ])
             return false
         }
     }
@@ -214,6 +227,10 @@ extension AuthenticationViewModel {
     func signOut(eventStore: EventStore) {
         do {
             try Auth.auth().signOut()
+            Mixpanel.mainInstance().track(event: "User Signed Out", properties: [
+                        "userId": user?.uid ?? "Unknown",
+                        "email": email
+                    ])
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: NSNotification.Name("UserSignedOut"), object: nil)
                 
@@ -221,6 +238,7 @@ extension AuthenticationViewModel {
                 
                 self.reset()
                 self.authenticationState = .unauthenticated
+                
             }
         }
         catch {
@@ -228,6 +246,9 @@ extension AuthenticationViewModel {
             DispatchQueue.main.async {
                 self.errorMessage = error.localizedDescription
             }
+            Mixpanel.mainInstance().track(event: "Sign-Out Error", properties: [
+                        "error": error.localizedDescription
+                    ])
         }
     }
     
@@ -241,6 +262,10 @@ extension AuthenticationViewModel {
             
             let credential = EmailAuthProvider.credential(withEmail: email, password: password)
             try await user.reauthenticate(with: credential)
+            Mixpanel.mainInstance().track(event: "Account Deleted", properties: [
+                "userId": user_id ?? "Unknown",
+                        "email": email
+                    ])
             print("User reauthenticated successfully")
             
             // Attempt to delete the user from Firebase
@@ -255,12 +280,16 @@ extension AuthenticationViewModel {
                 self.reset()
                 self.authenticationState = .unauthenticated
             }
+            
             return true
             
         } catch {
             print("Error deleting account: \(error.localizedDescription)")
             DispatchQueue.main.async {
                 self.errorMessage = error.localizedDescription
+                Mixpanel.mainInstance().track(event: "Account Deletion Error", properties: [
+                            "error": error.localizedDescription
+                        ])
             }
             return false
         }

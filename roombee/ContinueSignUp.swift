@@ -1,4 +1,5 @@
 import SwiftUI
+import Mixpanel
 import Combine
 
 struct ContinueSignUp: View {
@@ -89,6 +90,7 @@ struct ContinueSignUp: View {
     // primarily pulls onboardGuide up, but also shows error messages
     private var signUpButton: some View {
         Button(action: {
+            Mixpanel.mainInstance().track(event: "SwipedRight")
             Task {
                 if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
                     && !viewModel.gender.isEmpty) {

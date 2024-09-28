@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import Mixpanel
 
 let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
 
@@ -147,6 +147,7 @@ struct HomepageView: View {
                     HStack {
                         Button(action: {
                             navManager.openSideMenu()
+                            Mixpanel.mainInstance().track(event: "NavOpened", properties: ["userID": auth.user_id])
                         }) {
                             VStack (spacing: 3){
                                 Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
@@ -209,8 +210,9 @@ struct HomepageView: View {
         }
         .onChange(of: authViewModel.roommate_id) { newHiveCode in
             // Trigger fetching of toggles when hiveCode changes
-            print("HiveCode updated to: \(newHiveCode)")
+            print("HiveCode updated to: \(String(describing: newHiveCode))")
             fetchInitialToggles()
+            Mixpanel.mainInstance().track(event: "New Roommate Added", properties: [ "userId": auth.user_id ?? "Unknown", "roommate_id": auth.roommate_id])
         }
         .onDisappear{
             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 struct Onboarding3_CreateRoom: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -77,7 +78,8 @@ struct Onboarding3_CreateRoom: View {
                         
                         Button(action: {
                             authViewModel.skipCreateOrJoin = true
-                            showOnboardingGuide = true 
+                            showOnboardingGuide = true
+                            Mixpanel.mainInstance().track(event: "Skip", properties: ["userID": authViewModel.user_id])
                         }) {                                Group {
                                 if authViewModel.authenticationState != .authenticating {
                                     Text("Let's Go!")

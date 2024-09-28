@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Mixpanel
 
 struct InviteLinkPopupView: View {
     @EnvironmentObject var auth: AuthenticationViewModel
@@ -35,6 +36,7 @@ struct InviteLinkPopupView: View {
             Button(action: {
                 UIPasteboard.general.string = auth.hive_code
                 isPresented = false
+                Mixpanel.mainInstance().track(event: "CopyHive", properties: ["userID": auth.user_id])
             }) {
                 Text("Copy and Close")
                     .padding()
@@ -60,8 +62,10 @@ struct InviteLinkPopupView: View {
                         print(error.localizedDescription)
                     }
                 }
+                Mixpanel.mainInstance().track(event: "AddRoommateButton", properties: ["userID": auth.user_id])
+                
 
-            }) {
+            }){
                 Text("Submit Hive Code")
                     .padding()
                     .background(Color.green)

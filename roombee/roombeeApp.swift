@@ -12,6 +12,7 @@ import FirebaseAuth
 import AWSLambda
 import AWSCore
 import KeychainAccess
+import Mixpanel
 
 
 @MainActor
@@ -37,6 +38,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
+        Mixpanel.initialize(token: "50a544cc84f2bb1dfe1ed02a5d41e9b2", trackAutomaticEvents: false)
         UIApplication.shared.registerForRemoteNotifications()
         return true
     }

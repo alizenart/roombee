@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 struct SettingsView: View {
     @EnvironmentObject var navManager: NavManager
@@ -36,7 +37,10 @@ struct SettingsView: View {
                     
 
                     // About Roombee Button
-                    Button(action: {showAboutRoombee = true}){
+                    Button(action: {
+                        showAboutRoombee = true
+                        Mixpanel.mainInstance().track(event: "AboutRoombee")
+                    }){
                         HStack {
                             Image(systemName: "info.square.fill")
                                 .resizable()
@@ -148,7 +152,7 @@ struct AboutRoombeeView: View {
             Form {
 //                backgroundColor.ignoresSafeArea()
                 VStack(alignment: .leading, spacing: 15) { // Adjust spacing as needed
-                    Text("Roombee is founded by a group of Northwestern University students at The Garage, the university's startup incubator. Alison Bai, a junior at Northwestern, came up with the idea while navigating the experiences of living with roommates.")
+                    Text("Roombee is founded by a group of Northwestern University students at The Garage, the university's startup incubator. Alison Bai, a junior at Northwestern, came up with the idea while navigating the experiences of living with roommates. It is co-created by Alison, Ziye Wang, and Nicole Liu")
                     
                     Text("With the help of like-minded peers, Roombee was born during a hackathon, where it won first place. Inspired by their success, the team decided to continue developing the project.")
                 }

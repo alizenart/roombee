@@ -72,6 +72,7 @@ struct Onboarding3_CreateRoom2: View {
                                 .background(Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255))
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
+                            
                         }
                         
 

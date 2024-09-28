@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import Mixpanel
 import SwiftUI
 
 struct RoommateAgreementView: View {
@@ -297,7 +297,7 @@ struct NewAgreementsForm: View {
                         itemDetails: itemDetails
                     )
                 }
-
+                Mixpanel.mainInstance().track(event: "NewAgreement", properties: ["userID": auth.user_id])
                 agreementStore.addAgreement(newAgreement)
                 
                 showForm = false

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 
 struct HomepageContent: View {
@@ -223,6 +224,7 @@ struct StatusView: View {
                             .onChange(of: isSleeping) { isOn in
                                 if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
                                     toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
+                                    Mixpanel.mainInstance().track(event: "SleepingToggle", properties: ["userID": auth.user_id ?? "Unknown"])
                                 }
                                 if hasLoaded && !canToggle {
                                     NotificationService.shared.toggleSleep(isAsleep: isOn)
@@ -237,6 +239,7 @@ struct StatusView: View {
                             .onChange(of: inRoom) { isOn in
                                 if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
                                     toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                    Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
                                 }
                                 if hasLoaded && !canToggle {
                                     NotificationService.shared.toggleRoom(inRoom: isOn)
@@ -247,6 +250,7 @@ struct StatusView: View {
                 } else {
                     Button(action: {
                         showInviteLinkPopup.toggle()
+                        Mixpanel.mainInstance().track(event: "InvitePopup", properties: ["userID": auth.user_id])
                     }) {
                         Text("Add roommate to see toggles")
                             .font(.footnote)
@@ -275,7 +279,7 @@ struct DatesCarousel: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
     var dates: [Date]
     var onDateSelected: (Date) -> Void
-
+    @EnvironmentObject var auth: AuthenticationViewModel
     var onSwipeLeft: () -> Void
     var onSwipeRight: () -> Void
 
@@ -295,6 +299,7 @@ struct DatesCarousel: View {
 //                    .alignmentGuide(.firstTextBaseline) { d in d[.firstTextBaseline] }
                 Button(action: {
                     onSwipeRight() // Call onSwipeRight when the left arrow button is pressed
+                    Mixpanel.mainInstance().track(event: "SwipedRight", properties: ["userID": auth.user_id])
                 }) {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.white)
@@ -305,6 +310,8 @@ struct DatesCarousel: View {
                 
                 Button(action: {
                     onSwipeLeft() // Call onSwipeLeft when the right arrow button is pressed
+                    Mixpanel.mainInstance().track(event: "SwipedLeft", properties: ["userID": auth.user_id])
+                    
                 }) {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.white)
@@ -390,6 +397,7 @@ struct DateToggle: View {
     
     var body: some View {
         Button(action: onTapped) {
+            
             let statusShape = RoundedRectangle(cornerRadius: 10)
             ZStack {
                 statusShape
