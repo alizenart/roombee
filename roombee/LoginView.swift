@@ -27,6 +27,7 @@ struct LoginView: View {
                     
                     Button(action: signInWithEmailPassword) {
                         loginButtonContent
+                        
                     }
                     .disabled(!viewModel.isValid)
                     .buttonStyle(.borderedProminent)

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 
 struct Onboarding3_joinExisting: View {
@@ -59,8 +60,9 @@ struct Onboarding3_joinExisting: View {
                         
                         Button(action: {
                             authViewModel.skipCreateOrJoin = true
-                            showOnboardingGuide = true 
-                        }) {                            
+                            showOnboardingGuide = true
+                            Mixpanel.mainInstance().track(event: "JoinExisting", properties: ["userID": authViewModel.user_id])
+                        }) {
                             Text("Let's Go!")
                                 .font(.system(size : 25, weight: .bold))
                                 .frame(width: 175, height: 60, alignment: .center)

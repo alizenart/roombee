@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 struct SettingsView: View {
     @EnvironmentObject var navManager: NavManager
@@ -36,7 +37,10 @@ struct SettingsView: View {
                     
 
                     // About Roombee Button
-                    Button(action: {showAboutRoombee = true}){
+                    Button(action: {
+                        showAboutRoombee = true
+                        Mixpanel.mainInstance().track(event: "AboutRoombee")
+                    }){
                         HStack {
                             Image(systemName: "info.square.fill")
                                 .resizable()

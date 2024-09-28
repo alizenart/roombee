@@ -181,6 +181,7 @@ struct SecureInputField: View {
             }
             Button(action: {
                 isSecure.toggle()
+                
             }) {
                 Image(systemName: isSecure ? "eye.slash.fill" : "eye.fill")
                     .foregroundColor(Color.gray.opacity(0.7))

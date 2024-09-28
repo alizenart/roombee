@@ -1,4 +1,5 @@
 import SwiftUI
+import Mixpanel
 
 struct ToDoView: View {
     @EnvironmentObject var todoManager: TodoViewModel
@@ -58,6 +59,7 @@ struct ToDoView: View {
                                                 task.status = task.status == 0 ? 1 : 0
                                                 todoManager.updateTodo(todoID: task.id, todoStatus: String(task.status));
                                                 skipNextFilter = true
+                                                Mixpanel.mainInstance().track(event: "TaskCompletion", properties:  ["user_id": auth.user_id ?? "Unknown"])
                                             }
                                             Text(task.todoTitle)
                                                 .multilineTextAlignment(.leading)
@@ -86,7 +88,7 @@ struct ToDoView: View {
                                     $tasks.wrappedValue.remove(atOffsets: indexSet)
                                     todoManager.deleteTodo(todoID: deletedtask.id)
                                     skipNextFilter = true
-                                    
+                                    Mixpanel.mainInstance().track(event: "TaskDeletion", properties: ["userID": auth.user_id])
                                 }
                             }
                         } // List
@@ -126,6 +128,7 @@ struct ToDoView: View {
                                     todoCategory: task.todoCategory,
                                     todoStatus: String(task.status)
                                 )
+                                Mixpanel.mainInstance().track(event: "NewTodo", properties: ["userID": auth.user_id])
                                 tasks.append(task)
                                 skipNextFilter = true
                             } else {
