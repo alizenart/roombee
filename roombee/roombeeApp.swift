@@ -38,7 +38,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
-        Mixpanel.initialize(token: "50a544cc84f2bb1dfe1ed02a5d41e9b2", trackAutomaticEvents: false)
+        Mixpanel.initialize(token: "afcb925e6a6fc8b2cb699e8e0251aebb", trackAutomaticEvents: false)
         UIApplication.shared.registerForRemoteNotifications()
         return true
     }
