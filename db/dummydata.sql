@@ -8,4 +8,4 @@ use roombee;
 --   events(event_id, user_id, event_title, event_date, start_time, end_time, approved)
 --   values(0, 0, "test event", '2024-04-29', )
 
-SELECT * FROM todolist;
+SELECT * FROM users ORDER BY user_id asc;

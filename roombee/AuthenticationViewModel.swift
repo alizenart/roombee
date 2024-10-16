@@ -55,6 +55,11 @@ class AuthenticationViewModel: ObservableObject {
     @Published var hive_code = ""
     @Published var hive_name = ""
     
+    @Published var user_firstName = ""
+    @Published var user_lastName = ""
+    @Published var roommate_firstName = ""
+    @Published var roommate_lastName = ""
+    
     @Published var showingErrorAlert = false
     
     @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
@@ -404,12 +409,16 @@ extension AuthenticationViewModel {
                                     self.hive_code = userData["hive_code"] as? String ?? ""
                                     self.user_id = userData["user_id"] as? String ?? ""
                                     self.isUserDataLoaded = true
+                                    self.user_firstName = userData["first_name"] as? String ?? ""
+                                    self.user_lastName = userData["last_name"] as? String ?? ""
                                     print("User data loaded: \(userData)")
                                 }
                                 
                                 if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {
                                     self.isUserDataLoaded = true
                                     self.roommate_id = roommateData["user_id"] as? String ?? ""
+                                    self.roommate_firstName = roommateData["first_name"] as? String ?? ""
+                                    self.roommate_lastName = roommateData["last_name"] as? String ?? ""
                                     print("Roommate data loaded: \(roommateData)")
                                 }
                             }
