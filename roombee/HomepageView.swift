@@ -89,9 +89,10 @@ struct HomepageView: View {
                                     roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
                                     roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
                                     isInitialLoad: $isInitialLoad,
-                                    calGrid: GridView(cal: CalendarView(title: "Me")),
+                                    calGrid: GridView(cal: CalendarView(title: auth.user_firstName ?? "Me")),
+                                    
                                     yourStatus: auth.user_id != nil ? StatusView(
-                                        title: "Me:",
+                                        title: "\(auth.user_firstName ?? "Me"):",
                                         canToggle: true,
                                         isSleeping: $myStatusToggleSleeping,
                                         inRoom: $myStatusToggleInRoom,
@@ -99,7 +100,7 @@ struct HomepageView: View {
                                         isInitialLoad: $isInitialLoad
                                     ) : nil,
                                     roomStatus: StatusView(
-                                        title: "Roommate:",
+                                        title: "\(auth.roommate_firstName ?? "Roommate"):",  // Main title
                                         canToggle: false,
                                         isSleeping: $roomieStatusToggleSleeping,
                                         inRoom: $roomieStatusToggleInRoom,
