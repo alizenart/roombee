@@ -240,8 +240,20 @@ struct NewAgreementsForm: View {
     @State private var itemDetails = ""
     
     private let ruleTags = ["Chores", "Prohibitions"]
-    private let owners = ["Roommate1", "Roommate2"]
-    private let whoIsAbletoUse = ["Roommate1 Only", "Roommate2 Only", "Everyone"]
+    private var owners: [String] {
+        [
+            "\(auth.user_firstName) \(auth.user_lastName)",
+            "\(auth.roommate_firstName) \(auth.roommate_lastName)"
+        ]
+    }
+
+    private var whoIsAbleToUse: [String] {
+        [
+            "\(auth.user_firstName) \(auth.user_lastName) Only",
+            "\(auth.roommate_firstName) \(auth.roommate_lastName) Only",
+            "Everyone"
+        ]
+    }
 
     
     var body: some View {
@@ -261,7 +273,7 @@ struct NewAgreementsForm: View {
                 else {
                     TextField("Item", text: $title)
                     SingleSelectionDropdownView(title: "Owner", prompt: "None", options: owners, selection: $itemOwner)
-                    SingleSelectionDropdownView(title: "Who Can Use", prompt: "None", options: whoIsAbletoUse, selection: $whoCanUse)
+                    SingleSelectionDropdownView(title: "Who Can Use", prompt: "None", options: whoIsAbleToUse, selection: $whoCanUse)
                     TextField("Details", text: $itemDetails)
 
                 }
@@ -417,9 +429,18 @@ struct AgreementView: View {
             return "Roommate Only"
         }
         else {
-            return "Everyone"
+            if user == auth.user_id {
+                return "\(auth.user_firstName) \(auth.user_lastName) Only"
+            } else if user == auth.roommate_id {
+                return "\(auth.roommate_firstName) \(auth.roommate_lastName) Only"
+            } else if user == "Everyone" {
+                return "Everyone"
+            } else {
+                return user // Fallback for unexpected input
+            }
         }
     }
+
 }
 
 
