@@ -20,6 +20,7 @@ struct SettingsView: View {
     
     private func signOut() {
         authManager.signOut(eventStore: eventStore)
+        navManager.selectedSideMenuTab = 0
     }
 
     

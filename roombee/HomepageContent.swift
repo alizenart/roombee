@@ -64,10 +64,15 @@ struct HomepageContent: View {
                 ScrollView {
                     VStack {
                         
-                        Text("Roombee")
-                            .font(.largeTitle)
-                            .foregroundColor(ourOrange)
-                            .fontWeight(.bold)
+//                        Text("Roombee")
+//                            .font(.largeTitle)
+//                            .foregroundColor(ourOrange)
+//                            .fontWeight(.bold)
+//                            .padding(.top, 20)
+                        Image("RoombeeWithoutSmile")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 32)
                             .padding(.top, 20)
                         
                         HStack(spacing: 20){
