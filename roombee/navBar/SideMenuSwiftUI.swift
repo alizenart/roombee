@@ -191,14 +191,36 @@ struct SideMenuView: View {
                 print("Failed to upload image: \(error.localizedDescription)")
             } else {
                 print("Successfully uploaded image to: \(s3Url)")
-                
-                // Ensure the update happens on the main thread
+
+                // Save the image locally
+                self.saveImageLocally(image)
+
+                // Ensure the profile image URL update happens on the main thread
                 DispatchQueue.main.async {
-                    self.authViewModel.updateProfileImageURL(s3Url: s3Url) // Save URL to backend
+                    self.authViewModel.updateProfileImageURL(s3Url: s3Url)
                 }
             }
         }
     }
+
+    // Helper function to save the image locally
+    private func saveImageLocally(_ image: UIImage) {
+        if let data = image.jpegData(compressionQuality: 1.0) {
+            let fileURL = getDocumentsDirectory().appendingPathComponent("profileImage.jpg")
+            do {
+                try data.write(to: fileURL)
+                print("Image saved locally at: \(fileURL)")
+            } catch {
+                print("Error saving image locally: \(error)")
+            }
+        }
+    }
+
+    // Helper function to get the document directory path
+    private func getDocumentsDirectory() -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+
 
 
     func RowView(isSelected: Bool, imageName: String, title: String, action: @escaping () -> ()) -> some View {
