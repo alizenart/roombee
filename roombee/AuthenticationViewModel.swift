@@ -10,6 +10,9 @@ import FirebaseAuth
 import SwiftUI
 import AWSLambda
 import Mixpanel
+import AWSS3
+import AWSCore
+
 
 enum AuthenticationState {
     case unauthenticated
@@ -59,6 +62,10 @@ class AuthenticationViewModel: ObservableObject {
     @Published var user_lastName = ""
     @Published var roommate_firstName = ""
     @Published var roommate_lastName = ""
+    
+    
+    @Published var profileImageURL: String? = nil
+
     
     @Published var showingErrorAlert = false
     
@@ -372,6 +379,12 @@ extension AuthenticationViewModel {
             }
             return nil
         }
+    }
+    
+    
+    func updateProfileImageURL(s3Url: String){
+        profileImageURL = s3Url
+        
     }
 
     

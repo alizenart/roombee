@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import AWSS3
+import AWSCore
+
 
 
 enum SideMenuRowType: Int, CaseIterable {
@@ -50,6 +53,10 @@ enum SideMenuRowType: Int, CaseIterable {
 struct SideMenuView: View {
     @ObservedObject var navManager: NavManager
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @State private var profileImage: UIImage? // Store selected image
+    @State private var isShowingImagePicker = false // Toggle ImagePicker
+    
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack{
@@ -57,8 +64,11 @@ struct SideMenuView: View {
                     VStack {
                         ProfileImageView()
                             .frame(height: 140)
-                            .padding(.top, geometry.safeAreaInsets.top+30)
+                            .padding(.top, geometry.safeAreaInsets.top + 30)
                             .padding(.bottom, 30)
+                            .onTapGesture {
+                                isShowingImagePicker = true // Open Image Picker
+                            }
                         
                         ForEach(SideMenuRowType.allCases, id: \.self) { row in
                             RowView(isSelected: navManager.selectedSideMenuTab == row.rawValue, imageName: row.iconName, title: row.title) {
@@ -105,26 +115,91 @@ struct SideMenuView: View {
                 } //ontapgesture
             }//zstack
         }
+        .sheet(isPresented: $isShowingImagePicker) {
+            ImagePicker(image: $profileImage) { image in
+                uploadImageToS3(image)
+            }
+        }
     }
 
     func ProfileImageView() -> some View {
         return VStack(alignment: .center) {
             HStack {
                 Spacer()
-                Image("ProfileIcon")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 100, height: 100)
-                    .overlay(RoundedRectangle(cornerRadius: 50).stroke(LighterPurple.opacity(0.5), lineWidth: 10))
-                    .cornerRadius(50)
+                if let profileImage = profileImage {
+                    Image(uiImage: profileImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                } else if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 100, height: 100)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                        case .failure:
+                            Image("ProfileIcon")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 100, height: 100)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                        }
+                    }
+                } else {
+                    Image("ProfileIcon")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                }
                 Spacer()
             }
-            
-
             Text(authViewModel.user_firstName).font(.system(size: 18, weight: .bold)).foregroundColor(.black)
             Text(authViewModel.user_lastName).font(.system(size: 14, weight: .semibold)).foregroundColor(.black.opacity(0.5))
         }
     }
+
+    
+    func uploadImageToS3(_ image: UIImage) {
+        print("uploadImageToS3 called")
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+
+        let fileName = "profilePictures/\(authViewModel.user_id ?? "hello").jpg"
+        let s3BucketName = "roombee-profile-pictures"
+        let s3Url = "https://\(s3BucketName).s3.amazonaws.com/\(fileName)"
+
+        let uploadRequest = AWSS3TransferUtilityUploadExpression()
+
+        AWSS3TransferUtility.default().uploadData(
+            imageData,
+            bucket: s3BucketName,
+            key: fileName,
+            contentType: "image/jpeg",
+            expression: uploadRequest
+        ) { task, error in
+            if let error = error {
+                print("Failed to upload image: \(error.localizedDescription)")
+            } else {
+                print("Successfully uploaded image to: \(s3Url)")
+                
+                // Ensure the update happens on the main thread
+                DispatchQueue.main.async {
+                    self.authViewModel.updateProfileImageURL(s3Url: s3Url) // Save URL to backend
+                }
+            }
+        }
+    }
+
 
     func RowView(isSelected: Bool, imageName: String, title: String, action: @escaping () -> ()) -> some View {
         Button(action: action) {
