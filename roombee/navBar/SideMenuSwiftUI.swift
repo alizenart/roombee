@@ -69,6 +69,7 @@ struct SideMenuView: View {
                             .onTapGesture {
                                 isShowingImagePicker = true // Open Image Picker
                             }
+                            .environmentObject(authViewModel)
                         
                         ForEach(SideMenuRowType.allCases, id: \.self) { row in
                             RowView(isSelected: navManager.selectedSideMenuTab == row.rawValue, imageName: row.iconName, title: row.title) {
@@ -123,17 +124,12 @@ struct SideMenuView: View {
     }
 
     func ProfileImageView() -> some View {
+        print("in ProfileImageView")
+        print("authViewModel.profileImageURL: " , authViewModel.profileImageURL)
         return VStack(alignment: .center) {
             HStack {
                 Spacer()
-                if let profileImage = profileImage {
-                    Image(uiImage: profileImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 100, height: 100)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
-                } else if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
+                if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .empty:
@@ -144,29 +140,28 @@ struct SideMenuView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 100, height: 100)
                                 .clipShape(Circle())
-                                .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                                .overlay(Circle().stroke(Color.purple.opacity(0.5), lineWidth: 10))
                         case .failure:
-                            Image("ProfileIcon")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 100, height: 100)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                            fallbackProfileImage()
                         }
                     }
                 } else {
-                    Image("ProfileIcon")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 100, height: 100)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(LighterPurple.opacity(0.5), lineWidth: 10))
+                    fallbackProfileImage()
                 }
                 Spacer()
             }
             Text(authViewModel.user_firstName).font(.system(size: 18, weight: .bold)).foregroundColor(.black)
             Text(authViewModel.user_lastName).font(.system(size: 14, weight: .semibold)).foregroundColor(.black.opacity(0.5))
         }
+    }
+    
+    func fallbackProfileImage() -> some View {
+        Image("ProfileIcon")
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 100, height: 100)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.purple.opacity(0.5), lineWidth: 10))
     }
 
     
@@ -197,7 +192,7 @@ struct SideMenuView: View {
 
                 // Ensure the profile image URL update happens on the main thread
                 DispatchQueue.main.async {
-                    self.authViewModel.updateProfileImageURL(s3Url: s3Url)
+                    self.authViewModel.updateProfilePictureURL(s3Url: s3Url)
                 }
             }
         }

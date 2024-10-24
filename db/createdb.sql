@@ -10,6 +10,7 @@ CREATE TABLE users
   dob DATE not null,
   hive_code int not null, 
   password_hash CHAR(64) not null, -- store as hash, hash in api.
+  profile_picture_url VARCHAR(255),
   PRIMARY KEY (user_id), 
   UNIQUE (email)
 );
