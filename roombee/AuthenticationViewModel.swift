@@ -10,6 +10,9 @@ import FirebaseAuth
 import SwiftUI
 import AWSLambda
 import Mixpanel
+import AWSS3
+import AWSCore
+
 
 enum AuthenticationState {
     case unauthenticated
@@ -59,6 +62,11 @@ class AuthenticationViewModel: ObservableObject {
     @Published var user_lastName = ""
     @Published var roommate_firstName = ""
     @Published var roommate_lastName = ""
+    
+    
+    @Published var profileImageURL: String? = nil
+
+    @Published var roommateProfileImageURL: String? = nil
     
     @Published var showingErrorAlert = false
     
@@ -373,6 +381,37 @@ extension AuthenticationViewModel {
             return nil
         }
     }
+    
+    
+    func updateProfilePictureURL(s3Url: String) {
+        self.profileImageURL = s3Url
+        let lambdaInvoker = AWSLambdaInvoker.default()
+        
+        let jsonObject = [
+            "queryStringParameters": [
+                "user_id": user_id,
+                "profile_picture_url": s3Url
+            ]
+        ] as [String: Any]
+        
+        lambdaInvoker.invokeFunction("updateProfilePicture", jsonObject: jsonObject).continueWith { task -> Any? in
+            if let error = task.error {
+                print("Error occurred: \(error)")
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                    self.showingErrorAlert = true
+                }
+                return nil
+            }
+            if let result = task.result {
+                print("Lambda function result: \(result)")
+                DispatchQueue.main.async {
+                    self.showingErrorAlert = false
+                }
+            }
+            return nil
+        }
+    }
 
     
     
@@ -411,6 +450,8 @@ extension AuthenticationViewModel {
                                     self.isUserDataLoaded = true
                                     self.user_firstName = userData["first_name"] as? String ?? ""
                                     self.user_lastName = userData["last_name"] as? String ?? ""
+                                    self.profileImageURL = userData["profile_picture_url"] as? String ?? ""
+                                    
                                     print("User data loaded: \(userData)")
                                 }
                                 
@@ -419,6 +460,7 @@ extension AuthenticationViewModel {
                                     self.roommate_id = roommateData["user_id"] as? String ?? ""
                                     self.roommate_firstName = roommateData["first_name"] as? String ?? ""
                                     self.roommate_lastName = roommateData["last_name"] as? String ?? ""
+                                    self.roommateProfileImageURL = roommateData["profile_picture_url"] as? String ?? ""
                                     print("Roommate data loaded: \(roommateData)")
                                 }
                             }

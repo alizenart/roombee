@@ -65,6 +65,8 @@
 		C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FE5F632BE06F9E00161711 /* APIService.swift */; };
 		FA14A73C2C9826640042F1EB /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = FA14A73B2C9826640042F1EB /* KeychainAccess */; };
 		FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5554592C4460B50002E18F /* ToggleViewModel.swift */; };
+		FAD04AB92CCAAFC000353A33 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */; };
+		FAD04ABC2CCAB1C400353A33 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = FAD04ABB2CCAB1C400353A33 /* AWSS3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,6 +122,7 @@
 		C775E0552B8BFC26009F644B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		C7FE5F632BE06F9E00161711 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		FA5554592C4460B50002E18F /* ToggleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleViewModel.swift; sourceTree = "<group>"; };
+		FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		FAE0C6D22C67F43B002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE0C6D52C67F455002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -132,6 +135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD04ABC2CCAB1C400353A33 /* AWSS3 in Frameworks */,
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
 				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
 				FA14A73C2C9826640042F1EB /* KeychainAccess in Frameworks */,
@@ -170,6 +174,7 @@
 			children = (
 				30AA0BBA2AD1BC0400344002 /* roombee */,
 				FAF91EAB2C6662C500B60E68 /* roombee.app */,
+				FAD04ABA2CCAB1C400353A33 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -256,6 +261,7 @@
 			children = (
 				68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */,
 				68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */,
+				FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */,
 			);
 			path = navBar;
 			sourceTree = "<group>";
@@ -269,6 +275,13 @@
 				680FEBEF2BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		FAD04ABA2CCAB1C400353A33 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -300,6 +313,7 @@
 				309989122BFC7386005519F1 /* FirebaseAuth */,
 				685ACAF62C66BEAB0069E7BA /* Mixpanel */,
 				FA14A73B2C9826640042F1EB /* KeychainAccess */,
+				FAD04ABB2CCAB1C400353A33 /* AWSS3 */,
 			);
 			productName = roombee;
 			productReference = FAF91EAB2C6662C500B60E68 /* roombee.app */;
@@ -390,6 +404,7 @@
 				308DFDDD2BE9D88A00640B62 /* TextFieldStyle.swift in Sources */,
 				309D67712BCE478900C343FF /* AuthenticationViewModel.swift in Sources */,
 				4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */,
+				FAD04AB92CCAAFC000353A33 /* ImagePicker.swift in Sources */,
 				4CE4E4242C5C47DA0070C378 /* TodoViewModel.swift in Sources */,
 				680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */,
 				6897FCE62C743E60001B0A52 /* OnboardGuide.swift in Sources */,
@@ -777,6 +792,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		FAD04ABB2CCAB1C400353A33 /* AWSS3 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSS3;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

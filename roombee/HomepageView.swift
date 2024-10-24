@@ -167,6 +167,7 @@ struct HomepageView: View {
                 
                 if navManager.presentSideMenu {
                     SideMenuView(navManager: navManager)
+                        .environmentObject(authViewModel)
                         .transition(.move(edge: .leading))
                         .animation(.easeInOut, value: navManager.presentSideMenu)
                 }
