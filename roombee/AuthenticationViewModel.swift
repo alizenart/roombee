@@ -384,6 +384,7 @@ extension AuthenticationViewModel {
     
     
     func updateProfilePictureURL(s3Url: String) {
+        self.profileImageURL = s3Url
         let lambdaInvoker = AWSLambdaInvoker.default()
         
         let jsonObject = [
