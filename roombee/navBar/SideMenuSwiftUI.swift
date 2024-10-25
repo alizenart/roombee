@@ -192,7 +192,9 @@ struct SideMenuView: View {
 
                 // Ensure the profile image URL update happens on the main thread
                 DispatchQueue.main.async {
-                    self.authViewModel.updateProfilePictureURL(s3Url: s3Url)
+                    let timestamp = Int(Date().timeIntervalSince1970)
+                    authViewModel.profileImageURL = "\(s3Url)?v=\(timestamp)"
+                    self.authViewModel.updateProfilePictureURL(s3Url: "\(s3Url)?v=\(timestamp)")
                 }
             }
         }
