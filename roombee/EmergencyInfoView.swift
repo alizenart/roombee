@@ -9,8 +9,9 @@ import SwiftUI
 
 struct EmergencyInfoView: View {
     @StateObject private var emergencyInfoViewModel = EmergencyInfoViewModel()
-    @State private var emergencyContacts: [EmergencyContact] = []
     @State private var showNewContactForm = false
+    
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
 
     var body: some View {
         VStack {
@@ -25,7 +26,7 @@ struct EmergencyInfoView: View {
                         .cornerRadius(10)
                 }
                 .sheet(isPresented: $showNewContactForm) {
-                    NewEmergencyContactForm(showForm: $showNewContactForm, contacts: $emergencyContacts)
+                    NewEmergencyContactForm(showForm: $showNewContactForm, viewModel: emergencyInfoViewModel, userID: authViewModel.user_id ?? "80003")
                 }
             }
             .padding()
@@ -35,14 +36,14 @@ struct EmergencyInfoView: View {
                 .fontWeight(.bold)
                 .foregroundColor(.red)
 
-            if emergencyContacts.isEmpty {
+            if emergencyInfoViewModel.emergencyContacts.isEmpty {
                 Text("No emergency contacts yet. Add one using the button above.")
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
                     .padding()
             } else {
                 List {
-                    ForEach(emergencyContacts) { contact in
+                    ForEach(emergencyInfoViewModel.emergencyContacts) { contact in
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(contact.name)
@@ -63,12 +64,18 @@ struct EmergencyInfoView: View {
                         .padding()
                     }
                     .onDelete { indexSet in
-                        emergencyContacts.remove(atOffsets: indexSet)
+                        if let index = indexSet.first {
+                            let contact = emergencyInfoViewModel.emergencyContacts[index]
+                            emergencyInfoViewModel.deleteContact(contactID: contact.id, userID: contact.user_id)
+                        }
                     }
                 }
             }
         }
         .padding()
+        .onAppear {
+            emergencyInfoViewModel.fetchContacts(userID: authViewModel.user_id ?? "80003")
+        }
     }
 
     private func makePhoneCall(to number: String) {
@@ -79,6 +86,7 @@ struct EmergencyInfoView: View {
     }
 }
 
+
 struct EmergencyContact: Identifiable {
     let id = UUID()
     var name: String
@@ -88,7 +96,8 @@ struct EmergencyContact: Identifiable {
 
 struct NewEmergencyContactForm: View {
     @Binding var showForm: Bool
-    @Binding var contacts: [EmergencyContact]
+    var viewModel: EmergencyInfoViewModel  // Inject ViewModel
+    let userID: String
 
     @State private var name = ""
     @State private var phoneNumber = ""
@@ -106,13 +115,19 @@ struct NewEmergencyContactForm: View {
             .navigationBarItems(leading: Button("Cancel") {
                 showForm = false
             }, trailing: Button("Save") {
-                let newContact = EmergencyContact(name: name, phoneNumber: phoneNumber, relationship: relationship)
-                contacts.append(newContact)
+                let newContact = EmergencyContactInfo(
+                    user_id: userID,  // Replace with actual user ID
+                    name: name,
+                    phoneNumber: phoneNumber,
+                    relationship: relationship
+                )
+                viewModel.addContact(contact: newContact)
                 showForm = false
             })
         }
     }
 }
+
 
 #Preview {
     EmergencyInfoView()

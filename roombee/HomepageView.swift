@@ -139,6 +139,8 @@ struct HomepageView: View {
                             .environmentObject(eventStore)
                     case 4:
                         EmergencyInfoView()
+                            .environmentObject(authViewModel)
+                        
                     case 5:
                         SettingsView()
                             .environmentObject(authViewModel)
