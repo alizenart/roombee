@@ -36,6 +36,8 @@ struct DropdownView: View {
                 }
                 .frame(height: 40)
                 .padding(.horizontal)
+                .contentShape(Rectangle()) // trying to fix click exmpty space
+
                 .onTapGesture{
                     withAnimation(.snappy) {isExpanded.toggle()}
                 }
@@ -108,6 +110,8 @@ struct SingleSelectionDropdownView: View {
                 }
                 .frame(height: 40)
                 .padding(.horizontal)
+                .contentShape(Rectangle()) // trying to fix click exmpty space
+
                 .onTapGesture {
                     withAnimation(.snappy) {
                         isExpanded.toggle()

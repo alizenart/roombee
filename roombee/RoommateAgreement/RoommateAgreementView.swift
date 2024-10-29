@@ -240,19 +240,22 @@ struct NewAgreementsForm: View {
     @State private var itemDetails = ""
     
     private let ruleTags = ["Chores", "Prohibitions"]
+
+    
     private var owners: [String] {
-        [
-            "\(auth.user_firstName) \(auth.user_lastName)",
-            "\(auth.roommate_firstName) \(auth.roommate_lastName)"
-        ]
+        if auth.roommate_firstName.isEmpty || auth.roommate_lastName.isEmpty {
+            return ["\(auth.user_firstName) \(auth.user_lastName)", "Everyone"]
+        } else {
+            return ["\(auth.user_firstName) \(auth.user_lastName)", "\(auth.roommate_firstName) \(auth.roommate_lastName)", "Everyone"]
+        }
     }
 
     private var whoIsAbleToUse: [String] {
-        [
-            "\(auth.user_firstName) \(auth.user_lastName) Only",
-            "\(auth.roommate_firstName) \(auth.roommate_lastName) Only",
-            "Everyone"
-        ]
+        if auth.roommate_firstName.isEmpty || auth.roommate_lastName.isEmpty {
+            return ["\(auth.user_firstName) \(auth.user_lastName)", "Everyone"]
+        } else {
+            return ["\(auth.user_firstName) \(auth.user_lastName)", "\(auth.roommate_firstName) \(auth.roommate_lastName)", "Everyone"]
+        }
     }
 
     
@@ -304,8 +307,8 @@ struct NewAgreementsForm: View {
                         dateCreated: date_string,
                         isRule: isRule ? "0" : "1",
                         tags: tags.joined(separator: ","),
-                        itemOwner: userId,
-                        whoCanUse: userId,
+                        itemOwner: itemOwner,
+                        whoCanUse: whoCanUse,
                         itemDetails: itemDetails
                     )
                 }
@@ -364,7 +367,7 @@ struct AgreementView: View {
                     }
                     .padding(.top, 5)
                 }
-            } 
+            }
             // if the agreement is an item, this is the post's view
             else {
                 Text(agreement.title)
@@ -413,32 +416,41 @@ struct AgreementView: View {
         .shadow(radius: 5)
     }
     private func parseOwner(owner: String) -> String {
-        if owner == "Roommate 1" || owner == auth.user_id {
-            return auth.firstName
+        if owner == auth.user_id {
+            return "\(auth.user_firstName) \(auth.user_lastName)"
+        }
+        else if owner == auth.roommate_id {
+            return "\(auth.roommate_firstName) \(auth.roommate_lastName)"
         }
         else {
-            return "Roommate"
+            return "Unknown"
         }
     }
     
     private func parseUser(user: String) -> String {
-        if user == "Roommate1 Only" || user == auth.user_id {
-            return auth.firstName
+        if user == auth.user_id {
+            return  "\(auth.user_firstName) \(auth.user_lastName)"
         }
-        else if user == "Roommate2 Only" || user == auth.roommate_id {
-            return "Roommate Only"
+        else if user == auth.roommate_id {
+            return "\(auth.roommate_firstName) \(auth.roommate_lastName)"
+        }
+        else if user == "Everyone" {
+            return "Everyone"
         }
         else {
-            if user == auth.user_id {
-                return "\(auth.user_firstName) \(auth.user_lastName) Only"
-            } else if user == auth.roommate_id {
-                return "\(auth.roommate_firstName) \(auth.roommate_lastName) Only"
-            } else if user == "Everyone" {
-                return "Everyone"
-            } else {
-                return user // Fallback for unexpected input
-            }
+            return "Unknown"
         }
+//        else {
+//            if user == auth.user_id {
+//                return "\(auth.user_firstName) \(auth.user_lastName) Only"
+//            } else if user == auth.roommate_id {
+//                return "\(auth.roommate_firstName) \(auth.roommate_lastName) Only"
+//            } else if user == "Everyone" {
+//                return "Everyone"
+//            } else {
+//                return user // Fallback for unexpected input
+//            }
+//        }
     }
 
 }
