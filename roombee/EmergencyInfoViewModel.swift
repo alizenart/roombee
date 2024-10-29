@@ -4,7 +4,6 @@
 //
 //  Created by Alison Bai on 10/29/24.
 //
-
 import Foundation
 import Combine
 import AWSLambda
@@ -23,8 +22,7 @@ struct EmergencyContactInfo: Codable, Identifiable {
         case phoneNumber = "phone_number"
         case relationship = "relationship"
     }
-    
-    // Optional initializer if needed for mock data
+
     init(user_id: String, name: String, phoneNumber: String, relationship: String) {
         self.user_id = user_id
         self.id = UUID().uuidString
@@ -35,72 +33,70 @@ struct EmergencyContactInfo: Codable, Identifiable {
 }
 
 class EmergencyInfoViewModel: ObservableObject {
-    @Published var emergencyContacts: [EmergencyContactInfo] = []
+    @Published var userContacts: [EmergencyContactInfo] = []
+    @Published var roommateContacts: [EmergencyContactInfo] = []
     @Published var errorMessage: String = ""
     @Published var showingErrorAlert = false
 
     private let lambdaInvoker = AWSLambdaInvoker.default()
     private var cancellables = Set<AnyCancellable>()
-    
-    // Fetch all contacts for the given user
-    func fetchContacts(userID: String) {
-        let jsonObject: [String: Any] = [
-            "queryStringParameters": ["user_id": userID]
-        ]
-        
-        lambdaInvoker.invokeFunction("fetchEmergencyContacts", jsonObject: jsonObject).continueWith { task -> Any? in
-            if let error = task.error {
-                print("Error fetching contacts: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    self.errorMessage = "Failed to fetch contacts"
-                    self.showingErrorAlert = true
+
+    // Fetch contacts for both user and roommate
+    func fetchContacts(userID: String, roommateID: String) {
+        let userContactsPublisher = fetchEmergencyContacts(for: userID)
+        let roommateContactsPublisher = fetchEmergencyContacts(for: roommateID)
+
+        Publishers.Zip(userContactsPublisher, roommateContactsPublisher)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.errorMessage = error.localizedDescription
+                    self?.showingErrorAlert = true
                 }
-                return nil
+            } receiveValue: { [weak self] userContacts, roommateContacts in
+                self?.userContacts = userContacts
+                self?.roommateContacts = roommateContacts
             }
-            
-            guard let result = task.result as? [String: Any],
-                  let bodyString = result["body"] as? String,
-                  let bodyData = bodyString.data(using: .utf8) else {
-                print("Invalid response structure")
-                DispatchQueue.main.async {
-                    self.errorMessage = "Unexpected response format"
-                    self.showingErrorAlert = true
-                }
-                return nil
-            }
-            
-            do {
-                let body = try JSONSerialization.jsonObject(with: bodyData, options: []) as? [String: Any]
-                guard let contactData = body?["contacts"] as? [[String: Any]] else {
-                    print("Failed to find contacts in response body")
-                    DispatchQueue.main.async {
-                        self.errorMessage = "Unexpected response format"
-                        self.showingErrorAlert = true
-                    }
+            .store(in: &cancellables)
+    }
+
+    // Helper to fetch contacts for a specific user
+    private func fetchEmergencyContacts(for userID: String) -> Future<[EmergencyContactInfo], Error> {
+        return Future { promise in
+            let jsonObject: [String: Any] = [
+                "queryStringParameters": ["user_id": userID]
+            ]
+
+            self.lambdaInvoker.invokeFunction("fetchEmergencyContacts", jsonObject: jsonObject).continueWith { task -> Any? in
+                if let error = task.error {
+                    promise(.failure(error))
                     return nil
                 }
-                
-                let decoder = JSONDecoder()
-                let contacts = try contactData.map { contact in
-                    try decoder.decode(EmergencyContactInfo.self, from: JSONSerialization.data(withJSONObject: contact))
+
+                guard let result = task.result as? [String: Any],
+                      let bodyString = result["body"] as? String,
+                      let bodyData = bodyString.data(using: .utf8) else {
+                    promise(.failure(NSError(domain: "Invalid response structure", code: -1, userInfo: nil)))
+                    return nil
                 }
-                DispatchQueue.main.async {
-                    self.emergencyContacts = contacts
+
+                do {
+                    let body = try JSONSerialization.jsonObject(with: bodyData, options: []) as? [String: Any]
+                    let contactData = body?["contacts"] as? [[String: Any]] ?? []
+                    let contacts = try contactData.map { contact in
+                        try JSONDecoder().decode(EmergencyContactInfo.self, from: JSONSerialization.data(withJSONObject: contact))
+                    }
+                    promise(.success(contacts))
+                } catch {
+                    promise(.failure(error))
                 }
-            } catch {
-                print("Failed to decode contacts: \(error)")
-                DispatchQueue.main.async {
-                    self.errorMessage = "Failed to load contacts"
-                    self.showingErrorAlert = true
-                }
+
+                return nil
             }
-            return nil
         }
     }
 
-
-    
-    // Add a new emergency contact
+    // Add new contact
     func addContact(contact: EmergencyContactInfo) {
         let jsonObject = [
             "queryStringParameters": [
@@ -111,42 +107,40 @@ class EmergencyInfoViewModel: ObservableObject {
                 "relationship": contact.relationship
             ]
         ] as [String: Any]
-        
+
         lambdaInvoker.invokeFunction("addEmergencyContact", jsonObject: jsonObject).continueWith { task -> Any? in
             if let error = task.error {
-                print("Error adding contact: \(error)")
                 DispatchQueue.main.async {
                     self.errorMessage = error.localizedDescription
                     self.showingErrorAlert = true
                 }
                 return nil
             }
-            
+
             DispatchQueue.main.async {
-                self.emergencyContacts.append(contact)
+                self.userContacts.append(contact)
             }
             return nil
         }
     }
-    
-    // Delete a contact by ID
+
+    // Delete contact
     func deleteContact(contactID: String, userID: String) {
         let jsonObject = [
             "queryStringParameters": ["user_id": userID, "contact_id": contactID]
         ] as [String: Any]
-        
+
         lambdaInvoker.invokeFunction("deleteEmergencyContact", jsonObject: jsonObject).continueWith { task -> Any? in
             if let error = task.error {
-                print("Error deleting contact: \(error)")
                 DispatchQueue.main.async {
                     self.errorMessage = error.localizedDescription
                     self.showingErrorAlert = true
                 }
                 return nil
             }
-            
+
             DispatchQueue.main.async {
-                self.emergencyContacts.removeAll { $0.id == contactID }
+                self.userContacts.removeAll { $0.id == contactID }
             }
             return nil
         }

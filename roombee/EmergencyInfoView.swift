@@ -10,7 +10,7 @@ import SwiftUI
 struct EmergencyInfoView: View {
     @StateObject private var emergencyInfoViewModel = EmergencyInfoViewModel()
     @State private var showNewContactForm = false
-    
+
     @EnvironmentObject var authViewModel: AuthenticationViewModel
 
     var body: some View {
@@ -36,37 +36,28 @@ struct EmergencyInfoView: View {
                 .fontWeight(.bold)
                 .foregroundColor(.red)
 
-            if emergencyInfoViewModel.emergencyContacts.isEmpty {
-                Text("No emergency contacts yet. Add one using the button above.")
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(.center)
-                    .padding()
-            } else {
-                List {
-                    ForEach(emergencyInfoViewModel.emergencyContacts) { contact in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(contact.name)
-                                    .font(.headline)
-                                Button(action: {
-                                    makePhoneCall(to: contact.phoneNumber)
-                                }) {
-                                    Text("Phone: \(contact.phoneNumber)")
-                                        .font(.subheadline)
-                                        .foregroundColor(.blue)
-                                }
-                                Text("Relationship: \(contact.relationship)")
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
-                            }
-                            Spacer()
+            List {
+                Section(header: Text("Your Contacts").font(.headline)) {
+                    if emergencyInfoViewModel.userContacts.isEmpty {
+                        Text("No emergency contacts yet.")
+                            .foregroundColor(.gray)
+                    } else {
+                        ForEach(emergencyInfoViewModel.userContacts) { contact in
+                            ContactRow(contact: contact)
                         }
-                        .padding()
+                        .onDelete { indexSet in
+                            deleteContact(from: indexSet, in: &emergencyInfoViewModel.userContacts)
+                        }
                     }
-                    .onDelete { indexSet in
-                        if let index = indexSet.first {
-                            let contact = emergencyInfoViewModel.emergencyContacts[index]
-                            emergencyInfoViewModel.deleteContact(contactID: contact.id, userID: contact.user_id)
+                }
+
+                Section(header: Text("Roommate's Contacts").font(.headline)) {
+                    if emergencyInfoViewModel.roommateContacts.isEmpty {
+                        Text("No contacts found for your roommate.")
+                            .foregroundColor(.gray)
+                    } else {
+                        ForEach(emergencyInfoViewModel.roommateContacts) { contact in
+                            ContactRow(contact: contact)
                         }
                     }
                 }
@@ -74,15 +65,34 @@ struct EmergencyInfoView: View {
         }
         .padding()
         .onAppear {
-            emergencyInfoViewModel.fetchContacts(userID: authViewModel.user_id ?? "80003")
+            emergencyInfoViewModel.fetchContacts(
+                userID: authViewModel.user_id ?? "80003",
+                roommateID: "roommateID" // Replace with actual roommate ID logic
+            )
         }
     }
 
-    private func makePhoneCall(to number: String) {
-        let phoneNumber = "tel://\(number)"
-        if let url = URL(string: phoneNumber), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
+    private func deleteContact(from indexSet: IndexSet, in contacts: inout [EmergencyContactInfo]) {
+        if let index = indexSet.first {
+            let contact = contacts[index]
+            emergencyInfoViewModel.deleteContact(contactID: contact.id, userID: contact.user_id)
         }
+    }
+}
+
+struct ContactRow: View {
+    let contact: EmergencyContactInfo
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(contact.name).font(.headline)
+                Text("Phone: \(contact.phoneNumber)").font(.subheadline)
+                Text("Relationship: \(contact.relationship)").font(.footnote).foregroundColor(.gray)
+            }
+            Spacer()
+        }
+        .padding()
     }
 }
 
