@@ -292,8 +292,8 @@ struct NewAgreementsForm: View {
                         dateCreated: date_string,
                         isRule: isRule ? "0" : "1",
                         tags: tags.joined(separator: ","),
-                        itemOwner: userId,
-                        whoCanUse: userId,
+                        itemOwner: itemOwner == "Roommate1" ? userId : auth.roommate_id,
+                        whoCanUse: whoCanUse,
                         itemDetails: itemDetails
                     )
                 }
@@ -401,20 +401,20 @@ struct AgreementView: View {
         .shadow(radius: 5)
     }
     private func parseOwner(owner: String) -> String {
-        if owner == "Roommate 1" || owner == auth.user_id {
-            return auth.firstName
+        if owner == "Roommate1" || owner == auth.user_id {
+            return auth.user_firstName
         }
         else {
-            return "Roommate"
+            return auth.roommate_firstName
         }
     }
     
     private func parseUser(user: String) -> String {
         if user == "Roommate1 Only" || user == auth.user_id {
-            return auth.firstName
+            return auth.user_firstName
         }
         else if user == "Roommate2 Only" || user == auth.roommate_id {
-            return "Roommate Only"
+            return auth.roommate_firstName
         }
         else {
             return "Everyone"
