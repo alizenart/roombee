@@ -87,7 +87,20 @@ struct ContactRow: View {
         HStack {
             VStack(alignment: .leading) {
                 Text(contact.name).font(.headline)
-                Text("Phone: \(contact.phoneNumber)").font(.subheadline)
+                HStack {
+                    Text("Phone:").font(.subheadline)
+                    if let phoneURL = URL(string: "tel:\(contact.phoneNumber)") {
+                        Link(formatPhoneNumber(contact.phoneNumber), destination: phoneURL)
+                            .font(.subheadline)
+                            .foregroundColor(.blue)
+                            .underline()
+                    } else {
+                        Text(formatPhoneNumber(contact.phoneNumber))
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                }
+
                 Text("Relationship: \(contact.relationship)").font(.footnote).foregroundColor(.gray)
             }
             Spacer()
@@ -95,6 +108,43 @@ struct ContactRow: View {
         .padding()
     }
 }
+
+func formatPhoneNumber(_ phoneNumber: String) -> String {
+    let cleanedNumber = phoneNumber.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+    
+    if phoneNumber.hasPrefix("+") || phoneNumber.hasPrefix("00") {
+        return formatInternationalNumber(phoneNumber)
+    }
+    
+    switch cleanedNumber.count {
+    case 10:
+        return "(\(cleanedNumber.prefix(3))) \(cleanedNumber.dropFirst(3).prefix(3))-\(cleanedNumber.suffix(4))"
+    case 11 where cleanedNumber.hasPrefix("1"):
+        return "+1 (\(cleanedNumber.dropFirst().prefix(3))) \(cleanedNumber.dropFirst(4).prefix(3))-\(cleanedNumber.suffix(4))"
+    default:
+        return phoneNumber
+    }
+}
+
+func formatInternationalNumber(_ phoneNumber: String) -> String {
+    var formattedNumber = phoneNumber
+    if formattedNumber.hasPrefix("00") {
+        formattedNumber = "+" + formattedNumber.dropFirst(2)
+    }
+
+    let cleanNumber = formattedNumber.filter { $0.isNumber || $0 == "+" }
+    var result = ""
+    for (index, char) in cleanNumber.enumerated() {
+        result.append(char)
+        if index > 0 && index % 3 == 0 && index != cleanNumber.count - 1 {
+            result.append(" ")
+        }
+    }
+
+    return result
+}
+
+
 
 
 struct EmergencyContact: Identifiable {
@@ -119,6 +169,10 @@ struct NewEmergencyContactForm: View {
                 TextField("Name", text: $name)
                 TextField("Phone Number", text: $phoneNumber)
                     .keyboardType(.phonePad)
+                    .onChange(of: phoneNumber) { newValue in
+                        // auto-format as user types
+                        phoneNumber = formatPhoneNumber(newValue)
+                    }
                 TextField("Relationship", text: $relationship)
             }
             .navigationBarTitle("New Contact", displayMode: .inline)
