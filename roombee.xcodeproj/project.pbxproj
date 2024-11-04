@@ -32,6 +32,7 @@
 		30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BBF2AD1BC0800344002 /* Assets.xcassets */; };
 		30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */; };
 		30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */; };
+		4C1F73682CD179BB0003447B /* DynamoDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1F73672CD179B40003447B /* DynamoDBManager.swift */; };
 		4C2365B72C05366700D6FE49 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B62C05366700D6FE49 /* NotificationService.swift */; };
 		4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B82C05624B00D6FE49 /* LocalNotification.swift */; };
 		4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */; };
@@ -90,6 +91,7 @@
 		30AA0BC12AD1BC0800344002 /* roombee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = roombee.entitlements; sourceTree = "<group>"; };
 		30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageView.swift; sourceTree = "<group>"; };
+		4C1F73672CD179B40003447B /* DynamoDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamoDBManager.swift; sourceTree = "<group>"; };
 		4C2365B62C05366700D6FE49 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		4C2365B82C05624B00D6FE49 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
+				4C1F73672CD179B40003447B /* DynamoDBManager.swift */,
 				FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
@@ -364,6 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6897FCEA2C795FC6001B0A52 /* RoommateAgreementStore.swift in Sources */,
+				4C1F73682CD179BB0003447B /* DynamoDBManager.swift in Sources */,
 				308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */,
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
 				C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */,

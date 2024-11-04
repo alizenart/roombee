@@ -16,7 +16,7 @@ import Mixpanel
 
 
 @MainActor
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
@@ -39,7 +39,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
         Mixpanel.initialize(token: "afcb925e6a6fc8b2cb699e8e0251aebb", trackAutomaticEvents: false)
-        UIApplication.shared.registerForRemoteNotifications()
+        UNUserNotificationCenter.current().delegate = self
         return true
     }
     
@@ -52,6 +52,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         return false
     }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+            let token = tokenParts.joined()
+            print("Device Token: \(token)")
+        };
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+       print(error.localizedDescription)
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([.banner, .badge, .sound])
+        }
     
     private func handleIncomingURL(_ url: URL) {
         if url.scheme == "roombee" {

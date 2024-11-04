@@ -75,6 +75,7 @@ struct HomepageView: View {
         NavigationView {
             
             ZStack {
+                
                 backgroundColor
                     .ignoresSafeArea()
                 Group {
@@ -189,6 +190,9 @@ struct HomepageView: View {
             }
         }
         .onAppear {
+            requestPushAuthorization();
+            
+            UIApplication.shared.registerForRemoteNotifications()
             print("Authentication state: \(auth.authenticationState)")
             if auth.authenticationState == .authenticated {
                 // User is already signed in, fetch user data
@@ -263,9 +267,15 @@ struct HomepageView: View {
             }
         }
     }
-    
-
-
-
-
 }
+
+func requestPushAuthorization() {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+        if success {
+            print("Push notifications allowed")
+        } else if let error = error {
+            print(error.localizedDescription)
+        }
+    }
+}
+
