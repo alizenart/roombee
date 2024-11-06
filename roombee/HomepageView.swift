@@ -141,6 +141,10 @@ struct HomepageView: View {
                             .environmentObject(eventStore)
                             .environmentObject(authViewModel) //omg is this why agreement wasn't working? This wasn't here before I went in
                     case 4:
+                        EmergencyInfoView()
+                            .environmentObject(authViewModel)
+                        
+                    case 5:
                         SettingsView()
                             .environmentObject(authViewModel)
                     default:
@@ -180,12 +184,6 @@ struct HomepageView: View {
                         .animation(.easeInOut, value: showInviteLinkPopup)
                 }
             }
-//            .onChange(of: navManager.selectedSideMenuTab) { newValue in
-//                if newValue == 4 {
-//                    signOut()
-//                    navManager.selectedSideMenuTab = 0
-//                }
-//            }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
                 if newValue == 2 {
                     addRoommate()
