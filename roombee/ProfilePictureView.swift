@@ -30,7 +30,7 @@ struct ProfilePictureView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: width, height: width)
                                 .clipShape(Circle())
-                                .overlay(Circle().stroke(toggleColor, lineWidth: 5))
+                                .overlay(Circle().stroke(toggleColor, lineWidth: 7))
                         case .failure:
                             fallbackProfileImage()
                         }
@@ -52,7 +52,7 @@ struct ProfilePictureView: View {
             .aspectRatio(contentMode: .fill)
             .frame(width: width, height: width) 
             .clipShape(Circle())
-            .overlay(Circle().stroke(toggleColor, lineWidth: 5))
+            .overlay(Circle().stroke(toggleColor, lineWidth: 7))
     }
 }
 
