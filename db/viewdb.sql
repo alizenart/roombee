@@ -1,3 +1,3 @@
 use roombee;
 
-SELECT * FROM users order by email asc;
+SELECT * FROM agreements WHERE agreement_owner = "80003";
