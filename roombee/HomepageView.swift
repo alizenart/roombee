@@ -10,7 +10,7 @@ import Mixpanel
 
 let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
 
-let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
+let toggleColor = Color(red:231/255, green:224/255, blue:215/255)//Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
 
 let ourOrange = Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255)
 
@@ -19,6 +19,8 @@ let LighterPurple = Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255)
 let highlightYellow = Color(red: 230/255, green: 178/255, blue: 81/255)
 
 let creamColor = Color(red:231/255, green:224/255, blue:215/255)
+
+let ourRed = Color(red: 230/255, green:67/255, blue: 67/255)
 
 
 let date = Date()

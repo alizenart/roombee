@@ -48,7 +48,7 @@ enum SideMenuRowType: Int, CaseIterable {
         case .agreement:
             return "AgreementIcon"
         case .emergencyInfo:
-            return "TaskIcon"
+            return "EmergencyIcon"
         case .setting:
             return "SettingIcon"
         }
