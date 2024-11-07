@@ -15,54 +15,89 @@ struct EmergencyInfoView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                Button(action: { showNewContactForm = true }) {
-                    Text("Add Contact")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.red)
-                        .cornerRadius(10)
-                }
-                .sheet(isPresented: $showNewContactForm) {
-                    NewEmergencyContactForm(showForm: $showNewContactForm, viewModel: emergencyInfoViewModel, userID: authViewModel.user_id ?? "80003")
-                }
-            }
-            .padding()
+//            HStack {
+//                Spacer()
+//                Button(action: { showNewContactForm = true }) {
+//                    Text("Add Contact")
+//                        .font(.system(size: 15, weight: .bold))
+//                        .foregroundColor(.white)
+//                        .padding()
+//                        .background(Color.red)
+//                        .cornerRadius(10)
+//                }
+//                .sheet(isPresented: $showNewContactForm) {
+//                    NewEmergencyContactForm(showForm: $showNewContactForm, viewModel: emergencyInfoViewModel, userID: authViewModel.user_id ?? "80003")
+//                }
+//            }
+//            .padding()
 
             Text("Emergency Contacts")
                 .font(.system(size: 30))
                 .fontWeight(.bold)
-                .foregroundColor(.red)
-
-            List {
-                Section(header: Text("Your Contacts").font(.headline)) {
-                    if emergencyInfoViewModel.userContacts.isEmpty {
-                        Text("No emergency contacts yet.")
-                            .foregroundColor(.gray)
-                    } else {
-                        ForEach(emergencyInfoViewModel.userContacts) { contact in
-                            ContactRow(contact: contact)
+                .foregroundColor(ourOrange)
+                .padding()
+                .padding(.top)
+            ZStack{
+                creamColor.edgesIgnoringSafeArea(.all)
+                
+                
+                List {
+                    Section(header: Text("Your Contacts")
+                        .font(.system(size:16, weight: .medium))
+                        .foregroundColor(.black)
+                        .padding(.top, 5)) {
+                        if emergencyInfoViewModel.userContacts.isEmpty {
+                            Text("No emergency contacts yet.")
+                                .foregroundColor(.black)
+                        } else {
+                            ForEach(emergencyInfoViewModel.userContacts) { contact in
+                                ContactRow(contact: contact)
+                            }
+                            .onDelete { indexSet in
+                                deleteContact(from: indexSet, in: &emergencyInfoViewModel.userContacts)
+                            }
                         }
-                        .onDelete { indexSet in
-                            deleteContact(from: indexSet, in: &emergencyInfoViewModel.userContacts)
+                        Button(action: { showNewContactForm = true }) {
+                                Text("Add Contact")
+                                    .font(.system(size: 15, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding(7)
+                                    .background(ourRed)
+                                    .cornerRadius(10)
+                            } //button
+                            .sheet(isPresented: $showNewContactForm) {
+                                NewEmergencyContactForm(showForm: $showNewContactForm, viewModel: emergencyInfoViewModel, userID: authViewModel.user_id ?? "80003")
+                            }
+                            .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 4)
+                            .padding(7)
+
+                    } // Your contacts section
+                        
+
+                    
+                    Section(header: Text("Roommate's Contacts")
+                        .font(.system(size:16, weight: .medium))
+                        .foregroundColor(.black)) {
+                        if emergencyInfoViewModel.roommateContacts.isEmpty {
+                            Text("No contacts found for your roommate.")
+                                .foregroundColor(.black)
+                        } else {
+                            ForEach(emergencyInfoViewModel.roommateContacts) { contact in
+                                ContactRow(contact: contact)
+                            }
                         }
                     }
-                }
-
-                Section(header: Text("Roommate's Contacts").font(.headline)) {
-                    if emergencyInfoViewModel.roommateContacts.isEmpty {
-                        Text("No contacts found for your roommate.")
-                            .foregroundColor(.gray)
-                    } else {
-                        ForEach(emergencyInfoViewModel.roommateContacts) { contact in
-                            ContactRow(contact: contact)
-                        }
-                    }
-                }
-            }
-        }
+                    
+                } //list
+//                .background(Color.clear)
+                .scrollContentBackground(.hidden)
+                .cornerRadius(10)
+//                .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 4)
+            }//zstack
+            .cornerRadius(15)
+            .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 4)
+            .padding()
+        } //vstack
         .padding()
         .onAppear {
             emergencyInfoViewModel.fetchContacts(
