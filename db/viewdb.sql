@@ -1,3 +1,3 @@
 use roombee;
 
-SELECT * FROM agreements WHERE agreement_owner = "80003";
+SELECT * FROM users ORDER BY hive_code;

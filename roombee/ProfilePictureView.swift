@@ -12,14 +12,14 @@ struct ProfilePictureView: View {
     @Binding var profileImage: UIImage?
     @Binding var isShowingImagePicker: Bool
     var width: CGFloat
-    var imageURL: String? 
+    var imageURL: String?
 
     
     var body: some View {
         VStack(alignment: .center) {
             HStack {
                 Spacer()
-                if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
+                if let url = URL(string: imageURL ?? "hi") {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .empty:
