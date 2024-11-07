@@ -126,7 +126,7 @@ struct SideMenuView: View {
                 uploadImageToS3(image)
             }
         }
-    }
+    } //body
 
     func ProfileImageView() -> some View {
         print("in ProfileImageView")

@@ -78,6 +78,7 @@ struct HomepageContent: View {
                         HStack(spacing: 20){
                             yourStatus
                             roomStatus
+
                         }.padding(.horizontal, 40)
                             .padding(.top, 20)
                         
@@ -204,9 +205,16 @@ struct StatusView: View {
     @State private var hasLoaded = false // Flag to check if initial data has loaded
     @EnvironmentObject var toggleManager: ToggleViewModel
     var userId: String
+    var profileImageURL: String? //unique roommate profile images
+
     @Binding var isInitialLoad: Bool
     @EnvironmentObject var auth: AuthenticationViewModel
     @State private var showInviteLinkPopup = false
+    
+    @State private var profileImage: UIImage?
+    @State private var isShowingImagePicker = false
+
+    
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -217,59 +225,76 @@ struct StatusView: View {
                 .fill()
                 .foregroundColor(toggleColor)
                 .aspectRatio(1.0, contentMode: .fit)
-            
-            VStack {
-                Text(title)
-                    .foregroundColor(.black)
-                    .bold()
-                if auth.user_id != nil && auth.roommate_id != nil {
-                    HStack {
-                        Toggle(isOn: $isSleeping, label: { bedIcon })
-                            .disabled(!canToggle)
-                            .onChange(of: isSleeping) { isOn in
-                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                    toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
-                                    Mixpanel.mainInstance().track(event: "SleepingToggle", properties: ["userID": auth.user_id ?? "Unknown"])
-                                }
-                                if hasLoaded && !canToggle {
-                                    NotificationService.shared.toggleSleep(isAsleep: isOn)
-                                }
-                            }
-                    }
-                    .padding(.horizontal, 20)
+            GeometryReader { geometry in
+                let profileWidth = geometry.size.width * 0.5
+                let profileSpace = profileWidth - 20
+                
+                
+                VStack {
+                    ProfilePictureView(
+                        profileImage: $profileImage,
+                        isShowingImagePicker: $isShowingImagePicker,
+                        width: profileWidth,
+                        imageURL: profileImageURL 
+                    )
+                    .padding(.top, -20)
+                    .frame(height: profileSpace)
+                    .environmentObject(auth)
                     
-                    HStack {
-                        Toggle(isOn: $inRoom, label: { roomIcon })
-                            .disabled(!canToggle)
-                            .onChange(of: inRoom) { isOn in
-                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                    toggleManager.changeToggleState(userId: userId, state: "in_room")
-                                    Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                    
+                    
+                    //                Text(title)
+                    //                    .foregroundColor(.black)
+                    //                    .bold()
+                    if auth.user_id != nil && auth.roommate_id != nil {
+                        HStack {
+                            Toggle(isOn: $isSleeping, label: { bedIcon })
+                                .disabled(!canToggle)
+                                .onChange(of: isSleeping) { isOn in
+                                    if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                        toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
+                                        Mixpanel.mainInstance().track(event: "SleepingToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                                    }
+                                    if hasLoaded && !canToggle {
+                                        NotificationService.shared.toggleSleep(isAsleep: isOn)
+                                    }
                                 }
-                                if hasLoaded && !canToggle {
-                                    NotificationService.shared.toggleRoom(inRoom: isOn)
+                        }
+                        .padding(.horizontal, 20)
+                        
+                        HStack {
+                            Toggle(isOn: $inRoom, label: { roomIcon })
+                                .disabled(!canToggle)
+                                .onChange(of: inRoom) { isOn in
+                                    if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                        toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                        Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                                    }
+                                    if hasLoaded && !canToggle {
+                                        NotificationService.shared.toggleRoom(inRoom: isOn)
+                                    }
                                 }
-                            }
+                        }
+                        .padding(.horizontal, 20)
+                    } else {
+                        Button(action: {
+                            showInviteLinkPopup.toggle()
+                            Mixpanel.mainInstance().track(event: "InvitePopup", properties: ["userID": auth.user_id])
+                        }) {
+                            Text("Add roommate to see toggles")
+                                .font(.footnote)
+                                .foregroundColor(creamColor)
+                                .padding()
+                                .background(LighterPurple)
+                                .cornerRadius(10)
+                        }
+                        .padding(.horizontal, 20)
+                        .sheet(isPresented: $showInviteLinkPopup) {
+                            InviteLinkPopupView(inviteLink: "https://roombee.com/invite?hive_code=\(auth.hive_code)", isPresented: $showInviteLinkPopup)
+                        }
                     }
-                    .padding(.horizontal, 20)
-                } else {
-                    Button(action: {
-                        showInviteLinkPopup.toggle()
-                        Mixpanel.mainInstance().track(event: "InvitePopup", properties: ["userID": auth.user_id])
-                    }) {
-                        Text("Add roommate to see toggles")
-                            .font(.footnote)
-                            .foregroundColor(creamColor)
-                            .padding()
-                            .background(LighterPurple)
-                            .cornerRadius(10)
-                    }
-                    .padding(.horizontal, 20)
-                    .sheet(isPresented: $showInviteLinkPopup) {
-                        InviteLinkPopupView(inviteLink: "https://roombee.com/invite?hive_code=\(auth.hive_code)", isPresented: $showInviteLinkPopup)
-                    }
-                }
-            }
+                }//vstack
+            }//geometry
         }
         .onAppear {
             // Set hasLoaded to true only after initial render
@@ -440,21 +465,21 @@ struct DateToggle: View {
 
 
 
-#Preview {
-    HomepageContent(
-        myStatusToggleSleeping: .constant(true),
-        myStatusToggleInRoom: .constant(true),
-        roomieStatusToggleSleeping: .constant(true),
-        roomieStatusToggleInRoom: .constant(true),
-        isInitialLoad: .constant(true),
-        calGrid: GridView(cal: CalendarView(title: "Me")),
-        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false), userId: "80003", isInitialLoad: .constant(true)),
-        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false), userId: "80002", isInitialLoad: .constant(true))
-    )
-    .environmentObject(EventStore())
-    .environmentObject(AuthenticationViewModel())
-    .environmentObject(NavManager())
-    .environmentObject(ToggleViewModel())
-    .environmentObject(TodoViewModel())
-    .environmentObject(RoommateAgreementHandler())
-}
+//#Preview {
+//    HomepageContent(
+//        myStatusToggleSleeping: .constant(true),
+//        myStatusToggleInRoom: .constant(true),
+//        roomieStatusToggleSleeping: .constant(true),
+//        roomieStatusToggleInRoom: .constant(true),
+//        isInitialLoad: .constant(true),
+//        calGrid: GridView(cal: CalendarView(title: "Me")),
+//        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false), userId: "80003", isInitialLoad: .constant(true)),
+//        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false), userId: "80002", isInitialLoad: .constant(true))
+//    )
+//    .environmentObject(EventStore())
+//    .environmentObject(AuthenticationViewModel())
+//    .environmentObject(NavManager())
+//    .environmentObject(ToggleViewModel())
+//    .environmentObject(TodoViewModel())
+//    .environmentObject(RoommateAgreementHandler())
+//}

@@ -36,6 +36,7 @@ struct DropdownView: View {
                 }
                 .frame(height: 40)
                 .padding(.horizontal)
+                .contentShape(Rectangle())
                 .onTapGesture{
                     withAnimation(.snappy) {isExpanded.toggle()}
                 }
@@ -108,6 +109,7 @@ struct SingleSelectionDropdownView: View {
                 }
                 .frame(height: 40)
                 .padding(.horizontal)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     withAnimation(.snappy) {
                         isExpanded.toggle()

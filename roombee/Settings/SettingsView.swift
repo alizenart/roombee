@@ -7,19 +7,25 @@
 
 import SwiftUI
 import Mixpanel
+import AWSS3
+import AWSCore
 
 struct SettingsView: View {
     @EnvironmentObject var navManager: NavManager
-    @EnvironmentObject var authManager: AuthenticationViewModel
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var eventStore: EventStore
     
     @State private var showAboutRoombee = false
     @State private var showDeleteAccount = false
+    
+    @State private var profileImage: UIImage? // Store selected image
+    @State private var isShowingImagePicker = false // Toggle ImagePicker
+
 
 
     
     private func signOut() {
-        authManager.signOut(eventStore: eventStore)
+        authViewModel.signOut(eventStore: eventStore)
         navManager.selectedSideMenuTab = 0
     }
 
@@ -36,6 +42,13 @@ struct SettingsView: View {
                         .fontWeight(.bold)
                         .padding(.top, 50)
                     
+                    ProfileImageView()
+                        .padding()
+                        .onTapGesture {
+                            isShowingImagePicker = true // Open Image Picker
+                        }
+                        .environmentObject(authViewModel)
+
 
                     // About Roombee Button
                     Button(action: {
@@ -141,8 +154,115 @@ struct SettingsView: View {
                     
                 }//vstack
                 
+
+
+                
+            }//geometry
+        }//zstack
+        .sheet(isPresented: $isShowingImagePicker) {
+            ImagePicker(image: $profileImage) { image in
+                uploadImageToS3(image)
+            }
+        } //sheet
+    }//body
+    func ProfileImageView() -> some View {
+        print("in ProfileImageView")
+        print("authViewModel.profileImageURL: " , authViewModel.profileImageURL)
+        return VStack(alignment: .center) {
+            HStack {
+                Spacer()
+                if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.purple.opacity(0.5), lineWidth: 10))
+                        case .failure:
+                            fallbackProfileImage()
+                        }
+                    }
+                } else {
+                    fallbackProfileImage()
+                }
+                Spacer()
+            }
+            Text("Change Image")
+                .foregroundColor(.white)
+                .font(.system(size: 14))
+                .padding(.top, 3)
+                .underline()
+//            Text(authViewModel.user_firstName).font(.system(size: 18, weight: .bold)).foregroundColor(.white)
+//            Text(authViewModel.user_lastName).font(.system(size: 14, weight: .semibold)).foregroundColor(.white))
+        }
+    }
+    
+    func fallbackProfileImage() -> some View {
+        Image("ProfileIcon")
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 150, height: 150)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.purple.opacity(0.5), lineWidth: 10))
+    }
+
+    
+    func uploadImageToS3(_ image: UIImage) {
+        print("uploadImageToS3 called")
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+
+        let fileName = "profilePictures/\(authViewModel.user_id ?? "hello").jpg"
+        let s3BucketName = "roombee-profile-pictures"
+        let s3Url = "https://\(s3BucketName).s3.amazonaws.com/\(fileName)"
+
+        let uploadRequest = AWSS3TransferUtilityUploadExpression()
+
+        AWSS3TransferUtility.default().uploadData(
+            imageData,
+            bucket: s3BucketName,
+            key: fileName,
+            contentType: "image/jpeg",
+            expression: uploadRequest
+        ) { task, error in
+            if let error = error {
+                print("Failed to upload image: \(error.localizedDescription)")
+            } else {
+                print("Successfully uploaded image to: \(s3Url)")
+
+                // Save the image locally
+                self.saveImageLocally(image)
+
+                // Ensure the profile image URL update happens on the main thread
+                DispatchQueue.main.async {
+                    let timestamp = Int(Date().timeIntervalSince1970)
+                    authViewModel.profileImageURL = "\(s3Url)?v=\(timestamp)"
+                    self.authViewModel.updateProfilePictureURL(s3Url: "\(s3Url)?v=\(timestamp)")
+                }
             }
         }
+    }
+
+    // Helper function to save the image locally
+    private func saveImageLocally(_ image: UIImage) {
+        if let data = image.jpegData(compressionQuality: 1.0) {
+            let fileURL = getDocumentsDirectory().appendingPathComponent("profileImage.jpg")
+            do {
+                try data.write(to: fileURL)
+                print("Image saved locally at: \(fileURL)")
+            } catch {
+                print("Error saving image locally: \(error)")
+            }
+        }
+    }
+
+    // Helper function to get the document directory path
+    private func getDocumentsDirectory() -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }
 
@@ -167,7 +287,7 @@ struct AboutRoombeeView: View {
 }
 struct DeleteAccountWarningView: View {
     @Environment(\.dismiss) var dismiss // Access the dismiss action
-    @EnvironmentObject var authManager: AuthenticationViewModel
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
     
     @State private var password: String = ""
     @State private var showingErrorAlert = false
@@ -196,12 +316,12 @@ struct DeleteAccountWarningView: View {
                 
                 Button("Yes, delete my account") {
                     Task {
-                        let success = await authManager.deleteAccount(withPassword: password)
+                        let success = await authViewModel.deleteAccount(withPassword: password)
                         if success {
                             dismiss()
                         } else {
                             showingErrorAlert = true
-                            errorMessage = authManager.errorMessage
+                            errorMessage = authViewModel.errorMessage
                         }
                     }
                 }
@@ -235,6 +355,6 @@ struct DeleteAccountWarningView: View {
 
     
 
-#Preview {
-    SettingsView()
-}
+//#Preview {
+//    SettingsView()
+//}
