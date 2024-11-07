@@ -37,6 +37,7 @@ struct EmergencyInfoView: View {
                 .foregroundColor(ourOrange)
                 .padding()
                 .padding(.top)
+                .padding(.top, 5)
             ZStack{
                 creamColor.edgesIgnoringSafeArea(.all)
                 
