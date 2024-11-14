@@ -19,7 +19,14 @@ struct ProfilePictureView: View {
         VStack(alignment: .center) {
             HStack {
                 Spacer()
-                if let url = URL(string: imageURL ?? "hi") {
+                if let image = profileImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: width, height: width)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(toggleColor, lineWidth: 7))
+                } else if let url = URL(string: imageURL ?? "") {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .empty:
@@ -45,6 +52,7 @@ struct ProfilePictureView: View {
             isShowingImagePicker = true
         }
     }
+
 
     func fallbackProfileImage() -> some View {
         Image("ProfileIcon")

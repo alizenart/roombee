@@ -49,6 +49,20 @@ struct LoginView: View {
                 .alert(isPresented: $showingErrorAlert){
                     Alert(title: Text("Incorrect Email or Password"), dismissButton: .default(Text("OK")))
                 }
+                Button(action: {
+                    Task {
+                        await authViewModel.signInWithGoogle()
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "globe")
+                        Text("Sign in with Google")
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(8)
+                }
+                .padding()
             }
         }
     }

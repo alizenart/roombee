@@ -119,6 +119,10 @@ struct SideMenuView: View {
                         navManager.closeSideMenu()
                     } //if
                 } //ontapgesture
+                .onAppear {
+                    loadImageFromLocal()
+                }
+
             }//zstack
         }
         .sheet(isPresented: $isShowingImagePicker) {
@@ -127,14 +131,33 @@ struct SideMenuView: View {
             }
         }
     } //body
+    
+    func loadImageFromLocal() {
+        let fileURL = getDocumentsDirectory().appendingPathComponent("profileImage.jpg")
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            if let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
+                self.profileImage = image
+            } else {
+                print("Could not load image from local file")
+            }
+        } else {
+            print("Local image file does not exist")
+        }
+    }
+
 
     func ProfileImageView() -> some View {
-        print("in ProfileImageView")
-        print("authViewModel.profileImageURL: " , authViewModel.profileImageURL)
         return VStack(alignment: .center) {
             HStack {
                 Spacer()
-                if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
+                if let image = profileImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.purple.opacity(0.5), lineWidth: 10))
+                } else if let imageUrl = authViewModel.profileImageURL, let url = URL(string: imageUrl) {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .empty:
@@ -155,10 +178,15 @@ struct SideMenuView: View {
                 }
                 Spacer()
             }
-            Text(authViewModel.user_firstName).font(.system(size: 18, weight: .bold)).foregroundColor(.black)
-            Text(authViewModel.user_lastName).font(.system(size: 14, weight: .semibold)).foregroundColor(.black.opacity(0.5))
+            Text(authViewModel.user_firstName)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.black)
+            Text(authViewModel.user_lastName)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.black.opacity(0.5))
         }
     }
+
     
     func fallbackProfileImage() -> some View {
         Image("ProfileIcon")

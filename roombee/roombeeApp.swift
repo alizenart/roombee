@@ -13,6 +13,7 @@ import AWSLambda
 import AWSCore
 import KeychainAccess
 import Mixpanel
+import GoogleSignIn
 
 
 @MainActor
@@ -51,6 +52,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             return true
         }
         return false
+    }
+    
+    func application(_ app: UIApplication, open url: URL,
+                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
     }
     
     private func handleIncomingURL(_ url: URL) {

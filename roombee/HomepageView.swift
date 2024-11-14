@@ -49,6 +49,13 @@ struct HomepageView: View {
     @State var roomieStatusToggleSleeping = false
     @State var roomieStatusToggleInRoom = false
     
+    
+    // For profile Image
+    @State private var profileImage: UIImage? = nil
+    @State private var isShowingImagePicker = false
+
+
+    
     private func refreshPage() async {
         print("Refreshing data...")
         // Fetch the user's and roommate's initial data again
@@ -194,6 +201,7 @@ struct HomepageView: View {
             }
         }
         .onAppear {
+            loadImageFromLocal()
             print("Authentication state: \(authViewModel.authenticationState)")
             if authViewModel.authenticationState == .authenticated {
                 // User is already signed in, fetch user data
@@ -268,6 +276,24 @@ struct HomepageView: View {
             }
         }
     }
+    
+    func loadImageFromLocal() {
+        let fileURL = getDocumentsDirectory().appendingPathComponent("profileImage.jpg")
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            if let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
+                self.profileImage = image
+            } else {
+                print("Could not load image from local file")
+            }
+        } else {
+            print("Local image file does not exist")
+        }
+    }
+    private func getDocumentsDirectory() -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+
+
     
 
 

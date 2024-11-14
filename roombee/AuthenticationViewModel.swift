@@ -514,4 +514,75 @@ extension AuthenticationViewModel {
     }
 }
 
+extension AuthenticationViewModel {
+    func signInWithGoogle() async {
+            guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+            // Create Google Sign-In configuration object.
+            let config = GIDConfiguration(clientID: clientID)
+
+            guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
+                print("No root view controller")
+                return
+            }
+
+            // Start the sign-in flow.
+            GIDSignIn.sharedInstance.signIn(with: config, presenting: rootViewController) { user, error in
+                if let error = error {
+                    print("Error during Google Sign-In: \(error.localizedDescription)")
+                    self.errorMessage = error.localizedDescription
+                    self.authenticationState = .unauthenticated
+                    return
+                }
+
+                guard let authentication = user?.authentication, let idToken = authentication.idToken else {
+                    print("Authentication or ID Token missing")
+                    self.authenticationState = .unauthenticated
+                    return
+                }
+
+                let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
+
+                Task {
+                    do {
+                        let result = try await Auth.auth().signIn(with: credential)
+                        print("Signed in as \(result.user.uid), email: \(result.user.email ?? "No Email")")
+
+                        // Extract user information
+                        self.email = result.user.email ?? ""
+                        self.user = result.user
+                        self.user_id = result.user.uid
+                        self.authenticationState = .authenticated
+
+                        // Optionally, add user to your database
+                        await self.addUserAfterGoogleSignIn()
+
+                        // Fetch additional user data if needed
+                        await self.getUserData()
+                    } catch {
+                        print("Firebase sign-in error: \(error.localizedDescription)")
+                        self.errorMessage = error.localizedDescription
+                        self.authenticationState = .unauthenticated
+                    }
+                }
+            }
+        }
+
+        // Function to add user to your backend after Google Sign-In
+        func addUserAfterGoogleSignIn() async {
+            // Extract user's first and last name
+            if let profile = GIDSignIn.sharedInstance.currentUser?.profile {
+                self.firstName = profile.givenName ?? ""
+                self.lastName = profile.familyName ?? ""
+            }
+
+            // Set default values for other required fields
+            self.birthDate = Date() // You might want to prompt the user for this
+            self.hive_code = generateShorterUUID()
+
+            // Call your Lambda function to add the user
+            await addUserLambda()
+        }
+}
+
 

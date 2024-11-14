@@ -68,6 +68,7 @@
 		FA55545A2C4460B50002E18F /* ToggleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5554592C4460B50002E18F /* ToggleViewModel.swift */; };
 		FA613CB82CD14770008479A3 /* EmergencyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA613CB72CD14770008479A3 /* EmergencyInfoView.swift */; };
 		FA613CBA2CD16CED008479A3 /* EmergencyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA613CB92CD16CED008479A3 /* EmergencyInfoViewModel.swift */; };
+		FA806B4F2CE5945F007D7E9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA806B4E2CE5945E007D7E9A /* GoogleService-Info.plist */; };
 		FAD04AB92CCAAFC000353A33 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */; };
 		FAD04ABC2CCAB1C400353A33 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = FAD04ABB2CCAB1C400353A33 /* AWSS3 */; };
 /* End PBXBuildFile section */
@@ -128,8 +129,8 @@
 		FA5554592C4460B50002E18F /* ToggleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleViewModel.swift; sourceTree = "<group>"; };
 		FA613CB72CD14770008479A3 /* EmergencyInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyInfoView.swift; sourceTree = "<group>"; };
 		FA613CB92CD16CED008479A3 /* EmergencyInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyInfoViewModel.swift; sourceTree = "<group>"; };
+		FA806B4E2CE5945E007D7E9A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		FAE0C6D22C67F43B002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE0C6D52C67F455002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE0C6D72C67F45A002FE8D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -166,7 +167,7 @@
 		308DFDDB2BE9D85000640B62 /* SignupViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
-				FAE0C6D22C67F43B002FE8D6 /* GoogleService-Info.plist */,
+				FA806B4E2CE5945E007D7E9A /* GoogleService-Info.plist */,
 				308DFDDC2BE9D88A00640B62 /* TextFieldStyle.swift */,
 				308DFDDE2BE9D8A700640B62 /* LabelStyle.swift */,
 				308DFDE02BE9D95900640B62 /* FormLabelStyle.swift */,
@@ -366,6 +367,7 @@
 				685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 				FA14A7352C9815AD0042F1EB /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
 				FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				FA806B4D2CE59355007D7E9A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 30AA0BAF2AD1BC0400344002;
 			projectDirPath = "";
@@ -382,6 +384,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */,
+				FA806B4F2CE5945F007D7E9A /* GoogleService-Info.plist in Resources */,
 				6897FCDD2C70F8D4001B0A52 /* GoogleService-Info.plist in Resources */,
 				30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */,
 			);
@@ -630,7 +633,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.roombee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -673,7 +676,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 2.0;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.roombee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -748,6 +751,14 @@
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		FA806B4D2CE59355007D7E9A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
