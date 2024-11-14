@@ -51,7 +51,7 @@ struct LoginView: View {
                 }
                 Button(action: {
                     Task {
-                        await authViewModel.signInWithGoogle()
+                        await viewModel.signInWithGoogle()
                     }
                 }) {
                     HStack {
