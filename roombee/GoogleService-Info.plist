@@ -15,16 +15,22 @@
 	<key>STORAGE_BUCKET</key>
 	<string>roombee-751f7.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:640961029868:ios:04f13a39e779ed55b667c9</string>
+	<key>CLIENT_ID</key>
+	<string>640961029868-09kqfni3t5gahmlpc282ig41tl100cli.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.640961029868-09kqfni3t5gahmlpc282ig41tl100cli</string>
+	<key>GIDClientID</key>
+	<string>640961029868-09kqfni3t5gahmlpc282ig41tl100cli.apps.googleusercontent.com</string>
 </dict>
 </plist>
