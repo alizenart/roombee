@@ -35,6 +35,8 @@ struct LoginView: View {
                     
                     signUpLink
                     
+                    googleSignIn
+                    
                     NavigationLink(destination: SignupView().environmentObject(onboardGuideManager), isActive: $viewModel.showSignUp) {
                         EmptyView()
                     }
@@ -101,6 +103,27 @@ struct LoginView: View {
         }
         .padding([.top, .bottom], 25)
     }
+    
+    var googleSignIn: some View {
+        HStack {
+            Button("Sign in with Google") {
+                Task {
+                    let success = await viewModel.signInWithGoogle()
+                    if success {
+                        print("Sign-in successful")
+                    } else {
+                        print("Sign-in failed")
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .background(alignment: .leading) {
+                Image("Google")
+                    .frame(width: 30, alignment: .center)
+            }
+        }
+    }
+
 }
 
 struct LabelText: View {

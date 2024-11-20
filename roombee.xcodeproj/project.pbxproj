@@ -70,6 +70,8 @@
 		FA613CBA2CD16CED008479A3 /* EmergencyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA613CB92CD16CED008479A3 /* EmergencyInfoViewModel.swift */; };
 		FAD04AB92CCAAFC000353A33 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */; };
 		FAD04ABC2CCAB1C400353A33 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = FAD04ABB2CCAB1C400353A33 /* AWSS3 */; };
+		FAEFAE692CEE4FFF003A364B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = FAEFAE682CEE4FFF003A364B /* GoogleSignIn */; };
+		FAEFAE6B2CEE4FFF003A364B /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FAEFAE6A2CEE4FFF003A364B /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -141,7 +143,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAEFAE6B2CEE4FFF003A364B /* GoogleSignInSwift in Frameworks */,
 				FAD04ABC2CCAB1C400353A33 /* AWSS3 in Frameworks */,
+				FAEFAE692CEE4FFF003A364B /* GoogleSignIn in Frameworks */,
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
 				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
 				FA14A73C2C9826640042F1EB /* KeychainAccess in Frameworks */,
@@ -331,6 +335,8 @@
 				685ACAF62C66BEAB0069E7BA /* Mixpanel */,
 				FA14A73B2C9826640042F1EB /* KeychainAccess */,
 				FAD04ABB2CCAB1C400353A33 /* AWSS3 */,
+				FAEFAE682CEE4FFF003A364B /* GoogleSignIn */,
+				FAEFAE6A2CEE4FFF003A364B /* GoogleSignInSwift */,
 			);
 			productName = roombee;
 			productReference = FAF91EAB2C6662C500B60E68 /* roombee.app */;
@@ -366,6 +372,7 @@
 				685ACAF52C66BEAB0069E7BA /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 				FA14A7352C9815AD0042F1EB /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
 				FA14A73A2C9826640042F1EB /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				FAEFAE672CEE4FFF003A364B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 30AA0BAF2AD1BC0400344002;
 			projectDirPath = "";
@@ -615,17 +622,19 @@
 				ENABLE_TESTABILITY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = roombee/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
+				INFOPLIST_KEY_CFBundleDisplayName = Roombee;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -658,17 +667,19 @@
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = roombee/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
+				INFOPLIST_KEY_CFBundleDisplayName = Roombee;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -750,6 +761,14 @@
 				kind = branch;
 			};
 		};
+		FAEFAE672CEE4FFF003A364B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -817,6 +836,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
 			productName = AWSS3;
+		};
+		FAEFAE682CEE4FFF003A364B /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAEFAE672CEE4FFF003A364B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		FAEFAE6A2CEE4FFF003A364B /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAEFAE672CEE4FFF003A364B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
