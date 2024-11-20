@@ -15,6 +15,8 @@ import AWSS3
 import AWSCore
 import GoogleSignIn
 import GoogleSignInSwift
+import AuthenticationServices
+import CryptoKit
 
 
 enum AuthenticationState {
@@ -83,6 +85,10 @@ class AuthenticationViewModel: ObservableObject {
     
     //onboardGuide struggles
     @Published var shouldNavigateToHomepage = false
+    
+    //Used for Apple SignIn
+    @Published var currentNonce: String?
+
 
     
     init() {
@@ -518,7 +524,53 @@ extension AuthenticationViewModel {
     
 }
 
+
+//Sign In with Google and Apple
 extension AuthenticationViewModel {
+    
+    func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        let charset: Array<Character> =
+            Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remainingLength = length
+
+        while remainingLength > 0 {
+            let randoms: [UInt8] = (0..<16).map { _ in
+                var random: UInt8 = 0
+                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+                if errorCode != errSecSuccess {
+                    fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+                }
+                return random
+            }
+
+            randoms.forEach { random in
+                if remainingLength == 0 {
+                    return
+                }
+
+                if random < charset.count {
+                    result.append(charset[Int(random % UInt8(charset.count))])
+                    remainingLength -= 1
+                }
+            }
+        }
+
+        return result
+    }
+
+    func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            String(format: "%02x", $0)
+        }.joined()
+
+        return hashString
+    }
+
+    
     func signInWithGoogle() async -> Bool {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             print("No clientID found")
@@ -581,4 +633,59 @@ extension AuthenticationViewModel {
             return false
         }
     }
+    
+    func handleSignInWithApple(_ authResults: ASAuthorization) {
+        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+            guard let nonce = currentNonce else {
+                fatalError("Invalid state: A login callback was received, but no login request was sent.")
+            }
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                print("Unable to fetch identity token")
+                return
+            }
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                return
+            }
+
+            // Initialize a Firebase credential.
+            let credential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                      idToken: idTokenString,
+                                                      rawNonce: nonce)
+            Task {
+                do {
+                    let authResult = try await Auth.auth().signIn(with: credential)
+                    print("User is signed in with Apple")
+                    // Update user data
+                    DispatchQueue.main.async {
+                        self.authenticationState = .authenticated
+                        self.user = authResult.user
+                    }
+
+                    // Check if the user is new or existing
+                    let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                    if isNewUser {
+                        // Extract user details
+                        self.firstName = appleIDCredential.fullName?.givenName ?? ""
+                        self.lastName = appleIDCredential.fullName?.familyName ?? ""
+                        self.email = authResult.user.email ?? appleIDCredential.email ?? ""
+                        self.user_id = authResult.user.uid
+
+                        // Add user to backend
+                        self.addUserLambda()
+                    } else {
+                        // Existing user, fetch user data
+                        await self.getUserData()
+                    }
+                } catch {
+                    print("Error signing in with Apple: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.errorMessage = error.localizedDescription
+                        self.showingErrorAlert = true
+                    }
+                }
+            }
+        }
+    }
+
 }
