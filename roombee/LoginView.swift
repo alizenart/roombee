@@ -105,23 +105,39 @@ struct LoginView: View {
     }
     
     var googleSignIn: some View {
-        HStack {
-            Button("Sign in with Google") {
-                Task {
-                    let success = await viewModel.signInWithGoogle()
-                    if success {
-                        print("Sign-in successful")
-                    } else {
-                        print("Sign-in failed")
-                    }
+        Button(action: {
+            Task {
+                let success = await viewModel.signInWithGoogle()
+                if success {
+                    print("Sign-in successful")
+                } else {
+                    print("Sign-in failed")
                 }
             }
-            .frame(maxWidth: .infinity)
-            .background(alignment: .leading) {
-                Image("Google")
-                    .frame(width: 30, alignment: .center)
+        }) {
+            HStack(spacing: 10) {
+                // Google Icon
+                Image("Google") // Replace with the actual name of your Google logo asset
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .clipShape(Circle())
+                
+                // Text
+                Text("Sign in with Google")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.black)
             }
+            .frame(maxWidth: .infinity, minHeight: 40)
+            .padding(.horizontal, 12)
+            .background(Color(red: 242 / 255, green: 242 / 255, blue: 242 / 255)) // Light gray background
+            .cornerRadius(4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.clear, lineWidth: 1)
+            )
         }
+        .frame(minWidth: 200, maxWidth: 400)
+        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
     }
 
 }
