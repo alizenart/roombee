@@ -519,8 +519,8 @@ extension AuthenticationViewModel {
 }
 
 extension AuthenticationViewModel {
-    func signInWithGoogle() async-> Bool {
-        guard let clientID = FirebaseApp.app()?.options.clientID else{
+    func signInWithGoogle() async -> Bool {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
             print("No clientID found")
             return false
         }
@@ -530,39 +530,55 @@ extension AuthenticationViewModel {
         
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first,
-              let rootViewController = window.rootViewController else{
+              let rootViewController = window.rootViewController else {
             print("There is no root controller")
             return false
         }
+        
         do {
+            // Perform Google sign-in
             let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
             let user = userAuthentication.user
+            
             guard let idToken = user.idToken else {
                 print("ID token missing")
                 return false
             }
+            
+            let email = user.profile?.email ?? ""
             let accessToken = user.accessToken
+            
+            // Check existing sign-in methods for the email
+            let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+            print("Sign-in methods for \(email): \(signInMethods)")
+            
+            if !signInMethods.isEmpty && !signInMethods.contains("google.com") {
+                // Email already registered with a different method
+                self.errorMessage = "This email is already registered with a different sign-in method."
+                self.showingErrorAlert = true
+                return false
+            }
+            
+            // Proceed with Google sign-in
             let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
             
+            // Extract user details
             self.firstName = user.profile?.givenName ?? ""
             self.lastName = user.profile?.familyName ?? ""
+            self.profileImageURL = user.profile?.imageURL(withDimension: 200)?.absoluteString
             
+            // Add user to backend
             addUserLambda()
+            
             return true
-        }
-        catch {
+        } catch {
             print(error.localizedDescription)
-            errorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
+            self.showingErrorAlert = true
             return false
         }
-        
-        
-        return false
     }
-    
 }
-
-
