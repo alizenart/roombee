@@ -546,6 +546,11 @@ extension AuthenticationViewModel {
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
+            
+            self.firstName = user.profile?.givenName ?? ""
+            self.lastName = user.profile?.familyName ?? ""
+            
+            addUserLambda()
             return true
         }
         catch {
