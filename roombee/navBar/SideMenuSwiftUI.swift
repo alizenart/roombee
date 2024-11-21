@@ -61,16 +61,28 @@ struct SideMenuView: View {
     @State private var profileImage: UIImage? // Store selected image
     @State private var isShowingImagePicker = false // Toggle ImagePicker
     
-    
     var body: some View {
         GeometryReader { geometry in
-            ZStack{
-                HStack {
+//            ZStack {
+                // Background dimming overlay
+//                if navManager.presentSideMenu {
+//                    Color.black.opacity(0.5) // Static opacity, no animation
+//                        .ignoresSafeArea()
+//                        .onTapGesture {
+//                            withAnimation {
+//                                navManager.closeSideMenu() // Slide out the menu when tapped
+//                            }
+//                        }
+//                } // if
+
+                // Side menu content
+//                HStack {
                     VStack {
                         ProfileImageView()
                             .frame(height: 140)
-                            .padding(.top, geometry.safeAreaInsets.top + 30)
+                            .padding(.top, geometry.safeAreaInsets.top - 10)
                             .padding(.bottom, 30)
+                        
                             .onTapGesture {
                                 isShowingImagePicker = true // Open Image Picker
                             }
@@ -78,54 +90,50 @@ struct SideMenuView: View {
                         
                         ForEach(SideMenuRowType.allCases, id: \.self) { row in
                             RowView(isSelected: navManager.selectedSideMenuTab == row.rawValue, imageName: row.iconName, title: row.title) {
-                                navManager.switchTab(to: row.rawValue)
+                                withAnimation {
+                                    navManager.switchTab(to: row.rawValue)
+                                }
                             }
-                        } //foreach
+                        }
                         .padding(.trailing, 10)
                         .padding(.leading, 10)
+                        
                         Spacer()
-                        Spacer()
-                        // Contact Information at the Bottom
+                        
+                        // Footer
                         VStack(spacing: 5) {
                             Text("Feedback/questions?")
                                 .font(.footnote)
                                 .foregroundColor(.gray)
-                            
                             Text("Contact us at")
                                 .font(.footnote)
                                 .foregroundColor(.gray)
-                            
                             Text("roombeeapp@gmail.com")
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                                 .underline()
-                        } //vstack
-//                        .padding(.bottom)
+                        }
                         .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
-                    }//vstack
-                    .frame(width: 270, height: geometry.size.height + 100) 
-                    .background(toggleColor) // Your custom toggle color
-                    .offset(x: navManager.presentSideMenu ? 0 : -270)
-                    .animation(.easeInOut(duration: 0.7), value: navManager.presentSideMenu)
-                    Spacer()
-                } //hstack
-                .edgesIgnoringSafeArea(.all) // Ignore safe area to cover full screen
+                    }
+                    .frame(width: 270, height: geometry.size.height*0.95)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(toggleColor)
+                    )
+                    .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
+                    .offset(x: navManager.presentSideMenu ? 20 : -300) // Slide animation
+//                    .animation(.easeInOut(duration: 0.3), value: navManager.presentSideMenu)
 
-                .frame(width: geometry.size.width, height: geometry.size.height) //+200
-                .background(Color.black.opacity(navManager.presentSideMenu ? 0.5 : 0))
-//                .edgesIgnoringSafeArea(.all) // Ignore safe area to cover full screen
-                .onTapGesture {
-                    if navManager.presentSideMenu {
-                        navManager.closeSideMenu()
-                    } //if
-                } //ontapgesture
-            }//zstack
-        }
+                    
+                    Spacer()
+//                } //hstack
+//            } //zstack
+        } // geometry
         .sheet(isPresented: $isShowingImagePicker) {
             ImagePicker(image: $profileImage) { image in
                 uploadImageToS3(image)
             }
-        }
+        } //sheet
     } //body
 
     func ProfileImageView() -> some View {
