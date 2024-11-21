@@ -46,6 +46,7 @@
 		684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684DBD432BCF49C9009EE8DD /* AddToDoView.swift */; };
 		685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 685ACAF62C66BEAB0069E7BA /* Mixpanel */; };
 		687121282CD184F700CCABE1 /* ProfilePictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687121272CD184F700CCABE1 /* ProfilePictureView.swift */; };
+		688253082CEEC94900F6A8DA /* DimmedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688253072CEEC92C00F6A8DA /* DimmedBackgroundView.swift */; };
 		68900F212BD4E30600FFC62D /* SelectedDateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68900F202BD4E30600FFC62D /* SelectedDateManager.swift */; };
 		6897FCDD2C70F8D4001B0A52 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */; };
 		6897FCE22C743A04001B0A52 /* OnboardGuideViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6897FCE12C743A04001B0A52 /* OnboardGuideViewModel.swift */; };
@@ -108,6 +109,7 @@
 		684DBD412BCF49C4009EE8DD /* ToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToDoView.swift; sourceTree = "<group>"; };
 		684DBD432BCF49C9009EE8DD /* AddToDoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToDoView.swift; sourceTree = "<group>"; };
 		687121272CD184F700CCABE1 /* ProfilePictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePictureView.swift; sourceTree = "<group>"; };
+		688253072CEEC92C00F6A8DA /* DimmedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimmedBackgroundView.swift; sourceTree = "<group>"; };
 		68900F202BD4E30600FFC62D /* SelectedDateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedDateManager.swift; sourceTree = "<group>"; };
 		6897FCE12C743A04001B0A52 /* OnboardGuideViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardGuideViewModel.swift; sourceTree = "<group>"; };
 		6897FCE52C743E60001B0A52 /* OnboardGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardGuide.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				68E735FF2BCC688800D94A95 /* HomeSideBarView.swift */,
+				688253072CEEC92C00F6A8DA /* DimmedBackgroundView.swift */,
 				68E736082BCD939B00D94A95 /* SideMenuSwiftUI.swift */,
 				FAD04AB82CCAAFC000353A33 /* ImagePicker.swift */,
 			);
@@ -444,6 +447,7 @@
 				309D67732BCE4C6C00C343FF /* AuthenticationView.swift in Sources */,
 				3095ED992C5C8B77005A2192 /* InviteLinkPopupView.swift in Sources */,
 				680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */,
+				688253082CEEC94900F6A8DA /* DimmedBackgroundView.swift in Sources */,
 				68E735FC2BCC54FA00D94A95 /* OnboardStore.swift in Sources */,
 				4C2429972C7CFE9500341ED9 /* RoommateAgreementViewModel.swift in Sources */,
 				68E7360D2BCDDF0B00D94A95 /* SettingsView.swift in Sources */,

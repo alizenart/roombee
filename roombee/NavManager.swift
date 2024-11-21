@@ -16,15 +16,22 @@ class NavManager: ObservableObject {
     @Published var selectedSideMenuTab = 0
 
     func openSideMenu() {
-        presentSideMenu = true
+        withAnimation {
+            presentSideMenu = true
+        }
     }
 
     func closeSideMenu() {
-        presentSideMenu = false
+        withAnimation {
+            presentSideMenu = false
+        }
     }
 
     func switchTab(to index: Int) {
-        selectedSideMenuTab = index
-        closeSideMenu()  
+        withAnimation {
+            selectedSideMenuTab = index
+        }
+        closeSideMenu()
     }
 }
+

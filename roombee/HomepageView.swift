@@ -156,29 +156,47 @@ struct HomepageView: View {
                 VStack {
                     HStack {
                         Button(action: {
-                            navManager.openSideMenu()
+                            withAnimation(.easeInOut(duration: 0.3)) { // Ensure the menu opens with an animation
+                                navManager.openSideMenu()
+                            }
                             Mixpanel.mainInstance().track(event: "NavOpened", properties: ["userID": authViewModel.user_id])
                         }) {
-                            VStack (spacing: 3){
-                                Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                                Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                                Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                            VStack(spacing: 3) {
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 30, height: 3)
+                                    .cornerRadius(5)
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 30, height: 3)
+                                    .cornerRadius(5)
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 30, height: 3)
+                                    .cornerRadius(5)
                             }
                         }
                         .frame(width: 20, height: 60)
                         .padding(.trailing, 50)
                         .frame(width: 400, alignment: .leading)
-                    } // Hstack for nav button
+                    } // HStack for nav button
+
                     .padding(.leading, 30)
                     .frame(width: 400, alignment: .leading)
                     Spacer()
                 } //vstack for menu button
                 
                 if navManager.presentSideMenu {
-                    SideMenuView(navManager: navManager)
+                    ParentView(navManager: navManager)
                         .environmentObject(authViewModel)
-                        .transition(.move(edge: .leading))
-                        .animation(.easeInOut, value: navManager.presentSideMenu)
+//                        .environmentObject(eventStore)
+//                        .environmentObject(toggleManager)
+//                        .transition(.move(edge: .leading))
+//                        .animation(.easeInOut, value: navManager.presentSideMenu)
+//                    SideMenuView(navManager: navManager)
+//                        .environmentObject(authViewModel)
+//                        .transition(.move(edge: .leading))
+//                        .animation(.easeInOut, value: navManager.presentSideMenu)
                 }
                 if showInviteLinkPopup {
                     InviteLinkPopupView(inviteLink: inviteLink, isPresented: $showInviteLinkPopup)
