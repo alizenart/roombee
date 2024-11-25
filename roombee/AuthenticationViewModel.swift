@@ -173,28 +173,50 @@ extension AuthenticationViewModel {
     func signInWithEmailPassword() async -> Bool {
         authenticationState = .authenticating
         do {
+            // Check if the email has a valid password sign-in method
+            let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: self.email)
+            print("Sign-in methods for \(self.email): \(signInMethods)")
+
+            if !signInMethods.contains("password") {
+                // The account exists but is not associated with email/password
+                DispatchQueue.main.async {
+                    if signInMethods.contains("google.com") {
+                        self.errorMessage = "Your account is registered with Google. Please use 'Sign in with Google'."
+                    } else if signInMethods.contains("apple.com") {
+                        self.errorMessage = "Your account is registered with Apple. Please use 'Sign in with Apple'."
+                    } else {
+                        self.errorMessage = "This account is registered with another sign-in method."
+                    }
+                    self.showingErrorAlert = true
+                }
+                authenticationState = .unauthenticated
+                return false
+            }
+
+            // Attempt email/password sign-in
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
             await getUserData()
             DispatchQueue.main.async {
-               self.authenticationState = .authenticated // Update state here
+                self.authenticationState = .authenticated // Update state here
             }
-            Mixpanel.mainInstance().track(event: "User Signed In", properties: ["userId":user_id ?? "Unknown",
-                                                                                "email":email])
+            Mixpanel.mainInstance().track(event: "User Signed In", properties: [
+                "userId": user_id ?? "Unknown",
+                "email": email
+            ])
             return true
-        }
-        catch  {
-            print(error)
-            errorMessage = "Incorrect user or password"
+        } catch {
+            print("Error signing in with email/password: \(error.localizedDescription)")
             DispatchQueue.main.async {
-                self.errorMessage = error.localizedDescription
+                self.errorMessage = "Incorrect email or password. Please try again."
                 self.authenticationState = .unauthenticated
             }
             Mixpanel.mainInstance().track(event: "Sign-In Error", properties: [
-                            "error": error.localizedDescription
-                        ])
+                "error": error.localizedDescription
+            ])
             return false
         }
     }
+
     
     func validatePassword(_ password: String) -> Bool {
         let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\W]{8,}$")
@@ -531,10 +553,10 @@ extension AuthenticationViewModel {
     func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         let charset: Array<Character> =
-            Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
         var result = ""
         var remainingLength = length
-
+        
         while remainingLength > 0 {
             let randoms: [UInt8] = (0..<16).map { _ in
                 var random: UInt8 = 0
@@ -544,32 +566,32 @@ extension AuthenticationViewModel {
                 }
                 return random
             }
-
+            
             randoms.forEach { random in
                 if remainingLength == 0 {
                     return
                 }
-
+                
                 if random < charset.count {
                     result.append(charset[Int(random % UInt8(charset.count))])
                     remainingLength -= 1
                 }
             }
         }
-
+        
         return result
     }
-
+    
     func sha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
         let hashedData = SHA256.hash(data: inputData)
         let hashString = hashedData.compactMap {
             String(format: "%02x", $0)
         }.joined()
-
+        
         return hashString
     }
-
+    
     
     func signInWithGoogle() async -> Bool {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
@@ -606,8 +628,10 @@ extension AuthenticationViewModel {
             
             if !signInMethods.isEmpty && !signInMethods.contains("google.com") {
                 // Email already registered with a different method
-                self.errorMessage = "This email is already registered with a different sign-in method."
-                self.showingErrorAlert = true
+                DispatchQueue.main.async {
+                    self.errorMessage = "Your account is already registered with email/password. Please use that to sign in."
+                    self.showingErrorAlert = true
+                }
                 return false
             }
             
@@ -634,6 +658,7 @@ extension AuthenticationViewModel {
         }
     }
     
+    
     func handleSignInWithApple(_ authResults: ASAuthorization) {
         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
             guard let nonce = currentNonce else {
@@ -647,21 +672,35 @@ extension AuthenticationViewModel {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
                 return
             }
-
-            // Initialize a Firebase credential.
-            let credential = OAuthProvider.credential(withProviderID: "apple.com",
-                                                      idToken: idTokenString,
-                                                      rawNonce: nonce)
+            
+            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+            
             Task {
                 do {
+                    // Extract email if available
+                    let email = appleIDCredential.email ?? Auth.auth().currentUser?.email ?? ""
+                    
+                    // Check if email is already in use with a different sign-in method
+                    let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+                    print("Sign-in methods for \(email): \(signInMethods)")
+                    
+                    if !signInMethods.isEmpty && !signInMethods.contains("apple.com") {
+                        // Email already registered with a different method
+                        DispatchQueue.main.async {
+                            self.errorMessage = "Your account is already registered with email/password. Please use that to sign in."
+                            self.showingErrorAlert = true
+                        }
+                        return
+                    }
+                    
+                    // Proceed with Apple sign-in
                     let authResult = try await Auth.auth().signIn(with: credential)
                     print("User is signed in with Apple")
-                    // Update user data
                     DispatchQueue.main.async {
                         self.authenticationState = .authenticated
                         self.user = authResult.user
                     }
-
+                    
                     // Check if the user is new or existing
                     let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
                     if isNewUser {
@@ -670,7 +709,7 @@ extension AuthenticationViewModel {
                         self.lastName = appleIDCredential.fullName?.familyName ?? ""
                         self.email = authResult.user.email ?? appleIDCredential.email ?? ""
                         self.user_id = authResult.user.uid
-
+                        
                         // Add user to backend
                         self.addUserLambda()
                     } else {
@@ -687,5 +726,4 @@ extension AuthenticationViewModel {
             }
         }
     }
-
 }
