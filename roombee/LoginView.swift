@@ -19,7 +19,7 @@ struct LoginView: View {
                     .onTapGesture {
                         hideKeyboard()
                     }
-                VStack(spacing: 25){
+                VStack(){
                     Text("Login")
                         .font(.largeTitle)
                         .bold()
@@ -35,6 +35,7 @@ struct LoginView: View {
                     .disabled(!viewModel.isValid)
                     .buttonStyle(.borderedProminent)
                     .frame(width: 250, height: 50)
+                    .padding(.top, 30)
                     
                     signUpLink
                     
@@ -79,6 +80,7 @@ struct LoginView: View {
             LabelText(text: "Email")
             TextField("", text: $viewModel.email)
                 .modifier(TextFieldModifier())
+                .padding(.bottom, 20)
             
             LabelText(text: "Password")
             SecureField("", text: $viewModel.password)
@@ -106,7 +108,8 @@ struct LoginView: View {
             Text("Don't have an account yet?").font(.system(size: 15))
             Button("Sign Up", action: viewModel.switchFlow)
         }
-        .padding([.top, .bottom], 25)
+        .padding(.top, 25)
+        .padding(.bottom, 5)
     }
     
     var appleSignIn: some View {
@@ -125,9 +128,17 @@ struct LoginView: View {
                 viewModel.showingErrorAlert = true
             }
         })
-        .signInWithAppleButtonStyle(.black)
-        .frame(height: 45)
-        .padding()
+        .frame(maxWidth: 200)
+         .frame(height: 45)
+         .contentShape(Rectangle())
+         .padding(.horizontal, 12)
+         .background(Color.black)
+         .cornerRadius(8)
+         .overlay(
+             RoundedRectangle(cornerRadius: 8)
+                 .stroke(Color.clear, lineWidth: 1)
+         )
+         .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
     }
 
     
@@ -146,27 +157,27 @@ struct LoginView: View {
                 // Google Icon
                 Image("Google") // Replace with the actual name of your Google logo asset
                     .resizable()
-                    .frame(width: 20, height: 20)
+                    .frame(width: 15, height: 15)
                     .clipShape(Circle())
                 
                 // Text
                 Text("Sign in with Google")
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.black)
             }
-            .frame(maxWidth: .infinity, minHeight: 40)
-            .padding(.horizontal, 12)
+//            .frame(minHeight: 40)
+            .padding(.horizontal, 12) // Match Apple Button
+            .frame(maxWidth: 200) // Ensure consistent width
+            .frame(height: 45) // Match height
             .background(Color(red: 242 / 255, green: 242 / 255, blue: 242 / 255)) // Light gray background
-            .cornerRadius(4)
+            .cornerRadius(8)
             .overlay(
-                RoundedRectangle(cornerRadius: 4)
+                RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.clear, lineWidth: 1)
             )
         }
-        .frame(minWidth: 200, maxWidth: 400)
         .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
     }
-
 }
 
 struct LabelText: View {
