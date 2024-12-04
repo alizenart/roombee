@@ -40,8 +40,8 @@ struct LoginView: View {
                     signUpLink
                     
                     googleSignIn
-                    
-                    appleSignIn
+ 
+                    appleSignInNew
                     
                     NavigationLink(destination: SignupView().environmentObject(onboardGuideManager), isActive: $viewModel.showSignUp) {
                         EmptyView()
@@ -112,22 +112,20 @@ struct LoginView: View {
         .padding(.bottom, 5)
     }
     
-    var appleSignIn: some View {
-        SignInWithAppleButton(.signIn, onRequest: { request in
-            let nonce = viewModel.randomNonceString()
-            viewModel.currentNonce = nonce
-            request.requestedScopes = [.fullName, .email]
-            request.nonce = viewModel.sha256(nonce)
-        }, onCompletion: { result in
+    var appleSignInNew: some View {
+        SignInWithAppleButton { request in
+            viewModel.handleSignInWithAppleRequest(request)
+        } onCompletion: { result in
+            
             switch result {
             case .success(let authResults):
-                viewModel.handleSignInWithApple(authResults)
+                viewModel.handleSignInWithAppleCompletion(result)
             case .failure(let error):
                 print("Authorization failed: \(error.localizedDescription)")
                 viewModel.errorMessage = error.localizedDescription
                 viewModel.showingErrorAlert = true
             }
-        })
+        }
         .frame(maxWidth: 200)
          .frame(height: 45)
          .contentShape(Rectangle())
@@ -140,7 +138,7 @@ struct LoginView: View {
          )
          .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
     }
-
+    
     
     var googleSignIn: some View {
         Button(action: {

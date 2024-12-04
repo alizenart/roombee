@@ -78,7 +78,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     @Published var toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
-    @Published var genderOptions = ["Please select", "Female", "Male", "Other"]
+    @Published var genderOptions = ["Please select", "Female", "Male", "Other", "Prefer Not To Say"]
     
     @Published var isUserDataLoaded: Bool = false
     
@@ -155,16 +155,45 @@ class AuthenticationViewModel: ObservableObject {
         lastName = ""
         birthDate = Date()
         gender = ""
+        showSignUp = false
+        showLogIn = false
+        addUserError = false
+        addUserErrorMessage = ""
+        getUserError = false
+        getUserErrorMessage = ""
+        
+        // Reset state-specific properties
+        isValid = false
+        errorMessage = ""
         user = nil
         displayName = ""
         user_id = nil
         roommate_id = nil
         hive_code = ""
         hive_name = ""
-        isUserDataLoaded = false
         
+        user_firstName = ""
+        user_lastName = ""
+        roommate_firstName = ""
+        roommate_lastName = ""
+        
+        profileImageURL = nil
+        roommateProfileImageURL = nil
+        
+        showingErrorAlert = false
+        
+        backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+        toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
+        
+        genderOptions = ["Please select", "Female", "Male", "Other", "Prefer Not To Say"]
+        
+        isUserDataLoaded = false
         shouldNavigateToHomepage = false
+        
+        // Reset Apple SignIn data
+        currentNonce = nil
     }
+
 }
 
 // MARK: - Email and Password Authentication
@@ -660,6 +689,7 @@ extension AuthenticationViewModel {
     
     
     func handleSignInWithApple(_ authResults: ASAuthorization) {
+        print("in sign in with apple")
         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
             guard let nonce = currentNonce else {
                 fatalError("Invalid state: A login callback was received, but no login request was sent.")
@@ -672,49 +702,70 @@ extension AuthenticationViewModel {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
                 return
             }
-            
+
             let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
-            
+
             Task {
                 do {
+                    print("in task")
                     // Extract email if available
-                    let email = appleIDCredential.email ?? Auth.auth().currentUser?.email ?? ""
+                    let authResult = try await Auth.auth().signIn(with: credential)
                     
-                    // Check if email is already in use with a different sign-in method
+                    let firebaseUser = authResult.user
+                                    
+                    // Use Firebase User email or the one from Apple credential
+                    let email = firebaseUser.email ?? appleIDCredential.email ?? ""
+                    print("User signed in with email: \(email)")
+                    print("email: \(email)")
+
+                    // Check if email is already in use with a different sign-in method (e.g., Google)
                     let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
                     print("Sign-in methods for \(email): \(signInMethods)")
-                    
-                    if !signInMethods.isEmpty && !signInMethods.contains("apple.com") {
-                        // Email already registered with a different method
-                        DispatchQueue.main.async {
-                            self.errorMessage = "Your account is already registered with email/password. Please use that to sign in."
-                            self.showingErrorAlert = true
+
+                    if !signInMethods.isEmpty {
+                        // If email is already linked with Google, allow linking with Apple
+                        if signInMethods.contains("google.com") {
+                            // Link the Apple account with the existing Google account
+                            try await Auth.auth().currentUser?.link(with: credential)
+                            print("Apple account successfully linked with Google account")
+                            
+                            // Proceed to signed-in state
+                            DispatchQueue.main.async {
+                                self.authenticationState = .authenticated
+                                self.user = Auth.auth().currentUser
+                            }
+                        } else {
+                            // Email is already registered with a different method (e.g., email/password)
+                            DispatchQueue.main.async {
+                                self.errorMessage = "Your account is already registered with a different method. Please sign in using that method."
+                                self.showingErrorAlert = true
+                            }
                         }
-                        return
-                    }
-                    
-                    // Proceed with Apple sign-in
-                    let authResult = try await Auth.auth().signIn(with: credential)
-                    print("User is signed in with Apple")
-                    DispatchQueue.main.async {
-                        self.authenticationState = .authenticated
-                        self.user = authResult.user
-                    }
-                    
-                    // Check if the user is new or existing
-                    let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
-                    if isNewUser {
-                        // Extract user details
-                        self.firstName = appleIDCredential.fullName?.givenName ?? ""
-                        self.lastName = appleIDCredential.fullName?.familyName ?? ""
-                        self.email = authResult.user.email ?? appleIDCredential.email ?? ""
-                        self.user_id = authResult.user.uid
-                        
-                        // Add user to backend
-                        self.addUserLambda()
                     } else {
-                        // Existing user, fetch user data
-                        await self.getUserData()
+                        // Proceed with Apple sign-in as a new user
+                        let authResult = try await Auth.auth().signIn(with: credential)
+                        print("User is signed in with Apple")
+
+                        DispatchQueue.main.async {
+                            self.authenticationState = .authenticated
+                            self.user = authResult.user
+                        }
+
+                        // Check if the user is new or existing
+                        let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                        if isNewUser {
+                            // Extract user details
+                            self.firstName = appleIDCredential.fullName?.givenName ?? ""
+                            self.lastName = appleIDCredential.fullName?.familyName ?? ""
+                            self.email = authResult.user.email ?? appleIDCredential.email ?? ""
+                            self.user_id = authResult.user.uid
+
+                            // Add user to backend
+                            self.addUserLambda()
+                        } else {
+                            // Existing user, fetch user data
+                            await self.getUserData()
+                        }
                     }
                 } catch {
                     print("Error signing in with Apple: \(error.localizedDescription)")
@@ -726,4 +777,139 @@ extension AuthenticationViewModel {
             }
         }
     }
+    
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
+        request.requestedScopes = [.fullName, .email]
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.nonce = sha256(nonce)
+    }
+    
+    func handleSignInWithAppleCompletion(_ result: Result<ASAuthorization, Error>) {
+        if case .failure(let failure) = result {
+            // Handle error if the sign-in fails
+            errorMessage = failure.localizedDescription
+            return
+        } else if case .success(let authorization) = result {
+            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                guard let nonce = currentNonce else {
+                    fatalError("Invalid state: a login callback was received, but no login request was sent.")
+                }
+                guard let appleIDToken = appleIDCredential.identityToken else {
+                    print("Unable to fetch identity token.")
+                    return
+                }
+                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                    print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                    return
+                }
+
+                let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+                
+                // Perform asynchronous task
+                Task {
+                    do {
+                        let authResult = try await Auth.auth().signIn(with: credential)
+                        let firebaseUser = authResult.user
+                        let email = firebaseUser.email ?? appleIDCredential.email ?? ""
+                        print("User signed in with email: \(email)")
+                        
+                        // Check if email is already in use with a different sign-in method (e.g., Google)
+                        let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+                        print("Sign-in methods for \(email): \(signInMethods)")
+
+                        if !signInMethods.isEmpty {
+                            // If email is already linked with Google, allow linking with Apple
+                            if signInMethods.contains("google.com") {
+                                // Link the Apple account with the existing Google account
+                                try await Auth.auth().currentUser?.link(with: credential)
+                                print("Apple account successfully linked with Google account")
+                                
+                                // Proceed to authenticated state
+                                DispatchQueue.main.async {
+                                    self.authenticationState = .authenticated
+                                    self.user = Auth.auth().currentUser
+                                }
+                            } else {
+                                // Email is already registered with a different method (e.g., email/password)
+                                DispatchQueue.main.async {
+                                    self.errorMessage = "Your account is already registered with a different method. Please sign in using that method."
+                                    self.showingErrorAlert = true
+                                }
+                            }
+                        } else {
+                            // Proceed with Apple sign-in as a new user
+                            print("User is signed in with Apple")
+
+                            // Check if the user is new or existing
+                            let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                            if isNewUser {
+                                // Extract user details
+                                self.firstName = appleIDCredential.fullName?.givenName ?? ""
+                                self.lastName = appleIDCredential.fullName?.familyName ?? ""
+                                self.email = authResult.user.email ?? appleIDCredential.email ?? ""
+                                self.user_id = authResult.user.uid
+
+                                // Add user to backend
+                                self.addUserLambda()
+
+                                // Proceed to authenticated state
+                                DispatchQueue.main.async {
+                                    self.authenticationState = .authenticated
+                                    self.user = authResult.user
+                                }
+                            } else {
+                                // Existing user, fetch user data
+                                await self.getUserData()
+
+                                // Proceed to authenticated state
+                                DispatchQueue.main.async {
+                                    self.authenticationState = .authenticated
+                                    self.user = authResult.user
+                                }
+                            }
+                        }
+                    } catch {
+                        // Handle error during Firebase authentication
+                        print("Error signing in with Apple: \(error.localizedDescription)")
+                        DispatchQueue.main.async {
+                            self.errorMessage = error.localizedDescription
+                            self.showingErrorAlert = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    
+    func updateDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential, force: Bool = false) async {
+        if let currentDisplayName = Auth.auth().currentUser?.displayName, !currentDisplayName.isEmpty, !force {
+            // current user display name is non-empty, don't overwrite it
+            return
+        }
+        
+        let changeRequest = user.createProfileChangeRequest()
+        
+        // Construct the display name from the fullName property
+        if let fullName = appleIDCredential.fullName {
+            let givenName = fullName.givenName ?? ""
+            let familyName = fullName.familyName ?? ""
+            changeRequest.displayName = "\(givenName) \(familyName)".trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            // If fullName is nil, you might want to use a default or leave it empty
+            changeRequest.displayName = ""
+        }
+        
+        do {
+            try await changeRequest.commitChanges()
+            self.displayName = Auth.auth().currentUser?.displayName ?? ""
+        } catch {
+            print("Unable to update the user's display name: \(error.localizedDescription)")
+            errorMessage = error.localizedDescription
+        }
+    }
+
 }
+
