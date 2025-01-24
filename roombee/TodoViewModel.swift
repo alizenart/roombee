@@ -40,8 +40,17 @@ class TodoViewModel: ObservableObject {
     static let getTodoEndpoint = "/todolist/?user_id="
     
 
-    @Published var userTasks: [Tasks] = []
-    @Published var roommateTasks: [Tasks] = []
+    @Published var userTasks: [Tasks] = [] {
+        didSet {
+            updateCombinedTasks()
+        }
+    }
+    @Published var roommateTasks: [Tasks] = [] {
+        didSet {
+            updateCombinedTasks()
+        }
+    }
+    @Published var combinedTasks: [Tasks] = []
 
     func fetchUserTasks(user_id: String) {
         fetchTasks(for: user_id) { [weak self] tasks in
@@ -51,6 +60,30 @@ class TodoViewModel: ObservableObject {
         }
     }
 
+    private func updateCombinedTasks() {
+        combinedTasks = (userTasks + roommateTasks).sorted {
+            priorityValue(for: $0.todoPriority) < priorityValue(for: $1.todoPriority)
+        }
+    }
+
+//    func fetchTopTasks(user_id: String, roommate_id: String, limit: Int = 3) -> [Tasks] {
+//        fetchUserTasks(user_id: user_id)
+//        fetchRoommateTasks(roommate_id: roommate_id)
+//        let combinedTasks = userTasks + roommateTasks
+//        return combinedTasks.sorted {
+//            priorityValue(for: $0.todoPriority) < priorityValue(for: $1.todoPriority)
+//        }
+//    }
+
+    // Helper to assign numeric values to priorities for sorting
+    private func priorityValue(for priority: String) -> Int {
+        switch priority.lowercased() {
+        case "high": return 1
+        case "med": return 2
+        case "low": return 3
+        default: return 4
+        }
+    }
     func fetchRoommateTasks(roommate_id: String) {
         fetchTasks(for: roommate_id) { [weak self] tasks in
             DispatchQueue.main.async {

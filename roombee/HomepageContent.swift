@@ -354,7 +354,7 @@ struct TaskPreviewView: View {
                 }
 
                 // list tasks
-                if todoManager.userTasks.isEmpty {
+                if todoManager.combinedTasks.isEmpty {
                     ZStack(alignment: .leading) {
                         GeometryReader { geometry in
                             Rectangle()
@@ -378,7 +378,9 @@ struct TaskPreviewView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 2) {
-                            ForEach(todoManager.userTasks, id: \.id) { task in
+                            let topTasks = Array(todoManager.combinedTasks.prefix(3))
+
+                            ForEach(topTasks, id: \.id) { task in
                                 HStack {
                                     Image(systemName: task.status != 0 ? "checkmark.circle.fill" : "circle")
                                         .foregroundColor(task.status != 0 ? .white : .red)
@@ -390,61 +392,48 @@ struct TaskPreviewView: View {
                                 }
                                 .padding(.vertical, 5)
                             }
+                            
                         }
                         .padding(.leading, 20)
                     }
+                } //else
+                
+                if (todoManager.combinedTasks.count > 3){
+                    HStack {
+                        Button(action: {
+                            navManager.selectedSideMenuTab = 1
+                        }) {
+                            Text("View All Tasks")
+                                .foregroundColor(.white)
+                                .underline()
+                                .padding(.top, 10)
+                                .font(.subheadline)
+                                .offset(x: 10, y: 0)
+                        }
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-//                Button(action: addview) {
-//                    ZStack {
-//                        hexagonShape()
-//                            .fill(Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255))
-//                            .frame(width: 50, height: 60)
-//                        Text("+")
-//                            .foregroundColor(.white)
-//                            .fontWeight(.heavy
-//                            )
-//                            .font(.system(size: 45
-//                                         ))
-//                            .padding(.bottom, 5)
-//                    }
-//                }
-            }
+
+            }//vstack
             .padding()
         }
         .onAppear {
             fetchTasks()
         }
 
-//        .sheet(isPresented: $addpresent) {
-//            AddToDoView { task in
-//                if let userId = auth.user_id {
-//                    todoManager.addToDo(
-//                        todoID: task.id,
-//                        userId: userId,
-//                        hiveCode: auth.hive_code,
-//                        todoTitle: task.todoTitle,
-//                        todoPriority: task.todoPriority,
-//                        todoCategory: task.todoCategory,
-//                        todoStatus: String(task.status)
-//                    )
-////                    Mixpanel.mainInstance().track(event: "NewTodo", properties: ["userID": auth.user_id])
-//                    tasks.append(task)
-////                    skipNextFilter = true
-//                } else {
-//                    print("User ID not available. Task not added.")
-//                }
-//            }
-//        }// sheet
     }
 
     private func fetchTasks() {
         if let userId = auth.user_id {
             todoManager.fetchUserTasks(user_id: userId)
         }
+
+        if let roommateId = auth.roommate_id {
+            todoManager.fetchRoommateTasks(roommate_id: roommateId)
+        }
     }
-
-
 }
 
 
