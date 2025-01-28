@@ -34,7 +34,7 @@ struct HomepageContent: View {
     var calGrid: GridView
     var yourStatus: StatusView?
     var roomStatus: StatusView?
-    
+        
     var schedCara: DatesCarousel {
         let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7, weekOffset: weekOffset)
         return DatesCarousel(dates: dates, onDateSelected: { date in
@@ -82,8 +82,15 @@ struct HomepageContent: View {
                         }.padding(.horizontal, 40)
                             .padding(.top, 20)
                         
+                        TaskPreviewView()
+                            .environmentObject(todoManager)
+                            .environmentObject(auth)
+                            .environmentObject(navManager)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 30)
+
+                        
                         schedCara.environmentObject(selectedDateManager)
-                            .padding()
                         calGrid.padding([.leading, .trailing], 20)
                     }
                 }
@@ -304,6 +311,132 @@ struct StatusView: View {
         }
     }
 }
+
+struct TaskPreviewView: View {
+    @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var auth: AuthenticationViewModel
+    @EnvironmentObject var navManager: NavManager
+    @State private var addpresent = false
+
+    private func addview() {
+        addpresent.toggle()
+    }
+    
+    var body: some View {
+        let backgroundShape = RoundedRectangle(cornerRadius: 20)
+
+        ZStack {
+            backgroundShape
+                .foregroundColor(Color.white.opacity(0.5))
+                .onTapGesture {
+                    navManager.selectedSideMenuTab = 1
+                }
+
+            VStack(alignment: .trailing, spacing: 2) {
+                HStack {
+                    Text("To-do Today")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Spacer()
+                    HStack {
+                        Circle()
+                            .fill(LighterPurple)
+                            .frame(width: 30, height: 30)
+                            .overlay(
+                                Image("TaskIcon")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.white)
+                            )
+                    }
+                }
+
+                // list tasks
+                if todoManager.combinedTasks.isEmpty {
+                    ZStack(alignment: .leading) {
+                        GeometryReader { geometry in
+                            Rectangle()
+                                .fill(Color.white)
+                                .frame(width: 2, height: geometry.size.height)
+                                .offset(x: 10, y: 0)
+                        }
+                        Text("No tasks for today!")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .padding(.leading, 20)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    ZStack(alignment: .leading) {
+                        GeometryReader { geometry in
+                            Rectangle()
+                                .fill(Color.white)
+                                .frame(width: 2, height: geometry.size.height)
+                                .offset(x: 10, y: 0)
+                        }
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            let topTasks = Array(todoManager.combinedTasks.prefix(3))
+
+                            ForEach(topTasks, id: \.id) { task in
+                                HStack {
+                                    Image(systemName: task.status != 0 ? "checkmark.circle.fill" : "circle")
+                                        .foregroundColor(task.status != 0 ? .white : .red)
+                                    Text(task.todoTitle)
+                                        .foregroundColor(.white)
+                                        .lineLimit(1)
+//                                        .padding(.leading, 10)
+                                    Spacer()
+                                }
+                                .padding(.vertical, 5)
+                            }
+                            
+                        }
+                        .padding(.leading, 20)
+                    }
+                } //else
+                
+                if (todoManager.combinedTasks.count > 3){
+                    HStack {
+                        Button(action: {
+                            navManager.selectedSideMenuTab = 1
+                        }) {
+                            Text("View All Tasks")
+                                .foregroundColor(.white)
+                                .underline()
+                                .padding(.top, 10)
+                                .font(.subheadline)
+                                .offset(x: 10, y: 0)
+                        }
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+
+            }//vstack
+            .padding()
+        }
+        .onAppear {
+            fetchTasks()
+        }
+
+    }
+
+    private func fetchTasks() {
+        if let userId = auth.user_id {
+            todoManager.fetchUserTasks(user_id: userId)
+        }
+
+        if let roommateId = auth.roommate_id {
+            todoManager.fetchRoommateTasks(roommate_id: roommateId)
+        }
+    }
+}
+
+
 
 struct DatesCarousel: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
