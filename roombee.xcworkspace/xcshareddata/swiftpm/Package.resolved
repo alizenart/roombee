@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/aws-sdk-ios-spm",
       "state" : {
-        "revision" : "5a7f1036ca625cc9dcee8cdc6aff7c60f2214664",
-        "version" : "2.37.2"
+        "revision" : "512a43ed2770957d40618ad415a9826e6dd99ea9",
+        "version" : "2.40.1"
       }
     },
     {
@@ -115,7 +115,7 @@
       "location" : "https://github.com/mixpanel/mixpanel-swift",
       "state" : {
         "branch" : "master",
-        "revision" : "61ce9b40817466fb1334db1d7a582fbaf616ab4c"
+        "revision" : "8f5439aa82c733c125b451e95097b858df98f017"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "edb6ed4919f7756157fe02f2552b7e3850a538e5",
-        "version" : "1.28.1"
+        "revision" : "ebc7251dd5b37f627c93698e4374084d98409633",
+        "version" : "1.28.2"
       }
     },
     {

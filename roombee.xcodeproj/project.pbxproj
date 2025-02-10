@@ -32,12 +32,14 @@
 		30AA0BC02AD1BC0800344002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BBF2AD1BC0800344002 /* Assets.xcassets */; };
 		30AA0BC42AD1BC0800344002 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */; };
 		30AA0BCB2AD1CD8F00344002 /* HomepageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */; };
-		4C1F73682CD179BB0003447B /* DynamoDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1F73672CD179B40003447B /* DynamoDBManager.swift */; };
 		4C2365B72C05366700D6FE49 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B62C05366700D6FE49 /* NotificationService.swift */; };
 		4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B82C05624B00D6FE49 /* LocalNotification.swift */; };
 		4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */; };
 		4C2429972C7CFE9500341ED9 /* RoommateAgreementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2429962C7CFE9500341ED9 /* RoommateAgreementViewModel.swift */; };
+		4CD2580F2D4C40800072DEB9 /* AWSSNS in Frameworks */ = {isa = PBXBuildFile; productRef = 4CD2580E2D4C40800072DEB9 /* AWSSNS */; };
 		4CE4E4242C5C47DA0070C378 /* TodoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */; };
+		4CE576692D59D4F900FF4BED /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4CE576682D59D4F900FF4BED /* FirebaseMessaging */; };
+		4CE5766B2D5A889C00FF4BED /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE5766A2D5A889700FF4BED /* TokenManager.swift */; };
 		680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE52BBF6463002B3642 /* Onboarding2.swift */; };
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
 		680FEBEA2BBF651E002B3642 /* Onboarding3_joinExisting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */; };
@@ -91,12 +93,12 @@
 		30AA0BC12AD1BC0800344002 /* roombee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = roombee.entitlements; sourceTree = "<group>"; };
 		30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomepageView.swift; sourceTree = "<group>"; };
-		4C1F73672CD179B40003447B /* DynamoDBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamoDBManager.swift; sourceTree = "<group>"; };
 		4C2365B62C05366700D6FE49 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		4C2365B82C05624B00D6FE49 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
 		4C2429962C7CFE9500341ED9 /* RoommateAgreementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoommateAgreementViewModel.swift; sourceTree = "<group>"; };
 		4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoViewModel.swift; sourceTree = "<group>"; };
+		4CE5766A2D5A889700FF4BED /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		680FEBE52BBF6463002B3642 /* Onboarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2.swift; sourceTree = "<group>"; };
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
 		680FEBE92BBF651E002B3642 /* Onboarding3_joinExisting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_joinExisting.swift; sourceTree = "<group>"; };
@@ -134,6 +136,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CE576692D59D4F900FF4BED /* FirebaseMessaging in Frameworks */,
+				4CD2580F2D4C40800072DEB9 /* AWSSNS in Frameworks */,
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
 				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
 				FA14A73C2C9826640042F1EB /* KeychainAccess in Frameworks */,
@@ -172,6 +176,7 @@
 			children = (
 				30AA0BBA2AD1BC0400344002 /* roombee */,
 				FAF91EAB2C6662C500B60E68 /* roombee.app */,
+				4CE576672D59D4F900FF4BED /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -183,7 +188,6 @@
 				4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
-				4C1F73672CD179B40003447B /* DynamoDBManager.swift */,
 				FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
@@ -199,6 +203,7 @@
 				30AA0BCA2AD1CD8F00344002 /* HomepageView.swift */,
 				FAE0C6D72C67F45A002FE8D6 /* GoogleService-Info.plist */,
 				68E7360E2BCDE08B00D94A95 /* HomepageContent.swift */,
+				4CE5766A2D5A889700FF4BED /* TokenManager.swift */,
 				4C2365B62C05366700D6FE49 /* NotificationService.swift */,
 				68E7360C2BCDDF0B00D94A95 /* SettingsView.swift */,
 				68E736012BCC6EE600D94A95 /* navBar */,
@@ -232,6 +237,13 @@
 				30AA0BC32AD1BC0800344002 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4CE576672D59D4F900FF4BED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		6897FCDE2C7438BA001B0A52 /* OnboardingGuide */ = {
@@ -288,6 +300,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				4CE576662D59C94600FF4BED /* PBXTargetDependency */,
 				686995632C984D45001B44F9 /* PBXTargetDependency */,
 				686995612C984D3A001B44F9 /* PBXTargetDependency */,
 				6869955F2C984D34001B44F9 /* PBXTargetDependency */,
@@ -303,6 +316,8 @@
 				309989122BFC7386005519F1 /* FirebaseAuth */,
 				685ACAF62C66BEAB0069E7BA /* Mixpanel */,
 				FA14A73B2C9826640042F1EB /* KeychainAccess */,
+				4CD2580E2D4C40800072DEB9 /* AWSSNS */,
+				4CE576682D59D4F900FF4BED /* FirebaseMessaging */,
 			);
 			productName = roombee;
 			productReference = FAF91EAB2C6662C500B60E68 /* roombee.app */;
@@ -367,7 +382,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6897FCEA2C795FC6001B0A52 /* RoommateAgreementStore.swift in Sources */,
-				4C1F73682CD179BB0003447B /* DynamoDBManager.swift in Sources */,
 				308DFDE32BE9DB9F00640B62 /* BackgroundFormModifier.swift in Sources */,
 				680FEBF02BC08CDE002B3642 /* Onboarding3_CreateRoom2.swift in Sources */,
 				C7FE5F642BE06F9E00161711 /* APIService.swift in Sources */,
@@ -400,6 +414,7 @@
 				30AA0BBE2AD1BC0400344002 /* ContentView.swift in Sources */,
 				306820802AD1DEE100025437 /* CalendarView.swift in Sources */,
 				C739AD032BBE53E5001378D3 /* NewEventViewModel.swift in Sources */,
+				4CE5766B2D5A889C00FF4BED /* TokenManager.swift in Sources */,
 				68E7360F2BCDE08B00D94A95 /* HomepageContent.swift in Sources */,
 				309D67752BCE4E1600C343FF /* LoginView.swift in Sources */,
 				309D677B2BD0D29C00C343FF /* DatePickerView.swift in Sources */,
@@ -422,6 +437,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4CE576662D59C94600FF4BED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 4CE576652D59C94600FF4BED /* FirebaseMessaging */;
+		};
 		686995592C984D21001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 686995582C984D21001B44F9 /* AWSLambda */;
@@ -584,17 +603,19 @@
 				ENABLE_TESTABILITY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = roombee/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
+				INFOPLIST_KEY_CFBundleDisplayName = Roombee;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -627,17 +648,19 @@
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = roombee/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
+				INFOPLIST_KEY_CFBundleDisplayName = Roombee;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -741,6 +764,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		4CD2580E2D4C40800072DEB9 /* AWSSNS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890A2BFC7343005519F1 /* XCRemoteSwiftPackageReference "aws-sdk-ios-spm" */;
+			productName = AWSSNS;
+		};
+		4CE576652D59C94600FF4BED /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		4CE576682D59D4F900FF4BED /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 		685ACAF62C66BEAB0069E7BA /* Mixpanel */ = {
 			isa = XCSwiftPackageProductDependency;

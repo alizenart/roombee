@@ -5,18 +5,21 @@
 //  Created by Adwait Ganguly on 10/7/23.
 //
 
+
 import SwiftUI
 import Firebase
 import FirebaseCore
+import FirebaseMessaging
 import FirebaseAuth
 import AWSLambda
 import AWSCore
 import KeychainAccess
 import Mixpanel
-
+import AWSSNS // Import AWSSNS for SNS functionality
+import UserNotifications
 
 @MainActor
-class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
@@ -38,35 +41,55 @@ class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUserNotifi
         let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
+        
+        // Initialize Mixpanel
         Mixpanel.initialize(token: "afcb925e6a6fc8b2cb699e8e0251aebb", trackAutomaticEvents: false)
+        
+        // Set up notification delegate
         UNUserNotificationCenter.current().delegate = self
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
+            guard success else {
+                return
+            }
+            UNUserNotificationCenter.current().delegate = self
+            Messaging.messaging().delegate = self
+        }
+        application.registerForRemoteNotifications()
+        
+        
         return true
     }
     
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        print("in Roombee App")
-        if let incomingURL = userActivity.webpageURL {
-            print("Incoming URL: \(incomingURL)")
-            handleIncomingURL(incomingURL)
-            return true
-        }
-        return false
-    }
-    
+    // Handle device token registration
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-            let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-            let token = tokenParts.joined()
-            print("Device Token: \(token)")
-        };
-
+        }
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-       print(error.localizedDescription)
+        print("Failed to register for notifications: \(error.localizedDescription)")
+    }
+    
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([[.banner, .list, .sound]])
+    }
+    
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,  didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        NotificationCenter.default.post(name: Notification.Name("didReceiveRemoteNotification"), object: nil, userInfo: userInfo)
+        completionHandler()
+    }
+    
+    @objc nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        if let fcmToken = fcmToken {
+                print("Firebase token: \(fcmToken)")
+                DispatchQueue.main.async {
+                    TokenManager.shared.fcmToken = fcmToken
+                }
+            }
     }
 
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-            completionHandler([.banner, .badge, .sound])
-        }
     
+    
+    // Handle incoming URL (deep linking)
     private func handleIncomingURL(_ url: URL) {
         if url.scheme == "roombee" {
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
@@ -79,7 +102,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUserNotifi
             }
         }
     }
-    
 }
 
 @main
@@ -126,6 +148,5 @@ struct roombeeApp: App {
 
 extension Notification.Name {
     static let receivedHiveCode = Notification.Name("receivedHiveCode")
+    static let deviceTokenReceived = Notification.Name("deviceTokenReceived")
 }
-
-

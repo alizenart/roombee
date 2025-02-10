@@ -3,7 +3,7 @@
 //  roombee
 //
 //  Created by Adwait Ganguly on 10/7/23.
-//
+//x
 
 import SwiftUI
 import Mixpanel
@@ -26,6 +26,7 @@ let formatter = DateFormatter()
 
 @MainActor
 struct HomepageView: View {
+    
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var selectedDateManager: SelectedDateManager
@@ -190,9 +191,7 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-            requestPushAuthorization();
             
-            UIApplication.shared.registerForRemoteNotifications()
             print("Authentication state: \(auth.authenticationState)")
             if auth.authenticationState == .authenticated {
                 // User is already signed in, fetch user data
