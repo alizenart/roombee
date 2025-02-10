@@ -112,12 +112,12 @@ struct HomepageContent: View {
 
             if let roommateId = auth.roommate_id {
                 fetchRoomieInitialToggleState(userId: roommateId)
-                startRoomieStatusPolling(userId: roommateId)
+                //startRoomieStatusPolling(userId: roommateId)
             }
             
-            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
-                stopRoomieStatusPolling()
-            }
+//            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
+//                stopRoomieStatusPolling()
+//            }
             
             NotificationService.shared.todoNotif()
         }
@@ -133,28 +133,28 @@ struct HomepageContent: View {
             if let roommateId = auth.roommate_id {
                 fetchRoomieInitialToggleState(userId: roommateId)
                 eventStore.getRoommateEvents(roommate_id: roommateId)
-                startRoomieStatusPolling(userId: roommateId)
+                //startRoomieStatusPolling(userId: roommateId)
                 todoManager.fetchRoommateTasks(roommate_id: roommateId)
                 agreementManager.fetchRoommateAgreements(roommate_id: roommateId)
             }
             
             
-            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
-                stopRoomieStatusPolling()
-            }
+//            NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
+//                stopRoomieStatusPolling()
+//            }
             
-            NotificationService.shared.requestPerm()
+            //NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
         })
         .onChange(of: isShowingCalendarPopup) { newValue in
                     if newValue {
                         // Calendar popup is showing, pause polling
-                        stopRoomieStatusPolling()
+                        //stopRoomieStatusPolling()
                     } else {
                         // Calendar popup dismissed, resume polling
                         if let roommateId = auth.roommate_id {
                             fetchRoomieInitialToggleState(userId: roommateId)
-                            startRoomieStatusPolling(userId: roommateId)
+                            //startRoomieStatusPolling(userId: roommateId)
                         }
                     }
                 }
@@ -266,6 +266,9 @@ struct StatusView: View {
                                         NotificationService.shared.toggleSleep(isAsleep: isOn)
                                     }
                                 }
+
+                            }
+
                         }
                         .padding(.horizontal, 20)
                         
@@ -339,6 +342,15 @@ struct TaskPreviewView: View {
                         .foregroundColor(.white)
                     Spacer()
                     HStack {
+
+                        Toggle(isOn: $inRoom, label: { roomIcon })
+                            .disabled(!canToggle)
+                            .onChange(of: inRoom) { isOn in
+                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                    toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                    Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                                }
+                            }
                         Circle()
                             .fill(LighterPurple)
                             .frame(width: 30, height: 30)
@@ -596,23 +608,3 @@ struct DateToggle: View {
     }
 }
 
-
-
-//#Preview {
-//    HomepageContent(
-//        myStatusToggleSleeping: .constant(true),
-//        myStatusToggleInRoom: .constant(true),
-//        roomieStatusToggleSleeping: .constant(true),
-//        roomieStatusToggleInRoom: .constant(true),
-//        isInitialLoad: .constant(true),
-//        calGrid: GridView(cal: CalendarView(title: "Me")),
-//        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false), userId: "80003", isInitialLoad: .constant(true)),
-//        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false), userId: "80002", isInitialLoad: .constant(true))
-//    )
-//    .environmentObject(EventStore())
-//    .environmentObject(AuthenticationViewModel())
-//    .environmentObject(NavManager())
-//    .environmentObject(ToggleViewModel())
-//    .environmentObject(TodoViewModel())
-//    .environmentObject(RoommateAgreementHandler())
-//}
