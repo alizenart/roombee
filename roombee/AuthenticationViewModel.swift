@@ -7,11 +7,19 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseCore
 import SwiftUI
 import AWSLambda
 import Mixpanel
 import Combine
-import AWSSNS
+import AWSS3
+import AWSCore
+import GoogleSignIn
+import GoogleSignInSwift
+import AuthenticationServices
+import CryptoKit
+
+
 enum AuthenticationState {
     case unauthenticated
     case authenticating
@@ -61,19 +69,28 @@ class AuthenticationViewModel: ObservableObject {
     @Published var roommate_firstName = ""
     @Published var roommate_lastName = ""
     
+    
+    @Published var profileImageURL: String? = nil
+
+    @Published var roommateProfileImageURL: String? = nil
+    
     @Published var showingErrorAlert = false
     
     @Published var backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
     @Published var toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
     
-    @Published var genderOptions = ["Please select", "Female", "Male", "Other"]
+    @Published var genderOptions = ["Please select", "Female", "Male", "Other", "Prefer Not To Say"]
     
     @Published var isUserDataLoaded: Bool = false
     
     
     //onboardGuide struggles
     @Published var shouldNavigateToHomepage = false
-    private var cancellables = Set<AnyCancellable>()
+    
+    //Used for Apple SignIn
+    @Published var currentNonce: String?
+
+
 
     
     init() {
@@ -150,48 +167,44 @@ class AuthenticationViewModel: ObservableObject {
         lastName = ""
         birthDate = Date()
         gender = ""
+        showSignUp = false
+        showLogIn = false
+        addUserError = false
+        addUserErrorMessage = ""
+        getUserError = false
+        getUserErrorMessage = ""
+        
+        // Reset state-specific properties
+        isValid = false
+        errorMessage = ""
         user = nil
         displayName = ""
         user_id = nil
         roommate_id = nil
         hive_code = ""
         hive_name = ""
-        isUserDataLoaded = false
         
+        user_firstName = ""
+        user_lastName = ""
+        roommate_firstName = ""
+        roommate_lastName = ""
+        
+        profileImageURL = nil
+        roommateProfileImageURL = nil
+        
+        showingErrorAlert = false
+        
+        backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
+        toggleColor = Color(red: 90 / 255, green: 85 / 255, blue: 77 / 255)
+        
+        genderOptions = ["Please select", "Female", "Male", "Other", "Prefer Not To Say"]
+        
+        isUserDataLoaded = false
         shouldNavigateToHomepage = false
+        
+        // Reset Apple SignIn data
+        currentNonce = nil
     }
-    
-    /*
-    func requestNotificationPermissions() {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                if granted {
-                    print("Notification permissions granted.")
-                    DispatchQueue.main.async {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
-                } else if let error = error {
-                    print("Error requesting notification permissions: \(error.localizedDescription)")
-                }
-            }
-        }
-    func registerDeviceTokenWithSNS(deviceToken: String) {
-            let sns = AWSSNS.default()
-            let request = AWSSNSCreatePlatformEndpointInput()
-            
-            // Replace with your SNS platform application ARN
-            request?.platformApplicationArn = "arn:aws:sns:us-east-1:381492134677:app/APNS/roombee"
-            request?.token = deviceToken
-            
-            sns.createPlatformEndpoint(request!) { (response, error) in
-                if let error = error {
-                    print("Error registering device token with SNS: \(error)")
-                } else if let endpointArn = response?.endpointArn {
-                    print("Successfully registered device token with endpoint ARN: \(endpointArn)")
-                }
-            }
-        }
-    */
-    
 }
 
 // MARK: - Email and Password Authentication
@@ -200,28 +213,50 @@ extension AuthenticationViewModel {
     func signInWithEmailPassword() async -> Bool {
         authenticationState = .authenticating
         do {
+            // Check if the email has a valid password sign-in method
+            let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: self.email)
+            print("Sign-in methods for \(self.email): \(signInMethods)")
+
+            if !signInMethods.contains("password") {
+                // The account exists but is not associated with email/password
+                DispatchQueue.main.async {
+                    if signInMethods.contains("google.com") {
+                        self.errorMessage = "Your account is registered with Google. Please use 'Sign in with Google'."
+                    } else if signInMethods.contains("apple.com") {
+                        self.errorMessage = "Your account is registered with Apple. Please use 'Sign in with Apple'."
+                    } else {
+                        self.errorMessage = "This account is registered with another sign-in method."
+                    }
+                    self.showingErrorAlert = true
+                }
+                authenticationState = .unauthenticated
+                return false
+            }
+
+            // Attempt email/password sign-in
             try await Auth.auth().signIn(withEmail: self.email, password: self.password)
             await getUserData()
             DispatchQueue.main.async {
-               self.authenticationState = .authenticated // Update state here
+                self.authenticationState = .authenticated // Update state here
             }
-            Mixpanel.mainInstance().track(event: "User Signed In", properties: ["userId":user_id ?? "Unknown",
-                                                                                "email":email])
+            Mixpanel.mainInstance().track(event: "User Signed In", properties: [
+                "userId": user_id ?? "Unknown",
+                "email": email
+            ])
             return true
-        }
-        catch  {
-            print(error)
-            errorMessage = "Incorrect user or password"
+        } catch {
+            print("Error signing in with email/password: \(error.localizedDescription)")
             DispatchQueue.main.async {
-                self.errorMessage = error.localizedDescription
+                self.errorMessage = "Incorrect email or password. Please try again."
                 self.authenticationState = .unauthenticated
             }
             Mixpanel.mainInstance().track(event: "Sign-In Error", properties: [
-                            "error": error.localizedDescription
-                        ])
+                "error": error.localizedDescription
+            ])
             return false
         }
     }
+
     
     func validatePassword(_ password: String) -> Bool {
         let passwordRegex = NSPredicate(format: "SELF MATCHES %@", "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\W]{8,}$")
@@ -417,6 +452,37 @@ extension AuthenticationViewModel {
             return nil
         }
     }
+    
+    
+    func updateProfilePictureURL(s3Url: String) {
+        self.profileImageURL = s3Url
+        let lambdaInvoker = AWSLambdaInvoker.default()
+        
+        let jsonObject = [
+            "queryStringParameters": [
+                "user_id": user_id,
+                "profile_picture_url": s3Url
+            ]
+        ] as [String: Any]
+        
+        lambdaInvoker.invokeFunction("updateProfilePicture", jsonObject: jsonObject).continueWith { task -> Any? in
+            if let error = task.error {
+                print("Error occurred: \(error)")
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                    self.showingErrorAlert = true
+                }
+                return nil
+            }
+            if let result = task.result {
+                print("Lambda function result: \(result)")
+                DispatchQueue.main.async {
+                    self.showingErrorAlert = false
+                }
+            }
+            return nil
+        }
+    }
 
     
     
@@ -455,6 +521,8 @@ extension AuthenticationViewModel {
                                     self.isUserDataLoaded = true
                                     self.user_firstName = userData["first_name"] as? String ?? ""
                                     self.user_lastName = userData["last_name"] as? String ?? ""
+                                    self.profileImageURL = userData["profile_picture_url"] as? String ?? ""
+                                    
                                     print("User data loaded: \(userData)")
                                 }
                                 
@@ -463,6 +531,7 @@ extension AuthenticationViewModel {
                                     self.roommate_id = roommateData["user_id"] as? String ?? ""
                                     self.roommate_firstName = roommateData["first_name"] as? String ?? ""
                                     self.roommate_lastName = roommateData["last_name"] as? String ?? ""
+                                    self.roommateProfileImageURL = roommateData["profile_picture_url"] as? String ?? ""
                                     print("Roommate data loaded: \(roommateData)")
                                 }
                             }
@@ -514,6 +583,344 @@ extension AuthenticationViewModel {
             return false
         }
     }
+    
 }
 
+
+//Sign In with Google and Apple
+extension AuthenticationViewModel {
+    
+    func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        let charset: Array<Character> =
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remainingLength = length
+        
+        while remainingLength > 0 {
+            let randoms: [UInt8] = (0..<16).map { _ in
+                var random: UInt8 = 0
+                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+                if errorCode != errSecSuccess {
+                    fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+                }
+                return random
+            }
+            
+            randoms.forEach { random in
+                if remainingLength == 0 {
+                    return
+                }
+                
+                if random < charset.count {
+                    result.append(charset[Int(random % UInt8(charset.count))])
+                    remainingLength -= 1
+                }
+            }
+        }
+        
+        return result
+    }
+    
+    func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            String(format: "%02x", $0)
+        }.joined()
+        
+        return hashString
+    }
+    
+    
+    func signInWithGoogle() async -> Bool {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            print("No clientID found")
+            return false
+        }
+        
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first,
+              let rootViewController = window.rootViewController else {
+            print("There is no root controller")
+            return false
+        }
+        
+        do {
+            // Perform Google sign-in
+            let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+            let user = userAuthentication.user
+            
+            guard let idToken = user.idToken else {
+                print("ID token missing")
+                return false
+            }
+            
+            let email = user.profile?.email ?? ""
+            let accessToken = user.accessToken
+            
+            // Check existing sign-in methods for the email
+            let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+            print("Sign-in methods for \(email): \(signInMethods)")
+            
+            if !signInMethods.isEmpty && !signInMethods.contains("google.com") {
+                // Email already registered with a different method
+                DispatchQueue.main.async {
+                    self.errorMessage = "Your account is already registered with email/password. Please use that to sign in."
+                    self.showingErrorAlert = true
+                }
+                return false
+            }
+            
+            // Proceed with Google sign-in
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
+            let result = try await Auth.auth().signIn(with: credential)
+            let firebaseUser = result.user
+            print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
+            
+            // Extract user details
+            self.firstName = user.profile?.givenName ?? ""
+            self.lastName = user.profile?.familyName ?? ""
+            self.profileImageURL = user.profile?.imageURL(withDimension: 200)?.absoluteString
+            
+            // Add user to backend
+            addUserLambda()
+            
+            return true
+        } catch {
+            print(error.localizedDescription)
+            self.errorMessage = error.localizedDescription
+            self.showingErrorAlert = true
+            return false
+        }
+    }
+    
+    
+    func handleSignInWithApple(_ authResults: ASAuthorization) {
+        print("in sign in with apple")
+        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+            guard let nonce = currentNonce else {
+                fatalError("Invalid state: A login callback was received, but no login request was sent.")
+            }
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                print("Unable to fetch identity token")
+                return
+            }
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                return
+            }
+
+            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+
+            Task {
+                do {
+                    print("in task")
+                    // Extract email if available
+                    let authResult = try await Auth.auth().signIn(with: credential)
+                    
+                    let firebaseUser = authResult.user
+                                    
+                    // Use Firebase User email or the one from Apple credential
+                    let email = firebaseUser.email ?? appleIDCredential.email ?? ""
+                    print("User signed in with email: \(email)")
+                    print("email: \(email)")
+
+                    // Check if email is already in use with a different sign-in method (e.g., Google)
+                    let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+                    print("Sign-in methods for \(email): \(signInMethods)")
+
+                    if !signInMethods.isEmpty {
+                        // If email is already linked with Google, allow linking with Apple
+                        if signInMethods.contains("google.com") {
+                            // Link the Apple account with the existing Google account
+                            try await Auth.auth().currentUser?.link(with: credential)
+                            print("Apple account successfully linked with Google account")
+                            
+                            // Proceed to signed-in state
+                            DispatchQueue.main.async {
+                                self.authenticationState = .authenticated
+                                self.user = Auth.auth().currentUser
+                            }
+                        } else {
+                            // Email is already registered with a different method (e.g., email/password)
+                            DispatchQueue.main.async {
+                                self.errorMessage = "Your account is already registered with a different method. Please sign in using that method."
+                                self.showingErrorAlert = true
+                            }
+                        }
+                    } else {
+                        // Proceed with Apple sign-in as a new user
+                        let authResult = try await Auth.auth().signIn(with: credential)
+                        print("User is signed in with Apple")
+
+                        DispatchQueue.main.async {
+                            self.authenticationState = .authenticated
+                            self.user = authResult.user
+                        }
+
+                        // Check if the user is new or existing
+                        let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                        if isNewUser {
+                            // Extract user details
+                            self.firstName = appleIDCredential.fullName?.givenName ?? ""
+                            self.lastName = appleIDCredential.fullName?.familyName ?? ""
+                            self.email = authResult.user.email ?? appleIDCredential.email ?? ""
+                            self.user_id = authResult.user.uid
+
+                            // Add user to backend
+                            self.addUserLambda()
+                        } else {
+                            // Existing user, fetch user data
+                            await self.getUserData()
+                        }
+                    }
+                } catch {
+                    print("Error signing in with Apple: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.errorMessage = error.localizedDescription
+                        self.showingErrorAlert = true
+                    }
+                }
+            }
+        }
+    }
+    
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
+        request.requestedScopes = [.fullName, .email]
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.nonce = sha256(nonce)
+    }
+    
+    func handleSignInWithAppleCompletion(_ result: Result<ASAuthorization, Error>) {
+        if case .failure(let failure) = result {
+            // Handle error if the sign-in fails
+            errorMessage = failure.localizedDescription
+            return
+        } else if case .success(let authorization) = result {
+            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                guard let nonce = currentNonce else {
+                    fatalError("Invalid state: a login callback was received, but no login request was sent.")
+                }
+                guard let appleIDToken = appleIDCredential.identityToken else {
+                    print("Unable to fetch identity token.")
+                    return
+                }
+                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                    print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                    return
+                }
+
+                let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+                
+                // Perform asynchronous task
+                Task {
+                    do {
+                        let authResult = try await Auth.auth().signIn(with: credential)
+                        let firebaseUser = authResult.user
+                        let email = firebaseUser.email ?? appleIDCredential.email ?? ""
+                        print("User signed in with email: \(email)")
+                        
+                        // Check if email is already in use with a different sign-in method (e.g., Google)
+                        let signInMethods = try await Auth.auth().fetchSignInMethods(forEmail: email)
+                        print("Sign-in methods for \(email): \(signInMethods)")
+
+                        if !signInMethods.isEmpty {
+                            // If email is already linked with Google, allow linking with Apple
+                            if signInMethods.contains("google.com") {
+                                // Link the Apple account with the existing Google account
+                                try await Auth.auth().currentUser?.link(with: credential)
+                                print("Apple account successfully linked with Google account")
+                                
+                                // Proceed to authenticated state
+                                DispatchQueue.main.async {
+                                    self.authenticationState = .authenticated
+                                    self.user = Auth.auth().currentUser
+                                }
+                            } else {
+                                // Email is already registered with a different method (e.g., email/password)
+                                DispatchQueue.main.async {
+                                    self.errorMessage = "Your account is already registered with a different method. Please sign in using that method."
+                                    self.showingErrorAlert = true
+                                }
+                            }
+                        } else {
+                            // Proceed with Apple sign-in as a new user
+                            print("User is signed in with Apple")
+
+                            // Check if the user is new or existing
+                            let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                            if isNewUser {
+                                // Extract user details
+                                self.firstName = appleIDCredential.fullName?.givenName ?? ""
+                                self.lastName = appleIDCredential.fullName?.familyName ?? ""
+                                self.email = authResult.user.email ?? appleIDCredential.email ?? ""
+                                self.user_id = authResult.user.uid
+
+                                // Add user to backend
+                                self.addUserLambda()
+
+                                // Proceed to authenticated state
+                                DispatchQueue.main.async {
+                                    self.authenticationState = .authenticated
+                                    self.user = authResult.user
+                                }
+                            } else {
+                                // Existing user, fetch user data
+                                await self.getUserData()
+
+                                // Proceed to authenticated state
+                                DispatchQueue.main.async {
+                                    self.authenticationState = .authenticated
+                                    self.user = authResult.user
+                                }
+                            }
+                        }
+                    } catch {
+                        // Handle error during Firebase authentication
+                        print("Error signing in with Apple: \(error.localizedDescription)")
+                        DispatchQueue.main.async {
+                            self.errorMessage = error.localizedDescription
+                            self.showingErrorAlert = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    
+    func updateDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential, force: Bool = false) async {
+        if let currentDisplayName = Auth.auth().currentUser?.displayName, !currentDisplayName.isEmpty, !force {
+            // current user display name is non-empty, don't overwrite it
+            return
+        }
+        
+        let changeRequest = user.createProfileChangeRequest()
+        
+        // Construct the display name from the fullName property
+        if let fullName = appleIDCredential.fullName {
+            let givenName = fullName.givenName ?? ""
+            let familyName = fullName.familyName ?? ""
+            changeRequest.displayName = "\(givenName) \(familyName)".trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            // If fullName is nil, you might want to use a default or leave it empty
+            changeRequest.displayName = ""
+        }
+        
+        do {
+            try await changeRequest.commitChanges()
+            self.displayName = Auth.auth().currentUser?.displayName ?? ""
+        } catch {
+            print("Unable to update the user's display name: \(error.localizedDescription)")
+            errorMessage = error.localizedDescription
+        }
+    }
+
+}
 

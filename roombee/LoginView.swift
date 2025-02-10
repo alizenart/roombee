@@ -1,5 +1,8 @@
 import SwiftUI
 
+import AuthenticationServices
+
+
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
@@ -16,7 +19,7 @@ struct LoginView: View {
                     .onTapGesture {
                         hideKeyboard()
                     }
-                VStack(spacing: 25){
+                VStack(){
                     Text("Login")
                         .font(.largeTitle)
                         .bold()
@@ -32,8 +35,13 @@ struct LoginView: View {
                     .disabled(!viewModel.isValid)
                     .buttonStyle(.borderedProminent)
                     .frame(width: 250, height: 50)
+                    .padding(.top, 30)
                     
                     signUpLink
+                    
+                    googleSignIn
+ 
+                    appleSignInNew
                     
                     NavigationLink(destination: SignupView().environmentObject(onboardGuideManager), isActive: $viewModel.showSignUp) {
                         EmptyView()
@@ -47,7 +55,7 @@ struct LoginView: View {
                 .padding()
                 .navigationBarBackButtonHidden(true)
                 .alert(isPresented: $showingErrorAlert){
-                    Alert(title: Text("Incorrect Email or Password"), dismissButton: .default(Text("OK")))
+                    Alert(title: Text(viewModel.errorMessage), dismissButton: .default(Text("OK")))
                 }
             }
         }
@@ -72,6 +80,7 @@ struct LoginView: View {
             LabelText(text: "Email")
             TextField("", text: $viewModel.email)
                 .modifier(TextFieldModifier())
+                .padding(.bottom, 20)
             
             LabelText(text: "Password")
             SecureField("", text: $viewModel.password)
@@ -99,7 +108,73 @@ struct LoginView: View {
             Text("Don't have an account yet?").font(.system(size: 15))
             Button("Sign Up", action: viewModel.switchFlow)
         }
-        .padding([.top, .bottom], 25)
+        .padding(.top, 25)
+        .padding(.bottom, 5)
+    }
+    
+    var appleSignInNew: some View {
+        SignInWithAppleButton { request in
+            viewModel.handleSignInWithAppleRequest(request)
+        } onCompletion: { result in
+            
+            switch result {
+            case .success(let authResults):
+                viewModel.handleSignInWithAppleCompletion(result)
+            case .failure(let error):
+                print("Authorization failed: \(error.localizedDescription)")
+                viewModel.errorMessage = error.localizedDescription
+                viewModel.showingErrorAlert = true
+            }
+        }
+        .frame(maxWidth: 200)
+         .frame(height: 45)
+         .contentShape(Rectangle())
+         .padding(.horizontal, 12)
+         .background(Color.black)
+         .cornerRadius(8)
+         .overlay(
+             RoundedRectangle(cornerRadius: 8)
+                 .stroke(Color.clear, lineWidth: 1)
+         )
+         .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
+    }
+    
+    
+    var googleSignIn: some View {
+        Button(action: {
+            Task {
+                let success = await viewModel.signInWithGoogle()
+                if success {
+                    print("Sign-in successful")
+                } else {
+                    print("Sign-in failed")
+                }
+            }
+        }) {
+            HStack(spacing: 10) {
+                // Google Icon
+                Image("Google") // Replace with the actual name of your Google logo asset
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                    .clipShape(Circle())
+                
+                // Text
+                Text("Sign in with Google")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.black)
+            }
+//            .frame(minHeight: 40)
+            .padding(.horizontal, 12) // Match Apple Button
+            .frame(maxWidth: 200) // Ensure consistent width
+            .frame(height: 45) // Match height
+            .background(Color(red: 242 / 255, green: 242 / 255, blue: 242 / 255)) // Light gray background
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.clear, lineWidth: 1)
+            )
+        }
+        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 2)
     }
 }
 

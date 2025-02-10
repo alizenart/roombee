@@ -241,8 +241,13 @@ struct NewAgreementsForm: View {
     @State private var itemDetails = ""
     
     private let ruleTags = ["Chores", "Prohibitions"]
-    private let owners = ["Roommate1", "Roommate2"]
-    private let whoIsAbletoUse = ["Roommate1 Only", "Roommate2 Only", "Everyone"]
+    private var owners: [String] {
+        [auth.user_firstName, auth.roommate_firstName]
+    }
+    
+    private var whoIsAbletoUse: [String] {
+        ["\(auth.user_firstName) Only", "\(auth.roommate_firstName) Only", "Everyone"]
+    }
 
     
     var body: some View {
@@ -293,8 +298,8 @@ struct NewAgreementsForm: View {
                         dateCreated: date_string,
                         isRule: isRule ? "0" : "1",
                         tags: tags.joined(separator: ","),
-                        itemOwner: userId,
-                        whoCanUse: userId,
+                        itemOwner: itemOwner == auth.user_firstName ? auth.user_id : auth.roommate_id,
+                        whoCanUse: whoCanUse,
                         itemDetails: itemDetails
                     )
                 }
@@ -402,22 +407,22 @@ struct AgreementView: View {
         .shadow(radius: 5)
     }
     private func parseOwner(owner: String) -> String {
-        if owner == "Roommate 1" || owner == auth.user_id {
-            return auth.firstName
+        if owner == auth.user_id {
+            return auth.user_firstName
+        } else if owner == auth.roommate_id {
+            return auth.roommate_firstName
         }
-        else {
-            return "Roommate"
+        else{
+            return "Loading..."
         }
     }
     
     private func parseUser(user: String) -> String {
-        if user == "Roommate1 Only" || user == auth.user_id {
-            return auth.firstName
-        }
-        else if user == "Roommate2 Only" || user == auth.roommate_id {
-            return "Roommate Only"
-        }
-        else {
+        if user == "\(auth.user_firstName) Only" || user == auth.user_id {
+            return auth.user_firstName
+        } else if user == "\(auth.roommate_firstName) Only" || user == auth.roommate_id {
+            return auth.roommate_firstName
+        } else {
             return "Everyone"
         }
     }

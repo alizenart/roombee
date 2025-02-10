@@ -1,3 +1,8 @@
 use roombee;
 
-SELECT * FROM users order by email asc;
+<<<<<<< Updated upstream
+Select * from toggles;
+=======
+DESCRIBE users;
+
+>>>>>>> Stashed changes

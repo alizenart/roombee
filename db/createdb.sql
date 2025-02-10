@@ -10,6 +10,7 @@ CREATE TABLE users
   dob DATE not null,
   hive_code int not null, 
   password_hash CHAR(64) not null, -- store as hash, hash in api.
+  profile_picture_url VARCHAR(255),
   PRIMARY KEY (user_id), 
   UNIQUE (email)
 );
@@ -55,4 +56,14 @@ CREATE TABLE hives
   dorm varchar(128), 
   university varchar(128),
   PRIMARY KEY (hive_code)
+);
+
+CREATE TABLE emergency_contacts (
+  contact_id CHAR(36) NOT NULL,       -- UUID for the contact
+  user_id CHAR(36) NOT NULL,          -- UUID for the user posting the contact
+  name VARCHAR(128) NOT NULL,         -- Contact's name
+  phone_number VARCHAR(15) NOT NULL,  -- Contact's phone number
+  relationship VARCHAR(64) NOT NULL,  -- Relationship with the user
+  PRIMARY KEY (contact_id),           -- Set contact_id as the primary key
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Maintain integrity
 );

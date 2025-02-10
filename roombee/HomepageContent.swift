@@ -34,7 +34,7 @@ struct HomepageContent: View {
     var calGrid: GridView
     var yourStatus: StatusView?
     var roomStatus: StatusView?
-    
+        
     var schedCara: DatesCarousel {
         let dates = generateDates(startingFrom: selectedDateManager.SelectedDate, count: 7, weekOffset: weekOffset)
         return DatesCarousel(dates: dates, onDateSelected: { date in
@@ -64,20 +64,33 @@ struct HomepageContent: View {
                 ScrollView {
                     VStack {
                         
-                        Text("Roombee")
-                            .font(.largeTitle)
-                            .foregroundColor(ourOrange)
-                            .fontWeight(.bold)
+//                        Text("Roombee")
+//                            .font(.largeTitle)
+//                            .foregroundColor(ourOrange)
+//                            .fontWeight(.bold)
+//                            .padding(.top, 20)
+                        Image("RoombeeWithoutSmile")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 32)
                             .padding(.top, 20)
                         
                         HStack(spacing: 20){
                             yourStatus
                             roomStatus
+
                         }.padding(.horizontal, 40)
                             .padding(.top, 20)
                         
+                        TaskPreviewView()
+                            .environmentObject(todoManager)
+                            .environmentObject(auth)
+                            .environmentObject(navManager)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 30)
+
+                        
                         schedCara.environmentObject(selectedDateManager)
-                            .padding()
                         calGrid.padding([.leading, .trailing], 20)
                     }
                 }
@@ -199,9 +212,16 @@ struct StatusView: View {
     @State private var hasLoaded = false // Flag to check if initial data has loaded
     @EnvironmentObject var toggleManager: ToggleViewModel
     var userId: String
+    var profileImageURL: String? //unique roommate profile images
+
     @Binding var isInitialLoad: Bool
     @EnvironmentObject var auth: AuthenticationViewModel
     @State private var showInviteLinkPopup = false
+    
+    @State private var profileImage: UIImage?
+    @State private var isShowingImagePicker = false
+
+    
     
     var body: some View {
         let statusShape = RoundedRectangle(cornerRadius: 30)
@@ -212,53 +232,79 @@ struct StatusView: View {
                 .fill()
                 .foregroundColor(toggleColor)
                 .aspectRatio(1.0, contentMode: .fit)
-            
-            VStack {
-                Text(title)
-                    .foregroundColor(.black)
-                    .bold()
-                if auth.user_id != nil && auth.roommate_id != nil {
-                    HStack {
-                        Toggle(isOn: $isSleeping, label: { bedIcon })
-                            .disabled(!canToggle)
-                            .onChange(of: isSleeping) { isOn in
-                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                    toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
-                                    Mixpanel.mainInstance().track(event: "SleepingToggle", properties: ["userID": auth.user_id ?? "Unknown"])
-                                }
-                            }
-                    }
-                    .padding(.horizontal, 20)
+            GeometryReader { geometry in
+                let profileWidth = geometry.size.width * 0.5
+                let profileSpace = profileWidth - 20
+                
+                
+                VStack {
+                    ProfilePictureView(
+                        profileImage: $profileImage,
+                        isShowingImagePicker: $isShowingImagePicker,
+                        width: profileWidth,
+                        imageURL: profileImageURL 
+                    )
+                    .padding(.top, -20)
+                    .frame(height: profileSpace)
+                    .environmentObject(auth)
                     
-                    HStack {
-                        Toggle(isOn: $inRoom, label: { roomIcon })
-                            .disabled(!canToggle)
-                            .onChange(of: inRoom) { isOn in
-                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
-                                    toggleManager.changeToggleState(userId: userId, state: "in_room")
-                                    Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                    
+                    
+                    //                Text(title)
+                    //                    .foregroundColor(.black)
+                    //                    .bold()
+                    if auth.user_id != nil && auth.roommate_id != nil {
+                        HStack {
+                            Toggle(isOn: $isSleeping, label: { bedIcon })
+                                .disabled(!canToggle)
+                                .onChange(of: isSleeping) { isOn in
+                                    if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                        toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
+                                        Mixpanel.mainInstance().track(event: "SleepingToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                                    }
+                                    if hasLoaded && !canToggle {
+                                        NotificationService.shared.toggleSleep(isAsleep: isOn)
+                                    }
                                 }
+
                             }
+
+                        }
+                        .padding(.horizontal, 20)
+                        
+                        HStack {
+                            Toggle(isOn: $inRoom, label: { roomIcon })
+                                .disabled(!canToggle)
+                                .onChange(of: inRoom) { isOn in
+                                    if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                        toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                        Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                                    }
+                                    if hasLoaded && !canToggle {
+                                        NotificationService.shared.toggleRoom(inRoom: isOn)
+                                    }
+                                }
+                        }
+                        .padding(.horizontal, 20)
+                    } else {
+                        Button(action: {
+                            showInviteLinkPopup.toggle()
+                            Mixpanel.mainInstance().track(event: "InvitePopup", properties: ["userID": auth.user_id])
+                        }) {
+                            Text("Add roommate to see toggles")
+                                .font(.footnote)
+                                .foregroundColor(creamColor)
+                                .padding()
+                                .background(LighterPurple)
+                                .cornerRadius(10)
+                        }
+                        .padding(.horizontal, 20)
+                        .sheet(isPresented: $showInviteLinkPopup) {
+                            InviteLinkPopupView(inviteLink: "https://roombee.com/invite?hive_code=\(auth.hive_code)", isPresented: $showInviteLinkPopup)
+                        }
                     }
-                    .padding(.horizontal, 20)
-                } else {
-                    Button(action: {
-                        showInviteLinkPopup.toggle()
-                        Mixpanel.mainInstance().track(event: "InvitePopup", properties: ["userID": auth.user_id])
-                    }) {
-                        Text("Add roommate to see toggles")
-                            .font(.footnote)
-                            .foregroundColor(creamColor)
-                            .padding()
-                            .background(LighterPurple)
-                            .cornerRadius(10)
-                    }
-                    .padding(.horizontal, 20)
-                    .sheet(isPresented: $showInviteLinkPopup) {
-                        InviteLinkPopupView(inviteLink: "https://roombee.com/invite?hive_code=\(auth.hive_code)", isPresented: $showInviteLinkPopup)
-                    }
-                }
-            }
+                }//vstack
+            }//geometry
         }
         .onAppear {
             // Set hasLoaded to true only after initial render
@@ -268,6 +314,141 @@ struct StatusView: View {
         }
     }
 }
+
+struct TaskPreviewView: View {
+    @EnvironmentObject var todoManager: TodoViewModel
+    @EnvironmentObject var auth: AuthenticationViewModel
+    @EnvironmentObject var navManager: NavManager
+    @State private var addpresent = false
+
+    private func addview() {
+        addpresent.toggle()
+    }
+    
+    var body: some View {
+        let backgroundShape = RoundedRectangle(cornerRadius: 20)
+
+        ZStack {
+            backgroundShape
+                .foregroundColor(Color.white.opacity(0.5))
+                .onTapGesture {
+                    navManager.selectedSideMenuTab = 1
+                }
+
+            VStack(alignment: .trailing, spacing: 2) {
+                HStack {
+                    Text("To-do Today")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Spacer()
+                    HStack {
+
+                        Toggle(isOn: $inRoom, label: { roomIcon })
+                            .disabled(!canToggle)
+                            .onChange(of: inRoom) { isOn in
+                                if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
+                                    toggleManager.changeToggleState(userId: userId, state: "in_room")
+                                    Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
+                                }
+                            }
+                        Circle()
+                            .fill(LighterPurple)
+                            .frame(width: 30, height: 30)
+                            .overlay(
+                                Image("TaskIcon")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.white)
+                            )
+                    }
+                }
+
+                // list tasks
+                if todoManager.combinedTasks.isEmpty {
+                    ZStack(alignment: .leading) {
+                        GeometryReader { geometry in
+                            Rectangle()
+                                .fill(Color.white)
+                                .frame(width: 2, height: geometry.size.height)
+                                .offset(x: 10, y: 0)
+                        }
+                        Text("No tasks for today!")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .padding(.leading, 20)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    ZStack(alignment: .leading) {
+                        GeometryReader { geometry in
+                            Rectangle()
+                                .fill(Color.white)
+                                .frame(width: 2, height: geometry.size.height)
+                                .offset(x: 10, y: 0)
+                        }
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            let topTasks = Array(todoManager.combinedTasks.prefix(3))
+
+                            ForEach(topTasks, id: \.id) { task in
+                                HStack {
+                                    Image(systemName: task.status != 0 ? "checkmark.circle.fill" : "circle")
+                                        .foregroundColor(task.status != 0 ? .white : .red)
+                                    Text(task.todoTitle)
+                                        .foregroundColor(.white)
+                                        .lineLimit(1)
+//                                        .padding(.leading, 10)
+                                    Spacer()
+                                }
+                                .padding(.vertical, 5)
+                            }
+                            
+                        }
+                        .padding(.leading, 20)
+                    }
+                } //else
+                
+                if (todoManager.combinedTasks.count > 3){
+                    HStack {
+                        Button(action: {
+                            navManager.selectedSideMenuTab = 1
+                        }) {
+                            Text("View All Tasks")
+                                .foregroundColor(.white)
+                                .underline()
+                                .padding(.top, 10)
+                                .font(.subheadline)
+                                .offset(x: 10, y: 0)
+                        }
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+
+            }//vstack
+            .padding()
+        }
+        .onAppear {
+            fetchTasks()
+        }
+
+    }
+
+    private func fetchTasks() {
+        if let userId = auth.user_id {
+            todoManager.fetchUserTasks(user_id: userId)
+        }
+
+        if let roommateId = auth.roommate_id {
+            todoManager.fetchRoommateTasks(roommate_id: roommateId)
+        }
+    }
+}
+
+
 
 struct DatesCarousel: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
@@ -427,23 +608,3 @@ struct DateToggle: View {
     }
 }
 
-
-
-#Preview {
-    HomepageContent(
-        myStatusToggleSleeping: .constant(true),
-        myStatusToggleInRoom: .constant(true),
-        roomieStatusToggleSleeping: .constant(true),
-        roomieStatusToggleInRoom: .constant(true),
-        isInitialLoad: .constant(true),
-        calGrid: GridView(cal: CalendarView(title: "Me")),
-        yourStatus: StatusView(title: "Me:", canToggle: true, isSleeping: .constant(false), inRoom: .constant(false), userId: "80003", isInitialLoad: .constant(true)),
-        roomStatus: StatusView(title: "Roommate:", canToggle: false, isSleeping: .constant(false), inRoom: .constant(false), userId: "80002", isInitialLoad: .constant(true))
-    )
-    .environmentObject(EventStore())
-    .environmentObject(AuthenticationViewModel())
-    .environmentObject(NavManager())
-    .environmentObject(ToggleViewModel())
-    .environmentObject(TodoViewModel())
-    .environmentObject(RoommateAgreementHandler())
-}

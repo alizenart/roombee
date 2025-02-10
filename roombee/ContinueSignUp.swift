@@ -76,8 +76,8 @@ struct ContinueSignUp: View {
 
     private var form: some View {
         VStack {
-            DatePickerModule()
-            GenderPickerView()
+//            DatePickerModule()
+//            GenderPickerView()
             FormLabelStyle(text: "First Name")
             TextField("", text: $viewModel.firstName).modifier(TextFieldStyle())
                 .disableAutocorrection(true)
@@ -93,7 +93,7 @@ struct ContinueSignUp: View {
             Mixpanel.mainInstance().track(event: "SwipedRight")
             Task {
                 if (!viewModel.firstName.isEmpty && !viewModel.lastName.isEmpty
-                    && !viewModel.gender.isEmpty) {
+                    ) { //&& !viewModel.gender.isEmpty
                     showOnboardingGuide = true
 //                    if await viewModel.signUpWithEmailPassword() {
 //                        await viewModel.getUserData()

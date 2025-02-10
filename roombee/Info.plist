@@ -16,7 +16,14 @@
 				<string>roombeeapp</string>
 			</array>
 		</dict>
-		<dict/>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.640961029868-09kqfni3t5gahmlpc282ig41tl100cli</string>
+			</array>
+		</dict>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict/>
@@ -24,5 +31,7 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>GIDClientID</key>
+	<string>640961029868-09kqfni3t5gahmlpc282ig41tl100cli.apps.googleusercontent.com</string>
 </dict>
 </plist>

@@ -23,6 +23,7 @@ struct ContentView: View {
             HomepageView()
                 .environmentObject(eventStore)
                 .environmentObject(viewModel)
+                .environmentObject(authViewModel)
                 .environmentObject(navManager)
                 .environmentObject(selectedDate)
                 .environmentObject(toggleManager)

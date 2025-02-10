@@ -10,7 +10,7 @@ import Mixpanel
 
 let backgroundColor = Color(red: 56 / 255, green: 30 / 255, blue: 56 / 255)
 
-let toggleColor = Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
+let toggleColor = Color(red:231/255, green:224/255, blue:215/255)//Color(red: 230 / 255, green: 217 / 255, blue: 197 / 255)
 
 let ourOrange = Color(red: 221 / 255, green: 132 / 255, blue: 67 / 255)
 
@@ -19,6 +19,8 @@ let LighterPurple = Color(red: 124 / 255, green: 93 / 255, blue: 138 / 255)
 let highlightYellow = Color(red: 230/255, green: 178/255, blue: 81/255)
 
 let creamColor = Color(red:231/255, green:224/255, blue:215/255)
+
+let ourRed = Color(red: 230/255, green:67/255, blue: 67/255)
 
 
 let date = Date()
@@ -35,7 +37,7 @@ struct HomepageView: View {
     @EnvironmentObject var todoManager: TodoViewModel
     @EnvironmentObject var agreementManager: RoommateAgreementHandler
     @EnvironmentObject var agreementStore: RoommateAgreementStore
-    @EnvironmentObject var auth: AuthenticationViewModel
+//    @EnvironmentObject var auth: AuthenticationViewModel
     
     @State private var isActive: Bool = true
     @State private var showInviteLinkPopup: Bool = false
@@ -51,14 +53,14 @@ struct HomepageView: View {
     private func refreshPage() async {
         print("Refreshing data...")
         // Fetch the user's and roommate's initial data again
-        if let userId = auth.user_id {
+        if let userId = authViewModel.user_id {
             fetchMyInitialToggleState(userId: userId)
         }
 
-        if let roommateId = auth.roommate_id {
+        if let roommateId = authViewModel.roommate_id {
             fetchRoomieInitialToggleState(userId: roommateId)
         }
-        auth.getUserData() // Re-fetch user data
+        authViewModel.getUserData() // Re-fetch user data
     }
     
     
@@ -83,7 +85,6 @@ struct HomepageView: View {
                     switch navManager.selectedSideMenuTab {
                     case 0:
                         if authViewModel.isUserDataLoaded {
-                            // Add the refreshable modifier here
                             ScrollView {
                                 HomepageContent(
                                     myStatusToggleSleeping: $myStatusToggleSleeping,
@@ -91,32 +92,36 @@ struct HomepageView: View {
                                     roomieStatusToggleSleeping: $roomieStatusToggleSleeping,
                                     roomieStatusToggleInRoom: $roomieStatusToggleInRoom,
                                     isInitialLoad: $isInitialLoad,
-                                    calGrid: GridView(cal: CalendarView(title: "Me")),
-                                    yourStatus: auth.user_id != nil ? StatusView(
-                                        title: "Me:",
+                                    calGrid: GridView(cal: CalendarView(title: authViewModel.user_firstName)),
+                                    
+                                    yourStatus: StatusView(
+                                        title: "\(authViewModel.user_firstName):",
                                         canToggle: true,
                                         isSleeping: $myStatusToggleSleeping,
                                         inRoom: $myStatusToggleInRoom,
-                                        userId: auth.user_id!, // Forced unwrapping is safe here because of the check above
+                                        userId: authViewModel.user_id ?? "",
+                                        profileImageURL: authViewModel.profileImageURL,
                                         isInitialLoad: $isInitialLoad
-                                    ) : nil,
+                                    ),
                                     roomStatus: StatusView(
-                                        title: "Roommate:",
+                                        title: "\(authViewModel.roommate_firstName ?? "Roommate"):",
                                         canToggle: false,
                                         isSleeping: $roomieStatusToggleSleeping,
                                         inRoom: $roomieStatusToggleInRoom,
-                                        userId: auth.roommate_id ?? "", // Forced unwrapping is safe here because of the check above
+                                        userId: authViewModel.roommate_id ?? "",
+                                        profileImageURL: authViewModel.roommateProfileImageURL,
                                         isInitialLoad: .constant(true)
                                     )
                                 )
-                                .environmentObject(eventStore)
                                 .environmentObject(authViewModel)
+                                .environmentObject(eventStore)
                                 .environmentObject(navManager)
                                 .environmentObject(selectedDateManager)
                                 .environmentObject(toggleManager)
                                 .environmentObject(todoManager)
                                 .environmentObject(agreementManager)
                                 .environmentObject(agreementStore)
+
                             }
                             .refreshable {
                                 await refreshPage() // This will trigger the refresh logic
@@ -138,7 +143,12 @@ struct HomepageView: View {
                             .environmentObject(agreementStore)
                             .environmentObject(agreementManager)
                             .environmentObject(eventStore)
+                            .environmentObject(authViewModel) //omg is this why agreement wasn't working? This wasn't here before I went in
                     case 4:
+                        EmergencyInfoView()
+                            .environmentObject(authViewModel)
+                        
+                    case 5:
                         SettingsView()
                             .environmentObject(authViewModel)
                     default:
@@ -148,28 +158,47 @@ struct HomepageView: View {
                 VStack {
                     HStack {
                         Button(action: {
-                            navManager.openSideMenu()
-                            Mixpanel.mainInstance().track(event: "NavOpened", properties: ["userID": auth.user_id])
+                            withAnimation(.easeInOut(duration: 0.3)) { // Ensure the menu opens with an animation
+                                navManager.openSideMenu()
+                            }
+                            Mixpanel.mainInstance().track(event: "NavOpened", properties: ["userID": authViewModel.user_id])
                         }) {
-                            VStack (spacing: 3){
-                                Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                                Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
-                                Rectangle().foregroundColor(.white).frame(width: 30, height: 3).cornerRadius(5)
+                            VStack(spacing: 3) {
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 30, height: 3)
+                                    .cornerRadius(5)
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 30, height: 3)
+                                    .cornerRadius(5)
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 30, height: 3)
+                                    .cornerRadius(5)
                             }
                         }
                         .frame(width: 20, height: 60)
                         .padding(.trailing, 50)
                         .frame(width: 400, alignment: .leading)
-                    } // Hstack for nav button
+                    } // HStack for nav button
+
                     .padding(.leading, 30)
                     .frame(width: 400, alignment: .leading)
                     Spacer()
                 } //vstack for menu button
                 
                 if navManager.presentSideMenu {
-                    SideMenuView(navManager: navManager)
-                        .transition(.move(edge: .leading))
-                        .animation(.easeInOut, value: navManager.presentSideMenu)
+                    ParentView(navManager: navManager)
+                        .environmentObject(authViewModel)
+//                        .environmentObject(eventStore)
+//                        .environmentObject(toggleManager)
+//                        .transition(.move(edge: .leading))
+//                        .animation(.easeInOut, value: navManager.presentSideMenu)
+//                    SideMenuView(navManager: navManager)
+//                        .environmentObject(authViewModel)
+//                        .transition(.move(edge: .leading))
+//                        .animation(.easeInOut, value: navManager.presentSideMenu)
                 }
                 if showInviteLinkPopup {
                     InviteLinkPopupView(inviteLink: inviteLink, isPresented: $showInviteLinkPopup)
@@ -177,12 +206,6 @@ struct HomepageView: View {
                         .animation(.easeInOut, value: showInviteLinkPopup)
                 }
             }
-//            .onChange(of: navManager.selectedSideMenuTab) { newValue in
-//                if newValue == 4 {
-//                    signOut()
-//                    navManager.selectedSideMenuTab = 0
-//                }
-//            }
             .onChange(of: navManager.selectedSideMenuTab) { newValue in
                 if newValue == 2 {
                     addRoommate()
@@ -191,31 +214,32 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-            
-            print("Authentication state: \(auth.authenticationState)")
-            if auth.authenticationState == .authenticated {
+
+            print("Authentication state: \(authViewModel.authenticationState)")
+            if authViewModel.authenticationState == .authenticated {
+
                 // User is already signed in, fetch user data
-                if let userId = auth.user_id {
+                if let userId = authViewModel.user_id {
                     fetchMyInitialToggleState(userId: userId)
                 }
 
-                if let roommateId = auth.roommate_id {
+                if let roommateId = authViewModel.roommate_id {
                     fetchRoomieInitialToggleState(userId: roommateId)
                 }
-                auth.getUserData()
+                authViewModel.getUserData()
             } else {
                 // Otherwise, make sure login happens first
                 //auth.signIn()
             }
             NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
-            auth.getUserData()
+                authViewModel.getUserData()
             }
         }
         .onChange(of: authViewModel.roommate_id) { newHiveCode in
             // Trigger fetching of toggles when hiveCode changes
             print("HiveCode updated to: \(String(describing: newHiveCode))")
             fetchInitialToggles()
-            Mixpanel.mainInstance().track(event: "New Roommate Added", properties: [ "userId": auth.user_id ?? "Unknown", "roommate_id": auth.roommate_id])
+            Mixpanel.mainInstance().track(event: "New Roommate Added", properties: [ "userId": authViewModel.user_id ?? "Unknown", "roommate_id": authViewModel.roommate_id])
         }
         .onDisappear{
             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
