@@ -149,11 +149,12 @@ struct RoommateAgreementView: View {
                 Spacer()
             }
             .onAppear {
-                startPolling()
+                fetchAgreements()
+                //startPolling()
                 observeAppStateChanges()
             }
             .onDisappear {
-                stopPolling()
+                //stopPolling()
                 removeAppStateObserver()
             }
         }
@@ -177,11 +178,11 @@ struct RoommateAgreementView: View {
         // Observe app state changes to handle background and foreground transitions
         private func observeAppStateChanges() {
             NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
-                stopPolling()
+                //stopPolling()
             }
             
             NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
-                startPolling()
+                //startPolling()
             }
         }
 

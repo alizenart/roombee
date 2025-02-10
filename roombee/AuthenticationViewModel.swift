@@ -11,6 +11,7 @@ import FirebaseCore
 import SwiftUI
 import AWSLambda
 import Mixpanel
+import Combine
 import AWSS3
 import AWSCore
 import GoogleSignIn
@@ -37,7 +38,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var confirmPassword = ""
     @Published var in_room = 0
     @Published var is_sleeping = 0
-    
+    @Published var deviceToken: String? = nil
     @Published var firstName = ""
     @Published var lastName = ""
     @Published var birthDate = Date()
@@ -90,9 +91,19 @@ class AuthenticationViewModel: ObservableObject {
     @Published var currentNonce: String?
 
 
+
     
     init() {
         registerAuthStateHandler()
+        NotificationCenter.default.publisher(for: .deviceTokenReceived)
+            .sink { [weak self] notification in
+                            if let token = notification.userInfo?["deviceToken"] as? String {
+                                self?.deviceToken = token
+                                print("Device token received and stored: \(token)")
+                            }
+                            
+                        }
+                        .store(in: &cancellables)
         
         $flow
             .combineLatest($email, $password, $confirmPassword)
@@ -151,6 +162,7 @@ class AuthenticationViewModel: ObservableObject {
         email = ""
         password = ""
         confirmPassword = ""
+        deviceToken = ""
         firstName = ""
         lastName = ""
         birthDate = Date()
@@ -193,7 +205,6 @@ class AuthenticationViewModel: ObservableObject {
         // Reset Apple SignIn data
         currentNonce = nil
     }
-
 }
 
 // MARK: - Email and Password Authentication
@@ -388,9 +399,9 @@ extension AuthenticationViewModel {
         if hive_code == "" {
             hive_code = generateShorterUUID()
         }
-        
+        guard let fcmToken = TokenManager.shared.fcmToken else {return}
         let jsonObject = [
-            "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "in_room": in_room, "is_sleeping": is_sleeping]
+            "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "in_room": in_room, "is_sleeping": is_sleeping, "sns_endpoint_arn": fcmToken ?? ""]
         ] as [String : Any]
         
         lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in

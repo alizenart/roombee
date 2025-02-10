@@ -25,6 +25,12 @@
 			</array>
 		</dict>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>GIDClientID</key>
 	<string>640961029868-09kqfni3t5gahmlpc282ig41tl100cli.apps.googleusercontent.com</string>
 </dict>

@@ -166,12 +166,13 @@ struct ToDoView: View {
             }//zstack
 //        } //navigationView
             .onAppear {
-                startPolling()
+                fetchAllTasks()
+                //startPolling()
                 observeAppStateChanges()
                 tasknotif = true
             }
             .onDisappear {
-                stopPolling()
+                //stopPolling()
                 removeAppStateObserver()
             }
         
@@ -192,11 +193,11 @@ struct ToDoView: View {
 
     private func observeAppStateChanges() {
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { _ in
-            stopPolling()
+            //stopPolling()
         }
         
         NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
-            startPolling()
+            //startPolling()
         }
     }
 
