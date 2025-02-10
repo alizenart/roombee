@@ -3,7 +3,7 @@
 //  roombee
 //
 //  Created by Adwait Ganguly on 10/7/23.
-//x
+//
 
 import SwiftUI
 import Mixpanel
@@ -28,7 +28,6 @@ let formatter = DateFormatter()
 
 @MainActor
 struct HomepageView: View {
-    
     @EnvironmentObject var eventStore: EventStore
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var selectedDateManager: SelectedDateManager
@@ -78,7 +77,6 @@ struct HomepageView: View {
         NavigationView {
             
             ZStack {
-                
                 backgroundColor
                     .ignoresSafeArea()
                 Group {
@@ -214,10 +212,8 @@ struct HomepageView: View {
             }
         }
         .onAppear {
-
             print("Authentication state: \(authViewModel.authenticationState)")
             if authViewModel.authenticationState == .authenticated {
-
                 // User is already signed in, fetch user data
                 if let userId = authViewModel.user_id {
                     fetchMyInitialToggleState(userId: userId)
@@ -290,15 +286,9 @@ struct HomepageView: View {
             }
         }
     }
-}
+    
 
-func requestPushAuthorization() {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-        if success {
-            print("Push notifications allowed")
-        } else if let error = error {
-            print(error.localizedDescription)
-        }
-    }
-}
 
+
+
+}
