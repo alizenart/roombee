@@ -29,7 +29,7 @@ struct GenderPickerView: View {
                 .accentColor(viewModel.backgroundColor)
                 .font(.title3)
             }
-            .padding(.horizontal, 25)  // Adjust padding as needed
+            .padding(.horizontal, 25)  
         }
         .padding()
     }
