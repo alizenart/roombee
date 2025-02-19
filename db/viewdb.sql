@@ -1,3 +1,3 @@
 use roombee;
 
-Select * from toggles;
+SELECT * from users ORDER BY email ASC;
