@@ -9,6 +9,8 @@ import SwiftUI
 
 struct GridView: View {
     @EnvironmentObject var selectedDateManager: SelectedDateManager
+    @EnvironmentObject var eventStore: EventStore
+    @EnvironmentObject var auth: AuthenticationViewModel
 
     var cal: CalendarView
     
@@ -28,6 +30,9 @@ struct GridView: View {
             Grid() {
                 GridRow {
                     cal
+                        .environmentObject(eventStore)
+                        .environmentObject(selectedDateManager)
+                        .environmentObject(auth)
                         .frame(height: 650)
                         .clipped()
                 }

@@ -14,7 +14,7 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
     var eventTitle: String = "(No title)"
     var startTime: Date
     var endTime: Date
-    var approved: Bool = false
+    var approved: String? = "none"
     
     enum CodingKeys: String, CodingKey {
         case id = "event_id"
@@ -31,7 +31,7 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
         self.eventTitle = eventTitle
         self.startTime = startTime
         self.endTime = endTime
-        self.approved = false
+        self.approved = "none"
     }
     //initializer, creating events from dictionary
       init?(from dictionary: [String: Any]) {
@@ -41,14 +41,14 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
                 let eventTitle = dictionary["event_title"] as? String,
                 let startTimeString = dictionary["start_time"] as? String,
                 let endTimeString = dictionary["end_time"] as? String,
-                let approvedInt = dictionary["approved"] as? Int else {
+                let approvedValue = dictionary["approved"] as? String else {
               return nil
           }
 
           self.id = id
           self.user_id = user_id
           self.eventTitle = eventTitle
-          self.approved = (approvedInt != 0) // Assuming 0 is false and any non-zero value is true
+          self.approved = approvedValue
 
           // Set up the date formatter for the date strings
           let dateFormatter = DateFormatter()
@@ -79,9 +79,8 @@ struct CalendarEvent: Identifiable, Codable, Equatable, Hashable {
                 user_id = try container.decode(String.self, forKey: .user_id)
             }
             
-            // Decode approved as Int and convert to Bool
-            let approvedInt = try container.decode(Int.self, forKey: .approved)
-            approved = (approvedInt != 0)
+            // Decode approved as a String instead of Int
+            approved = try container.decodeIfPresent(String.self, forKey: .approved) ?? "none"
         }
     
     // Equatable conformance

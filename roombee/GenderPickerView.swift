@@ -33,7 +33,7 @@ struct GenderPickerView: View {
         }
         .padding()
     }
-}
+} 
 
 struct GenderPickerView_Previews: PreviewProvider {
     static var previews: some View {

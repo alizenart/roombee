@@ -70,21 +70,36 @@ struct NewEventView: View {
 //                                .frame(maxWidth: .infinity, alignment: .leading)
                             DatePicker("Event Date", selection: $viewModel.dateEvent, displayedComponents: .date)
                                 .datePickerStyle(GraphicalDatePickerStyle())
+//                                .onChange(of: viewModel.dateEvent) { newDate in
+//                                    // Adjust startTime and endTime to match the selected date
+//                                    let calendar = Calendar.current
+//                                    viewModel.startTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.startTime),
+//                                        minute: calendar.component(.minute, from: viewModel.startTime),
+//                                        second: 0, of: newDate) ?? newDate
+//                                    viewModel.endTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.endTime),
+//                                        minute: calendar.component(.minute, from: viewModel.endTime),
+//                                        second: 0, of: newDate) ?? newDate
+//                                    print("Updated dateEvent: \(viewModel.dateEvent)")
+//                                    print("Updated startTime: \(viewModel.startTime)")
+//                                    print("Updated endTime: \(viewModel.endTime)")
+//                                    checkAndFixEndTime()
+//                                    updateMultidayEventStatus()
+//                                }
                                 .onChange(of: viewModel.dateEvent) { newDate in
-                                    // Adjust startTime and endTime to match the selected date
                                     let calendar = Calendar.current
-                                    viewModel.startTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.startTime),
-                                        minute: calendar.component(.minute, from: viewModel.startTime),
-                                        second: 0, of: newDate) ?? newDate
-                                    viewModel.endTime = calendar.date(bySettingHour: calendar.component(.hour, from: viewModel.endTime),
-                                        minute: calendar.component(.minute, from: viewModel.endTime),
-                                        second: 0, of: newDate) ?? newDate
-                                    print("Updated dateEvent: \(viewModel.dateEvent)")
-                                    print("Updated startTime: \(viewModel.startTime)")
-                                    print("Updated endTime: \(viewModel.endTime)")
+                                    let newStartHour = calendar.component(.hour, from: viewModel.startTime)
+                                    let newStartMinute = calendar.component(.minute, from: viewModel.startTime)
+                                    
+                                    let newEndHour = calendar.component(.hour, from: viewModel.endTime)
+                                    let newEndMinute = calendar.component(.minute, from: viewModel.endTime)
+                                    
+                                    viewModel.startTime = calendar.date(bySettingHour: newStartHour, minute: newStartMinute, second: 0, of: newDate) ?? newDate
+                                    viewModel.endTime = calendar.date(bySettingHour: newEndHour, minute: newEndMinute, second: 0, of: newDate) ?? newDate
+                                    
                                     checkAndFixEndTime()
                                     updateMultidayEventStatus()
                                 }
+
                         }
                         .padding(.bottom)
                         
@@ -242,6 +257,10 @@ struct CalendarView: View {
     @State private var errorMessage: String? = nil
     
     
+    
+    @State private var selectedEvent: CalendarEvent? // Track selected event
+    @State private var showModal = false // modal visibility
+    
     let hourHeight = 50.0
     let maxEventWidth: CGFloat = 250.0
     
@@ -270,20 +289,28 @@ struct CalendarView: View {
                                     let eventWidth = maxEventWidth - CGFloat(group.firstIndex(of: event)! * 10)
                                     eventCell(event, width: eventWidth)
                                         .frame(alignment: .trailing)
+                                        .onTapGesture {
+                                            if showModal {
+                                                showModal = false
+                                                selectedEvent = nil
+                                            }
+                                        }
+
+                                    
                                     //                                        .padding(1)
-                                }
-                            }
+                                } // foreach
+                            } //for each
                             
-                        }
+                        } //zstack
                         .onAppear {
                             // Scroll to 7 AM initially
                             value.scrollTo(7, anchor: .top)
                         }
-                    }
+                    } //scrollreader
                     
-                }
+                } //scrollview
                 addButton()
-            }
+            } //vstack
             .padding()
         } //ZStack
         .cornerRadius(30)
@@ -300,8 +327,38 @@ struct CalendarView: View {
                 }
             )
         })
+        .overlay(
+            Group {
+                if let selectedEvent = selectedEvent, showModal {
+                    EventModal(event: selectedEvent, isPresented: $showModal)
+                        .transition(.scale)
+                        .environmentObject(eventStore)
+                        .environmentObject(auth)
+                        .transition(.move(edge: .top))
+                        .zIndex(1)
+                }
+            }
+        )
+
+//        .overlay(
+//            // Display modal only if selectedEvent is not nil
+//            if let selectedEvent = selectedEvent, showModal {
+//                EventModal(event: selectedEvent, isPresented: $showModal)
+//                    .transition(.move(edge: .top)) // Smooth transition
+//                    .zIndex(1) // Ensure modal is on top
+//            } else {
+//                EmptyView()
+//            }
+//        )
+        .onTapGesture {
+            if showModal {
+                showModal = false
+                selectedEvent = nil
+            }
+        } //on tap
         
-    }
+    } //body
+    
     private func startTimer() {
             stopTimer()  // Ensure no timer is already running
             timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
@@ -390,30 +447,61 @@ struct CalendarView: View {
             }
         }
         .sheet(isPresented: $showingAddEventSheet, onDismiss: {
-            // Resume the timer when the NewEventView is dismissed
             startTimer()
-        }) {// Move this into a closure to ensure it doesn’t return a View
-            NewEventView(viewModel: newEventViewModel) { newEvent in
-                if let userId = auth.user_id {
-                    events.append(newEvent)
-                    eventStore.addEvent(user_id: userId, newEvent)
-                    skipFilter = true
-                } else {
-                    // Handle the case where user_id is nil (e.g., show an error message)
-                    errorMessage = "Error: No user information found."
+        }) {
+            Group {
+                NewEventView(viewModel: newEventViewModel) { newEvent in
+                    if let userId = auth.user_id {
+                        events.append(newEvent)
+                        eventStore.addEvent(user_id: userId, newEvent)
+                        skipFilter = true
+                    } else {
+                        errorMessage = "Error: No user information found."
+                    }
+                }
+                .onAppear {
+                    stopTimer()
                 }
             }
-            .onAppear {
-                stopTimer()
-            }
         }
+
+//        .sheet(isPresented: $showingAddEventSheet, onDismiss: {
+//            // Resume the timer when the NewEventView is dismissed
+//            startTimer()
+//        }) {// Move this into a closure to ensure it doesn’t return a View
+//            NewEventView(viewModel: newEventViewModel) { newEvent in
+//                if let userId = auth.user_id {
+//                    events.append(newEvent)
+//                    eventStore.addEvent(user_id: userId, newEvent)
+//                    skipFilter = true
+//                } else {
+//                    // Handle the case where user_id is nil (e.g., show an error message)
+//                    errorMessage = "Error: No user information found."
+//                }
+//            }
+//            .onAppear {
+//                stopTimer()
+//            }
+//        }
         .padding()
     }
     
+    // the appearance of each event on the calendar
     func eventCell(_ event: CalendarEvent, width: CGFloat) -> some View {
         let isUserEvent = eventStore.userEvents.contains(event)
-        let backgroundColor = isUserEvent ? LighterPurple : highlightYellow // Different color for roommate's events
-
+//        let backgroundColor = isUserEvent ? LighterPurple : highlightYellow // Different color for roommate's events
+        let backgroundColor: Color = {
+            switch event.approved {
+            case "true":
+                return isUserEvent ? LighterPurple : highlightYellow
+            case "false":
+                return .gray
+            case "let's talk":
+                return ourOrange
+            default:
+                return isUserEvent ? pendingPurple : pendingYellow // 50% opacity for "none"
+            }
+        }()
         let duration = event.endTime.timeIntervalSince(event.startTime)
         let height = duration / 60 / 60 * hourHeight
         
@@ -457,8 +545,15 @@ struct CalendarView: View {
             .padding(.leading, 60) // Add padding on the right
             .offset(y: offsetY + 24)
             .offset(x: maxEventWidth - width) //Offset the cell by the difference between maxEventWidth and current width
-        }
-    }
+//            .opacity(event.approved == "none" ? 0.5 : 1.0) // Apply 50% opacity if approved is "none"
+            .onTapGesture {
+                withAnimation {
+                    selectedEvent = event
+                    showModal = true // Trigger the modal to show with animation
+                }
+            }
+        } // vstack
+    } // func eventCell
 
     
     func groupedEvents() -> [[CalendarEvent]] {
@@ -487,6 +582,153 @@ struct CalendarView: View {
         
         return groups
     }
+    
+    struct EventModal: View {
+        let event: CalendarEvent
+        @Binding var isPresented: Bool
+        @EnvironmentObject var eventStore: EventStore
+        @EnvironmentObject var auth: AuthenticationViewModel
+
+        @State private var selectedApproval: String?
+        @State private var deletedEvents: Set<String> = []
+
+        
+        var isUserEvent: Bool {
+            eventStore.userEvents.contains(event)
+        }
+        var canModifyApproval: Bool {
+            event.user_id != auth.user_id // ✅ Only non-creators can modify
+        }
+
+        
+        var modalBackgroundColor: Color {
+            switch event.approved {
+            case "true":
+                return isUserEvent ? LighterPurple : highlightYellow
+            case "false":
+                return .gray
+            case "let's talk":
+                return ourOrange
+            default:
+                return isUserEvent ? pendingPurple : pendingYellow // 50% opacity for "none"
+            }
+        } // modalbackground
+        
+        var body: some View {
+            VStack {
+                HStack{
+                    Spacer()
+                    // Delete Button
+                    Button(action: {
+                        deleteEvent()
+                    }) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 12))
+                            .foregroundColor(.red)
+                            .padding()
+                            .frame(width: 12, height: 12)
+                    }
+                    .disabled(event.user_id != auth.user_id) //disable if the current user is the creator
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.top, 10)
+                .padding(.trailing, 10)
+                
+                Text(event.eventTitle)
+                    .font(.headline)
+//                    .padding(.top, 15)
+                    .foregroundColor(.white)
+                Text("\(event.startTime.formatted(.dateTime.hour().minute())) - \(event.endTime.formatted(.dateTime.hour().minute()))")
+                    .font(.subheadline)
+                    .foregroundColor(.white)
+
+
+                HStack{ //spacing: 10
+                    Button("Approve ✅") { //only the roommate who didnt make the event can change this event's status
+                        selectedApproval = "true"
+                    }
+                    .disabled(!canModifyApproval) //disable if creator
+                    .foregroundColor(.white)
+                    .padding()
+                    .font(.system(size: 14))
+                    .background(selectedApproval == "true" ? Color.white : highlightYellow)
+                    .cornerRadius(10)
+                    .opacity(canModifyApproval ? 1 : 0.5) //grays out button if creator
+                    
+//                    Button("Deny") {
+//                        isPresented = false
+//                    }
+//                    .padding()
+                    
+                    Button("Let's Talk!💬") {
+                        selectedApproval = "let's talk"
+                     }
+                    .disabled(!canModifyApproval)
+                    .foregroundColor(.white)
+                    .padding()
+                    .font(.system(size: 14))
+                    .background(selectedApproval == "let's talk" ? Color.white : ourOrange)
+                    .cornerRadius(10)
+                    .opacity(canModifyApproval ? 1 : 0.5) //grays out button if creator
+                    
+                }
+                .frame(width: 280, height: 40)
+                .padding(.horizontal, 6)
+                .padding(.top, 6)
+                
+                Button("Confirm") {
+                    if let approval = selectedApproval {
+                        updateEventApproval(approval)
+                    }
+                    withAnimation{
+                        isPresented = false
+                    }
+                }
+                .foregroundColor(.white)
+                .frame(width: 100, height: 30)
+                .background(backgroundColor)
+                .cornerRadius(10)
+                .padding()
+                
+//                Text("This event was created by \(event.user_id)")
+//                    .font(.subheadline)
+//                    .padding()
+//                    .foregroundColor(.white)
+            }
+            .frame(width: 280)
+            .background(modalBackgroundColor)
+            .cornerRadius(10)
+            .shadow(radius: 10)
+            .onAppear {
+                selectedApproval = event.approved
+            }
+            .onTapGesture {
+                //to prevent dismissing if user taps inside modal
+            }
+            .background(
+                isPresented ? Color.black.opacity(0.0).edgesIgnoringSafeArea(.all).onTapGesture {
+                    withAnimation{
+                        isPresented = false
+                    }
+                } : nil
+            )
+            .transition(.scale)
+
+        } //body
+        
+        private func deleteEvent() {
+            // Ensure deletion logic integrates with your data flow
+            eventStore.deleteEvent(eventId: event.id.uuidString)
+            withAnimation{
+                isPresented = false
+            }
+        }
+
+        private func updateEventApproval(_ approval: String) {
+            // Your database update logic goes here
+            print("Updating event approval to:", approval)
+        }
+    } // eventmodal
 }
 
 
@@ -518,6 +760,7 @@ func hexStringToUIColor (hex:String) -> UIColor {
         alpha: CGFloat(1.0)
     )
 }
+
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
