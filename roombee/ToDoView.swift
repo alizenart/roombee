@@ -166,7 +166,7 @@ struct ToDoView: View {
             }//zstack
 //        } //navigationView
             .onAppear {
-                startPolling()
+                fetchAllTasks()
                 observeAppStateChanges()
                 tasknotif = true
             }
@@ -196,7 +196,7 @@ struct ToDoView: View {
         }
         
         NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
-            startPolling()
+            fetchAllTasks()
         }
     }
 
