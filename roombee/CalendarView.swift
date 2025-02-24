@@ -583,13 +583,16 @@ struct CalendarView: View {
         return groups
     }
     
+
+    
+    
     struct EventModal: View {
         let event: CalendarEvent
         @Binding var isPresented: Bool
         @EnvironmentObject var eventStore: EventStore
         @EnvironmentObject var auth: AuthenticationViewModel
 
-        @State private var selectedApproval: String?
+        @State private var selectedApproval: String? = nil
         @State private var deletedEvents: Set<String> = []
 
         
@@ -634,8 +637,12 @@ struct CalendarView: View {
                 .padding(.top, 10)
                 .padding(.trailing, 10)
                 
+                
+//                EventModalContent(event: event, selectedApproval: $selectedApproval, canModifyApproval: $canModifyApproval)
+
+            
                 Text(event.eventTitle)
-                    .font(.headline)
+                    .font(.system(size: 20, weight: .bold))
 //                    .padding(.top, 15)
                     .foregroundColor(.white)
                 Text("\(event.startTime.formatted(.dateTime.hour().minute())) - \(event.endTime.formatted(.dateTime.hour().minute()))")
@@ -648,7 +655,7 @@ struct CalendarView: View {
                         selectedApproval = "true"
                     }
                     .disabled(!canModifyApproval) //disable if creator
-                    .foregroundColor(.white)
+                    .foregroundColor(selectedApproval == "true" ? backgroundColor : .white)
                     .padding()
                     .font(.system(size: 14))
                     .background(selectedApproval == "true" ? Color.white : highlightYellow)
@@ -664,7 +671,7 @@ struct CalendarView: View {
                         selectedApproval = "let's talk"
                      }
                     .disabled(!canModifyApproval)
-                    .foregroundColor(.white)
+                    .foregroundColor(selectedApproval == "Let's talk" ? backgroundColor : .white)
                     .padding()
                     .font(.system(size: 14))
                     .background(selectedApproval == "let's talk" ? Color.white : ourOrange)
@@ -676,7 +683,7 @@ struct CalendarView: View {
                 .padding(.horizontal, 6)
                 .padding(.top, 6)
                 
-                Button("Confirm") {
+                Button("Save and Close") {
                     if let approval = selectedApproval {
                         updateEventApproval(approval)
                     }
@@ -685,7 +692,7 @@ struct CalendarView: View {
                     }
                 }
                 .foregroundColor(.white)
-                .frame(width: 100, height: 30)
+                .frame(width: 150, height: 30)
                 .background(backgroundColor)
                 .cornerRadius(10)
                 .padding()
@@ -725,10 +732,19 @@ struct CalendarView: View {
         }
 
         private func updateEventApproval(_ approval: String) {
-            // Your database update logic goes here
-            print("Updating event approval to:", approval)
+//            eventStore.updateApproval(eventId: event.id.uuidString, newApprovalStatus: approval) { success, error in
+//                if success {
+//                    print("Approval updated successfully.")
+//                } else {
+//                    print("Failed to update approval: \(error?.localizedDescription ?? "Unknown error")")
+//                }
+//            }
+            print("Approval updated successfully.")
         }
+
     } // eventmodal
+    
+    
 }
 
 

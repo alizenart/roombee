@@ -156,6 +156,44 @@ class APIService: ObservableObject {
         }
     }.resume()
   }
+    
+//    // Update event approval
+//    func updateApproval(eventId: String, newApprovalStatus: String, completion: @escaping (Bool, Error?) -> Void) {
+//        let endpoint = "/event/updateApproval"  // Update the endpoint if needed
+//        var urlComponents = URLComponents(string: APIService.baseURL + endpoint)
+//        
+//        // Add query string parameters
+//        urlComponents?.queryItems = [
+//            URLQueryItem(name: "event_id", value: eventId),
+//            URLQueryItem(name: "approved", value: newApprovalStatus)  // Assuming `approved` is a string like 'true', 'false', etc.
+//        ]
+//        
+//        guard let url = urlComponents?.url else {
+//            completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+//            return
+//        }
+//        
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "PUT"  // Using PUT for updating resources
+//        
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            guard error == nil else {
+//                completion(false, error)
+//                return
+//            }
+//            
+//            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+//                completion(false, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to update approval"]))
+//                return
+//            }
+//            
+//            print("Successfully updated approval for event with id: \(eventId)")
+//            DispatchQueue.main.async {
+//                completion(true, nil)
+//            }
+//        }.resume()
+//    }
+
 
     
   func addEvent(user_id: String, event: CalendarEvent, completion: @escaping (Bool, Error?) -> Void) {

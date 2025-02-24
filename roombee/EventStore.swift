@@ -166,4 +166,23 @@ class EventStore: ObservableObject {
                 }
             }
         }
+//    @MainActor func updateApproval(eventId: String, newApprovalStatus: String, completion: @escaping (Bool, Error?) -> Void) {
+//        APIService.shared.updateApproval(eventId: eventId, newApprovalStatus: newApprovalStatus) { success, error in
+//            if success {
+//                DispatchQueue.main.async {
+//                    // Update the local event list with the new approval status if necessary
+//                    if let eventIndex = self.userEvents.firstIndex(where: { $0.id.uuidString == eventId }) {
+//                        self.userEvents[eventIndex].approved = newApprovalStatus
+//                    }
+//                    print("Event approval updated successfully")
+//                }
+//            } else {
+//                DispatchQueue.main.async {
+//                    print("Failed to update approval: \(error?.localizedDescription ?? "Unknown error")")
+//                }
+//            }
+//            completion(success, error)
+//        }
+//    }
+
 }
