@@ -523,23 +523,34 @@ struct CalendarView: View {
                 VStack(alignment: .leading) {
                     Text(event.startTime.formatted(.dateTime.hour().minute()))
                         .foregroundColor(.white)
-                    Text(event.eventTitle).bold()
-                        .foregroundColor(.white)
                     
+                    if event.approved == "true" {
+                        Text("\(event.eventTitle) ✅")
+                            .bold()
+                            .foregroundColor(.white)
+                    } else if event.approved == "let's talk" {
+                        Text("\(event.eventTitle) 💬")
+                            .bold()
+                            .foregroundColor(.white)
+                    } else {
+                        Text(event.eventTitle)
+                            .bold()
+                            .foregroundColor(.white)
+                    }
                 }
                 Spacer()
                 
-                Button(action: {
-                    skipFilter = true
-                    Mixpanel.mainInstance().track(event: "DeletedEvent", properties: ["userID": auth.user_id ?? "Unknown", "eventName": newEventViewModel.title])
-                    deletedEvents.insert(event.id.uuidString)
-                    events.removeAll(where: {$0.id == event.id})
-                    eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
-                }) {
-                    Image(systemName: "trash")
-                        .foregroundColor(.white)
-                }
-                .disabled(backgroundColor == highlightYellow)
+//                Button(action: {
+//                    skipFilter = true
+//                    Mixpanel.mainInstance().track(event: "DeletedEvent", properties: ["userID": auth.user_id ?? "Unknown", "eventName": newEventViewModel.title])
+//                    deletedEvents.insert(event.id.uuidString)
+//                    events.removeAll(where: {$0.id == event.id})
+//                    eventStore.deleteEvent(eventId: event.id.uuidString) // Ensure this matches the expected string format
+//                }) {
+//                    Image(systemName: "trash")
+//                        .foregroundColor(.white)
+//                }
+//                .disabled(event.user_id != auth.user_id)
             }
             .font(.caption)
             .frame(width: width, alignment: .topLeading) // Align to the right
@@ -639,7 +650,7 @@ struct CalendarView: View {
                             .padding()
                             .frame(width: 12, height: 12)
                     }
-                    .disabled(event.user_id != auth.user_id) //disable if the current user is the creator
+                    .disabled(event.user_id != auth.user_id) //disable if the current user is not the creator
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.top, 10)
