@@ -91,7 +91,11 @@ struct HomepageContent: View {
 
                         
                         schedCara.environmentObject(selectedDateManager)
-                        calGrid.padding([.leading, .trailing], 20)
+                        calGrid
+                            .environmentObject(eventStore)
+                            .environmentObject(selectedDateManager)
+                            .environmentObject(auth)
+                            .padding([.leading, .trailing], 20)
                     }
                 }
                         
