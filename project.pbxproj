@@ -36,8 +36,6 @@
 		4C2365B92C05624B00D6FE49 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365B82C05624B00D6FE49 /* LocalNotification.swift */; };
 		4C2365BB2C0564A900D6FE49 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */; };
 		4C2429972C7CFE9500341ED9 /* RoommateAgreementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2429962C7CFE9500341ED9 /* RoommateAgreementViewModel.swift */; };
-		4C7DF5A82D5AAECB004DCD5E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 4C7DF5A72D5AAECB004DCD5E /* FirebaseMessaging */; };
-		4C7DF5AC2D5AAF55004DCD5E /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DF5AB2D5AAF51004DCD5E /* TokenManager.swift */; };
 		4CE4E4242C5C47DA0070C378 /* TodoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */; };
 		680FEBE62BBF6463002B3642 /* Onboarding2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE52BBF6463002B3642 /* Onboarding2.swift */; };
 		680FEBE82BBF64C6002B3642 /* Onboarding3_CreateRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */; };
@@ -104,7 +102,6 @@
 		4C2365B82C05624B00D6FE49 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
 		4C2429962C7CFE9500341ED9 /* RoommateAgreementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoommateAgreementViewModel.swift; sourceTree = "<group>"; };
-		4C7DF5AB2D5AAF51004DCD5E /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		4CE4E4232C5C47DA0070C378 /* TodoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoViewModel.swift; sourceTree = "<group>"; };
 		680FEBE52BBF6463002B3642 /* Onboarding2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2.swift; sourceTree = "<group>"; };
 		680FEBE72BBF64C6002B3642 /* Onboarding3_CreateRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3_CreateRoom.swift; sourceTree = "<group>"; };
@@ -150,7 +147,6 @@
 			files = (
 				FAEFAE6B2CEE4FFF003A364B /* GoogleSignInSwift in Frameworks */,
 				FAD04ABC2CCAB1C400353A33 /* AWSS3 in Frameworks */,
-				4C7DF5A82D5AAECB004DCD5E /* FirebaseMessaging in Frameworks */,
 				FAEFAE692CEE4FFF003A364B /* GoogleSignIn in Frameworks */,
 				3099890C2BFC7343005519F1 /* AWSCore in Frameworks */,
 				685ACAF72C66BEAB0069E7BA /* Mixpanel in Frameworks */,
@@ -202,7 +198,6 @@
 				4C2365BA2C0564A900D6FE49 /* LocalNotificationManager.swift */,
 				308DFDDB2BE9D85000640B62 /* SignupViewModifiers */,
 				30AA0BBB2AD1BC0400344002 /* roombeeApp.swift */,
-				4C7DF5AB2D5AAF51004DCD5E /* TokenManager.swift */,
 				FAE0C6D42C67F441002FE8D6 /* GoogleService-Info.plist */,
 				68E7360A2BCDDB5000D94A95 /* NavManager.swift */,
 				68900F202BD4E30600FFC62D /* SelectedDateManager.swift */,
@@ -327,7 +322,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4C7DF5AA2D5AAEDB004DCD5E /* PBXTargetDependency */,
 				686995632C984D45001B44F9 /* PBXTargetDependency */,
 				686995612C984D3A001B44F9 /* PBXTargetDependency */,
 				6869955F2C984D34001B44F9 /* PBXTargetDependency */,
@@ -346,7 +340,6 @@
 				FAD04ABB2CCAB1C400353A33 /* AWSS3 */,
 				FAEFAE682CEE4FFF003A364B /* GoogleSignIn */,
 				FAEFAE6A2CEE4FFF003A364B /* GoogleSignInSwift */,
-				4C7DF5A72D5AAECB004DCD5E /* FirebaseMessaging */,
 			);
 			productName = roombee;
 			productReference = FAF91EAB2C6662C500B60E68 /* roombee.app */;
@@ -433,7 +426,6 @@
 				684DBD422BCF49C4009EE8DD /* ToDoView.swift in Sources */,
 				6897FCE82C793BB3001B0A52 /* RoommateAgreementView.swift in Sources */,
 				684DBD442BCF49C9009EE8DD /* AddToDoView.swift in Sources */,
-				4C7DF5AC2D5AAF55004DCD5E /* TokenManager.swift in Sources */,
 				308DFDD92BE9D30700640B62 /* LabelStyleModifier.swift in Sources */,
 				FA613CB82CD14770008479A3 /* EmergencyInfoView.swift in Sources */,
 				309D67772BCE4FFB00C343FF /* SignupView.swift in Sources */,
@@ -472,10 +464,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		4C7DF5AA2D5AAEDB004DCD5E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 4C7DF5A92D5AAEDB004DCD5E /* FirebaseMessaging */;
-		};
 		686995592C984D21001B44F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 686995582C984D21001B44F9 /* AWSLambda */;
@@ -807,16 +795,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		4C7DF5A72D5AAECB004DCD5E /* FirebaseMessaging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseMessaging;
-		};
-		4C7DF5A92D5AAEDB004DCD5E /* FirebaseMessaging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3099890F2BFC7386005519F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseMessaging;
 		};
 		685ACAF62C66BEAB0069E7BA /* Mixpanel */ = {
 			isa = XCSwiftPackageProductDependency;

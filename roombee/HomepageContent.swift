@@ -116,11 +116,11 @@ struct HomepageContent: View {
 
             if let roommateId = auth.roommate_id {
                 fetchRoomieInitialToggleState(userId: roommateId)
-                startRoomieStatusPolling(userId: roommateId)
+                //startRoomieStatusPolling(userId: roommateId)
             }
             
             NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
-                stopRoomieStatusPolling()
+                //stopRoomieStatusPolling()
             }
             
             NotificationService.shared.todoNotif()
@@ -137,7 +137,7 @@ struct HomepageContent: View {
             if let roommateId = auth.roommate_id {
                 fetchRoomieInitialToggleState(userId: roommateId)
                 eventStore.getRoommateEvents(roommate_id: roommateId)
-                startRoomieStatusPolling(userId: roommateId)
+                //startRoomieStatusPolling(userId: roommateId)
                 todoManager.fetchRoommateTasks(roommate_id: roommateId)
                 agreementManager.fetchRoommateAgreements(roommate_id: roommateId)
             }
@@ -147,7 +147,6 @@ struct HomepageContent: View {
                 stopRoomieStatusPolling()
             }
             
-            NotificationService.shared.requestPerm()
             NotificationService.shared.todoNotif()
         })
         .onChange(of: isShowingCalendarPopup) { newValue in
@@ -158,7 +157,7 @@ struct HomepageContent: View {
                         // Calendar popup dismissed, resume polling
                         if let roommateId = auth.roommate_id {
                             fetchRoomieInitialToggleState(userId: roommateId)
-                            startRoomieStatusPolling(userId: roommateId)
+                            //startRoomieStatusPolling(userId: roommateId)
                         }
                     }
                 }
@@ -266,9 +265,6 @@ struct StatusView: View {
                                         toggleManager.changeToggleState(userId: userId, state: "is_sleeping")
                                         Mixpanel.mainInstance().track(event: "SleepingToggle", properties: ["userID": auth.user_id ?? "Unknown"])
                                     }
-                                    if hasLoaded && !canToggle {
-                                        NotificationService.shared.toggleSleep(isAsleep: isOn)
-                                    }
                                 }
                         }
                         .padding(.horizontal, 20)
@@ -280,9 +276,6 @@ struct StatusView: View {
                                     if hasLoaded && canToggle { // Only trigger API call if the initial load is done and toggling is allowed
                                         toggleManager.changeToggleState(userId: userId, state: "in_room")
                                         Mixpanel.mainInstance().track(event: "InRoomToggle", properties: ["userID": auth.user_id ?? "Unknown"])
-                                    }
-                                    if hasLoaded && !canToggle {
-                                        NotificationService.shared.toggleRoom(inRoom: isOn)
                                     }
                                 }
                         }

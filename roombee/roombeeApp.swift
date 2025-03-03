@@ -13,10 +13,12 @@ import AWSLambda
 import AWSCore
 import KeychainAccess
 import Mixpanel
+import UserNotifications
+import FirebaseMessaging
 
 
 @MainActor
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
@@ -39,9 +41,45 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
         AWSServiceManager.default().defaultServiceConfiguration = configuration
         Mixpanel.initialize(token: "afcb925e6a6fc8b2cb699e8e0251aebb", trackAutomaticEvents: false)
-        UIApplication.shared.registerForRemoteNotifications()
+        // Set up notification delegate
+        UNUserNotificationCenter.current().delegate = self
+                
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
+                    guard success else {
+                        return
+                    }
+                    UNUserNotificationCenter.current().delegate = self
+                    Messaging.messaging().delegate = self
+                }
+                application.registerForRemoteNotifications()
         return true
     }
+    
+    // Handle device token registration
+        func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            }
+        func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+            print("Failed to register for notifications: \(error.localizedDescription)")
+        }
+        
+        nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+            completionHandler([[.banner, .list, .sound]])
+        }
+        
+        nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,  didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+            let userInfo = response.notification.request.content.userInfo
+            NotificationCenter.default.post(name: Notification.Name("didReceiveRemoteNotification"), object: nil, userInfo: userInfo)
+            completionHandler()
+        }
+        
+        @objc nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+            if let fcmToken = fcmToken {
+                    print("Firebase token: \(fcmToken)")
+                    DispatchQueue.main.async {
+                        TokenManager.shared.fcmToken = fcmToken
+                    }
+                }
+        }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         print("in Roombee App")

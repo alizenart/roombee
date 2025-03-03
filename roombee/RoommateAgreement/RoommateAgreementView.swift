@@ -149,7 +149,7 @@ struct RoommateAgreementView: View {
                 Spacer()
             }
             .onAppear {
-                startPolling()
+                fetchAgreements()
                 observeAppStateChanges()
             }
             .onDisappear {
@@ -181,7 +181,7 @@ struct RoommateAgreementView: View {
             }
             
             NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { _ in
-                startPolling()
+                fetchAgreements()
             }
         }
 

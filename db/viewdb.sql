@@ -1,4 +1,3 @@
 use roombee;
 
-Select * from toggles;
-
+SELECT * FROM agreements WHERE agreement_title = "Test";

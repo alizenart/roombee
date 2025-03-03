@@ -389,9 +389,10 @@ extension AuthenticationViewModel {
             hive_code = generateShorterUUID()
         }
         
-        let jsonObject = [
-            "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "in_room": in_room, "is_sleeping": is_sleeping]
-        ] as [String : Any]
+        guard let fcmToken = TokenManager.shared.fcmToken else {return}
+                let jsonObject = [
+                    "queryStringParameters": ["user_id": user_id, "email": email, "last_name": lastName, "first_name": firstName, "dob": dateString, "hive_code": hive_code, "hive_name": hive_name, "in_room": in_room, "is_sleeping": is_sleeping, "sns_endpoint_arn": fcmToken ?? ""]
+                ] as [String : Any]
         
         lambdaInvoker.invokeFunction("addUser", jsonObject: jsonObject).continueWith { task -> Any? in
             if let error = task.error {
