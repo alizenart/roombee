@@ -473,7 +473,28 @@ extension AuthenticationViewModel {
             return nil
         }
     }
-
+    
+    func addToken() {
+            let lambdaInvoker = AWSLambdaInvoker.default()
+            
+            
+            guard let fcmToken = TokenManager.shared.fcmToken else {return}
+                    let jsonObject = [
+                        "queryStringParameters": ["user_id": self.user_id, "sns_endpoint_arn": fcmToken ?? ""]
+                    ] as [String : Any]
+            
+            lambdaInvoker.invokeFunction("updateToken", jsonObject: jsonObject).continueWith { task -> Any? in
+                if let error = task.error {
+                    print("Error occurred: \(error)")
+                    return nil
+                }
+                if let result = task.result {
+                    print("Lambda function result: \(result)")
+                    self.getUserData()
+                }
+                return nil
+            }
+        }
     
     
     // Gets the current user's data from the database that is NOT already in their firebase user
@@ -513,7 +534,15 @@ extension AuthenticationViewModel {
                                     self.user_lastName = userData["last_name"] as? String ?? ""
                                     self.profileImageURL = userData["profile_picture_url"] as? String ?? ""
                                     
+                                    if let snsEndpointArn = userData["sns_endpoint_arn"] as? String {
+                                                if snsEndpointArn == "<null>" {
+                                                    self.addToken()
+                                                }
+                                            } else if userData["sns_endpoint_arn"] is NSNull || userData["sns_endpoint_arn"] == nil {
+                                                self.addToken()
+                                            }
                                     print("User data loaded: \(userData)")
+                                    
                                 }
                                 
                                 if let roommateData = jsonResponse["roommate_data"] as? [String: Any] {

@@ -60,6 +60,7 @@ struct HomepageView: View {
             fetchRoomieInitialToggleState(userId: roommateId)
         }
         authViewModel.getUserData() // Re-fetch user data
+        //authViewModel.addToken()
     }
     
     
