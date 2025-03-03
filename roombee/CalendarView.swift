@@ -336,6 +336,13 @@ struct CalendarView: View {
                         .environmentObject(auth)
                         .transition(.move(edge: .top))
                         .zIndex(1)
+                        .onAppear {
+                            stopTimer() // Stop the timer when the modal appears
+                        }
+                        .onDisappear {
+                            startTimer() // Restart the timer when the modal disappears
+                        }
+                    
                 }
             }
         )
@@ -399,8 +406,9 @@ struct CalendarView: View {
     var filteredEvents: [CalendarEvent] {
         let selectedDate = selectedDateManager.SelectedDate
         let calendar = Calendar.current
+        let allEvents = eventStore.userEvents + eventStore.roommateEvents
         
-        return events.filter { event in
+        return allEvents.filter { event in
             let eventDate = calendar.startOfDay(for: event.startTime)
             let selectedDay = calendar.startOfDay(for: selectedDate)
             return eventDate == selectedDay
@@ -671,7 +679,7 @@ struct CalendarView: View {
                         selectedApproval = "let's talk"
                      }
                     .disabled(!canModifyApproval)
-                    .foregroundColor(selectedApproval == "Let's talk" ? backgroundColor : .white)
+                    .foregroundColor(selectedApproval == "let's talk" ? backgroundColor : .white)
                     .padding()
                     .font(.system(size: 14))
                     .background(selectedApproval == "let's talk" ? Color.white : ourOrange)
@@ -688,6 +696,7 @@ struct CalendarView: View {
                         updateEventApproval(approval)
                     }
                     withAnimation{
+//                        eventStore.getAllEvents(user_id: auth.user_id!, roommate_id: auth.roommate_id)
                         isPresented = false
                     }
                 }
@@ -732,19 +741,24 @@ struct CalendarView: View {
         }
 
         private func updateEventApproval(_ approval: String) {
-//            eventStore.updateApproval(eventId: event.id.uuidString, newApprovalStatus: approval) { success, error in
-//                if success {
-//                    print("Approval updated successfully.")
-//                } else {
-//                    print("Failed to update approval: \(error?.localizedDescription ?? "Unknown error")")
+            eventStore.updateEventApproval(eventId: event.id.uuidString, newApprovalStatus: approval) { success, error in
+                if success {
+                    print("Approval updated successfully.")
+                } else {
+                    print(approval)
+                    print("Failed to update approval: \(error?.localizedDescription ?? "Unknown error")")
+                }
+            }
+            // Manually trigger the update of the CalendarView or EventCell
+//            DispatchQueue.main.async {
+//                self.eventStore.objectWillChange.send()
+//                withAnimation {
+//                    isPresented = false
 //                }
 //            }
-            print("Approval updated successfully.")
-        }
+        } // updateEventApproval
 
     } // eventmodal
-    
-    
 }
 
 
