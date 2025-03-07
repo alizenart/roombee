@@ -22,6 +22,8 @@ let creamColor = Color(red:231/255, green:224/255, blue:215/255)
 
 let ourRed = Color(red: 230/255, green:67/255, blue: 67/255)
 
+let pendingPurple = Color(red: 190/255, green:178/255, blue: 195/255)
+let pendingYellow = Color(red: 220/255, green:203/255, blue: 167/255)
 
 let date = Date()
 let formatter = DateFormatter()
