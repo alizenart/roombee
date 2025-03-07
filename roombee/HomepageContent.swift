@@ -138,13 +138,14 @@ struct HomepageContent: View {
                 fetchRoomieInitialToggleState(userId: roommateId)
                 eventStore.getRoommateEvents(roommate_id: roommateId)
                 //startRoomieStatusPolling(userId: roommateId)
+                fetchRoomieInitialToggleState(userId: roommateId)
                 todoManager.fetchRoommateTasks(roommate_id: roommateId)
                 agreementManager.fetchRoommateAgreements(roommate_id: roommateId)
             }
             
             
             NotificationCenter.default.addObserver(forName: NSNotification.Name("UserSignedOut"), object: nil, queue: .main) { _ in
-                stopRoomieStatusPolling()
+                //stopRoomieStatusPolling()
             }
             
             NotificationService.shared.todoNotif()
@@ -152,7 +153,7 @@ struct HomepageContent: View {
         .onChange(of: isShowingCalendarPopup) { newValue in
                     if newValue {
                         // Calendar popup is showing, pause polling
-                        stopRoomieStatusPolling()
+                        //stopRoomieStatusPolling()
                     } else {
                         // Calendar popup dismissed, resume polling
                         if let roommateId = auth.roommate_id {
